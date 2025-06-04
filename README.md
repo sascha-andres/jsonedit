@@ -9,6 +9,44 @@ A web-based JSON editor application.
 - Read-only mode option
 - Configurable indentation
 
+## Show me
+
+### Home Page
+The landing page of the application provides quick access to all main features. From here, you can:
+- Create a new JSON document
+- Open an existing JSON file
+- Access the comparison tool
+
+![Home Page](assets/home.png)
+
+### JSON Editor
+A full-featured JSON editor with syntax highlighting and validation. This view allows you to:
+- Edit JSON content
+- Save changes to files
+
+![JSON Editor](assets/edit.png)
+
+### JSON Viewer
+A read-only view for JSON documents with collapsible sections. This view is ideal for:
+- Reviewing JSON data without risk of accidental changes
+
+![JSON Viewer](assets/view.png)
+
+### JSON Comparison
+A comparison tool that highlights differences between two JSON documents. Features include:
+- Visual highlighting of added, modified, and removed elements
+
+![JSON Comparison](assets/compare.png)
+
+### Debug Visualizer
+An advanced debugging tool available in debug mode that shows:
+- HTTP request and response details
+- Application logs and events
+- Performance metrics
+- Request tracing information
+
+![Debug Visualizer](assets/visualizer.png)
+
 ## Usage
 
 ```bash
@@ -30,6 +68,8 @@ The application can be configured using command-line flags or environment variab
 | `--indent` | `JSON_EDIT_INDENT` | "  " | Indentation level |
 | `--read-only` | `JSON_EDIT_READ_ONLY` | false | Read-only mode |
 | `--log-level` | `JSON_EDIT_LOG_LEVEL` | info | Log level (debug, info, warn, error) |
+
+When running in debug mode (by setting `--log-level debug`), the application exposes a `/__viz` endpoint that provides visualization and logging of HTTP requests and responses, which is useful for debugging and development.
 
 ## Building and Releasing
 
@@ -69,4 +109,4 @@ To create a new release:
 
 ## License
 
-[Add license information here]
+This project is licensed under the [Apache License 2.0](LICENSE) - see the [LICENSE](LICENSE) file for details.
