@@ -165,7 +165,7 @@ func (app *App) generateReadOnlyJSON(data interface{}, path string, indent int) 
 					if value != nil {
 						strValue = fmt.Sprintf("%v", value)
 					}
-					result += fmt.Sprintf(`<span style="font-family: monospace;">%s</span>`, html.EscapeString(strValue))
+					result += fmt.Sprintf(`<span style="font-family: 'CustomMonoFont', monospace;">%s</span>`, html.EscapeString(strValue))
 					result += "</div>\n"
 				}
 			}
@@ -197,7 +197,7 @@ func (app *App) generateReadOnlyJSON(data interface{}, path string, indent int) 
 					if value != nil {
 						strValue = fmt.Sprintf("%v", value)
 					}
-					result += fmt.Sprintf(`<span style="font-family: monospace;">%s</span>`, html.EscapeString(strValue))
+					result += fmt.Sprintf(`<span style="font-family: 'CustomMonoFont', monospace;">%s</span>`, html.EscapeString(strValue))
 					result += "</div>\n"
 				}
 			}
@@ -210,7 +210,7 @@ func (app *App) generateReadOnlyJSON(data interface{}, path string, indent int) 
 		}
 		result += fmt.Sprintf(`<div class="json-field">`)
 		result += fmt.Sprintf(`<label>Value:</label>`)
-		result += fmt.Sprintf(`<span style="font-family: monospace;">%s</span>`, html.EscapeString(strValue))
+		result += fmt.Sprintf(`<span style="font-family: 'CustomMonoFont', monospace;">%s</span>`, html.EscapeString(strValue))
 		result += "</div>\n"
 	}
 

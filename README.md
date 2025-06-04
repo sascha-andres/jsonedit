@@ -111,6 +111,20 @@ To create a new release:
 
 3. The release will be available on the GitHub Releases page.
 
+## Used dependencies
+
+### Go dependencies
+
+- [github.com/doganarif/govisual](https://github.com/doganarif/govisual) - Visual debugging tool
+- [github.com/google/go-cmp](https://github.com/google/go-cmp) - Package for comparing Go values
+- [github.com/google/gops](https://github.com/google/gops) - Tool to list and diagnose Go processes
+
+### Used Fonts
+
+This project uses the following fonts:
+- [Monaspace](https://github.com/githubnext/monaspace) - Used for monospaced text
+- [Jost](https://github.com/indestructible-type/Jost) - Used for non-monospaced text
+
 ## License
 
 This project is licensed under the [Apache License 2.0](LICENSE) - see the [LICENSE](LICENSE) file for details.

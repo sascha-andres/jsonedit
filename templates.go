@@ -13,9 +13,21 @@ const compareResultTemplate = `
 	<meta name="apple-mobile-web-app-title" content="JSON edit" />
 	<link rel="manifest" href="/assets/site.webmanifest" />
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #0F172A; color: #38BDF8; }
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('/assets/font.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'CustomMonoFont';
+            src: url('/assets/mono.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body { font-family: 'CustomFont', sans-serif; margin: 20px; background-color: #0F172A; color: #38BDF8; }
         h1 { color: #38BDF8; }
-        pre { background-color: #1E293B; padding: 10px; border-radius: 5px; overflow: auto; color: #E2E8F0; }
+        pre { background-color: #1E293B; padding: 10px; border-radius: 5px; overflow: auto; color: #E2E8F0; font-family: 'CustomMonoFont', monospace; }
         button { padding: 8px 15px; background: #1E293B; color: #38BDF8; border: none; cursor: pointer; margin-right: 10px; }
         button:hover { background: #1E293B; }
         .logo-container { text-align: center; margin-bottom: 20px; }
@@ -48,10 +60,22 @@ const uploadPageTemplate = `
 	<meta name="apple-mobile-web-app-title" content="JSON edit" />
 	<link rel="manifest" href="/assets/site.webmanifest" />
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #0F172A; color: #38BDF8; }
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('/assets/font.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'CustomMonoFont';
+            src: url('/assets/mono.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body { font-family: 'CustomFont', sans-serif; margin: 20px; background-color: #0F172A; color: #38BDF8; }
         h1 { color: #38BDF8; }
         form { margin: 20px 0; }
-        textarea { width: 100%; height: 300px; margin: 10px 0; }
+        textarea { width: 100%; height: 300px; margin: 10px 0; font-family: 'CustomMonoFont', monospace; }
         button { padding: 8px 15px; background: #1E293B; color: #38BDF8; border: none; cursor: pointer; margin-right: 10px; }
         button:hover { background: #1E293B; }
         .error { color: red; }
@@ -107,18 +131,30 @@ const editPageTemplate = `
 	<meta name="apple-mobile-web-app-title" content="JSON edit" />
 	<link rel="manifest" href="/assets/site.webmanifest" />
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #0F172A; color: #38BDF8; }
+        @font-face {
+            font-family: 'CustomFont';
+            src: url('/assets/font.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'CustomMonoFont';
+            src: url('/assets/mono.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body { font-family: 'CustomFont', sans-serif; margin: 20px; background-color: #0F172A; color: #38BDF8; }
         h1 { color: #38BDF8; }
         form { margin: 20px 0; }
-        textarea { width: 100%; height: 300px; margin: 10px 0; font-family: monospace; background-color: #1E293B; color: #38BDF8; border: 1px solid #2D3748; }
+        textarea { width: 100%; height: 300px; margin: 10px 0; font-family: 'CustomMonoFont', monospace; background-color: #1E293B; color: #38BDF8; border: 1px solid #2D3748; }
         button { padding: 8px 15px; background: #1E293B; color: #38BDF8; border: none; cursor: pointer; margin-right: 10px; }
         button:hover { background: #1E293B; }
-        .delete-property-btn, .delete-array-item-btn { background: #f44336; }
-        .delete-property-btn:hover, .delete-array-item-btn:hover { background: #d32f2f; }
+        .delete-property-btn, .delete-array-item-btn { background: #f44336; color: white; }
+        .delete-property-btn:hover, .delete-array-item-btn:hover { background: #d32f2f; color: white; }
         .error { color: red; }
         .json-field { margin: 5px 0; display: flex; align-items: center; }
         .json-field label { min-width: 150px; margin-right: 10px; font-weight: bold; }
-        .json-field input { flex-grow: 1; padding: 5px; font-family: monospace; background-color: #1E293B; color: #38BDF8; border: 1px solid #2D3748; }
+        .json-field input { flex-grow: 1; padding: 5px; font-family: 'CustomMonoFont', monospace; background-color: #1E293B; color: #38BDF8; border: 1px solid #2D3748; }
         select { background-color: #1E293B; color: #38BDF8; border: 1px solid #2D3748; padding: 5px; }
         .hidden { display: none; }
         .logo-container { text-align: center; margin-bottom: 20px; }
