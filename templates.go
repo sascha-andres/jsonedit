@@ -6,6 +6,12 @@ const compareResultTemplate = `
 <html>
 <head>
     <title>JSON Comparison Result</title>
+	<link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96" />
+	<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+	<link rel="shortcut icon" href="/assets/favicon.ico" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+	<meta name="apple-mobile-web-app-title" content="JSON edit" />
+	<link rel="manifest" href="/assets/site.webmanifest" />
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { color: #333; }
@@ -35,6 +41,12 @@ const uploadPageTemplate = `
 <html>
 <head>
     <title>JSON Editor</title>
+	<link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96" />
+	<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+	<link rel="shortcut icon" href="/assets/favicon.ico" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+	<meta name="apple-mobile-web-app-title" content="JSON edit" />
+	<link rel="manifest" href="/assets/site.webmanifest" />
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { color: #333; }
@@ -87,6 +99,12 @@ const editPageTemplate = `
 <html>
 <head>
     <title>Edit JSON</title>
+	<link rel="icon" type="image/png" href="/assets/favicon-96x96.png" sizes="96x96" />
+	<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+	<link rel="shortcut icon" href="/assets/favicon.ico" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+	<meta name="apple-mobile-web-app-title" content="JSON edit" />
+	<link rel="manifest" href="/assets/site.webmanifest" />
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { color: #333; }
