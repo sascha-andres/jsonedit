@@ -12,9 +12,13 @@ const compareResultTemplate = `
         pre { background-color: #f5f5f5; padding: 10px; border-radius: 5px; overflow: auto; }
         button { padding: 8px 15px; background: #4CAF50; color: white; border: none; cursor: pointer; margin-right: 10px; }
         button:hover { background: #45a049; }
+        .logo-container { text-align: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
+    <div class="logo-container">
+        <img src="/assets/logo.svg" alt="JSON Edit Logo" width="200">
+    </div>
     <h1>JSON Comparison Result</h1>
     <div class="comparison-result">
         {{.ComparisonResult}}
@@ -40,9 +44,13 @@ const uploadPageTemplate = `
         button:hover { background: #45a049; }
         .error { color: red; }
         .button-container { margin: 20px 0; }
+        .logo-container { text-align: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
+    <div class="logo-container">
+        <img src="/assets/logo.svg" alt="JSON Edit Logo" width="200">
+    </div>
     <h1>JSON Editor</h1>
     <form action="/upload" method="post" enctype="multipart/form-data">
         <h2>Upload JSON File</h2>
@@ -93,6 +101,7 @@ const editPageTemplate = `
         .json-field label { min-width: 150px; margin-right: 10px; font-weight: bold; }
         .json-field input { flex-grow: 1; padding: 5px; font-family: monospace; }
         .hidden { display: none; }
+        .logo-container { text-align: center; margin-bottom: 20px; }
     </style>
     <script>
         // Function to add a new property to an object
@@ -680,6 +689,9 @@ const editPageTemplate = `
     </script>
 </head>
 <body>
+    <div class="logo-container">
+        <img src="/assets/logo.svg" alt="JSON Edit Logo" width="200">
+    </div>
     <h1>Edit JSON</h1>
     {{if .Error}}
     <p class="error">{{.Error}}</p>

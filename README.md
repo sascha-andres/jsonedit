@@ -1,5 +1,9 @@
 # JSON Edit
 
+<p align="center">
+  <img src="assets/logo.svg" alt="JSON Edit Logo" width="200">
+</p>
+
 A web-based JSON editor application.
 
 ## Features

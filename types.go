@@ -146,6 +146,10 @@ func openBrowser(url string) {
 func (app *App) Run() error {
 
 	mux := http.NewServeMux()
+
+	// Serve static files from the embedded filesystem
+	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(GetEmbeddedFileSystem())))
+
 	mux.HandleFunc("/", app.handleUploadPage)
 	mux.HandleFunc("/upload", app.handleUpload)
 	mux.HandleFunc("/save", app.handleSave)
