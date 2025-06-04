@@ -115,6 +115,8 @@ To create a new release:
 
 ### Go dependencies
 
+This project uses the following dependencies not from the same author:
+
 - [github.com/doganarif/govisual](https://github.com/doganarif/govisual) - Visual debugging tool
 - [github.com/google/go-cmp](https://github.com/google/go-cmp) - Package for comparing Go values
 - [github.com/google/gops](https://github.com/google/gops) - Tool to list and diagnose Go processes

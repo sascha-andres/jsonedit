@@ -655,6 +655,11 @@ const editPageTemplate = `
             const path = button.getAttribute('data-path');
             const key = button.getAttribute('data-key');
 
+            // Ask for confirmation before deleting
+            if (!confirm('Are you sure you want to delete this property?')) {
+                return; // User cancelled the operation
+            }
+
             // Get the JSON content
             const jsonContent = document.getElementById('jsonContent');
             const jsonData = JSON.parse(jsonContent.value);
@@ -698,6 +703,11 @@ const editPageTemplate = `
         function deleteArrayItem(button) {
             const path = button.getAttribute('data-path');
             const index = parseInt(button.getAttribute('data-index'));
+
+            // Ask for confirmation before deleting
+            if (!confirm('Are you sure you want to delete this array item?')) {
+                return; // User cancelled the operation
+            }
 
             // Get the JSON content
             const jsonContent = document.getElementById('jsonContent');
