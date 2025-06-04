@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/google/gops/agent"
 	"github.com/sascha-andres/reuse/flag"
 
 	"github.com/sascha-andres/jsonedit"
@@ -45,6 +46,10 @@ func main() {
 // returning an error if initialization fails.
 func run() error {
 	logger := createLogger(logLevel, appName)
+	if err := agent.Listen(agent.Options{}); err != nil {
+		logger.Error("could not start gops agent", "error", err)
+		return err
+	}
 	a, err := jsonedit.NewApp(
 		jsonedit.WithHost(host),
 		jsonedit.WithIndent(indent),

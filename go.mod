@@ -5,6 +5,7 @@ go 1.24.0
 require (
 	github.com/doganarif/govisual v0.1.9
 	github.com/google/go-cmp v0.7.0
+	github.com/google/gops v0.3.28
 	github.com/sascha-andres/reuse v0.9.1
 )
 
