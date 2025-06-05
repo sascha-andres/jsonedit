@@ -1,4 +1,4 @@
-package jsonedit
+package flatten
 
 import (
 	"reflect"
@@ -37,8 +37,8 @@ func TestFlattenJSON(t *testing.T) {
 			wantErr:  false,
 		},
 		{
-			name:     "JSON with array requiring padding",
-			jsonDoc:  `{"numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}`,
+			name:    "JSON with array requiring padding",
+			jsonDoc: `{"numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}`,
 			expected: []string{
 				"numbers/00: 1", "numbers/01: 2", "numbers/02: 3", "numbers/03: 4", "numbers/04: 5",
 				"numbers/05: 6", "numbers/06: 7", "numbers/07: 8", "numbers/08: 9", "numbers/09: 10",
@@ -87,7 +87,7 @@ func TestFlattenJSON(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := FlattenJSON(tt.jsonDoc)
+			got, err := FlattenJSON([]byte(tt.jsonDoc))
 			if (err != nil) != tt.wantErr {
 				t.Errorf("FlattenJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return

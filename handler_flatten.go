@@ -4,6 +4,8 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+
+	"github.com/sascha-andres/jsonedit/json/flatten"
 )
 
 // handleFlatten processes a JSON file and flattens it
@@ -39,7 +41,7 @@ func (app *App) handleFlatten(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Validate and flatten JSON
-	flattenedLines, err := FlattenJSON(string(content))
+	flattenedLines, err := flatten.FlattenJSON(content)
 	if err != nil {
 		app.logger.Error("failed to flatten JSON file", "err", err)
 		http.Error(w, "Failed to flatten JSON file: "+err.Error(), http.StatusBadRequest)

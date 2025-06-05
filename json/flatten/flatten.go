@@ -1,4 +1,4 @@
-package jsonedit
+package flatten
 
 import (
 	"encoding/json"
@@ -11,9 +11,9 @@ import (
 // where each string represents a flattened property:value pair.
 // Nested objects are prefixed with parent property names.
 // Array items are suffixed with /index where index is padded with leading zeros.
-func FlattenJSON(jsonDoc string) ([]string, error) {
+func FlattenJSON(jsonDoc []byte) ([]string, error) {
 	var data interface{}
-	if err := json.Unmarshal([]byte(jsonDoc), &data); err != nil {
+	if err := json.Unmarshal(jsonDoc, &data); err != nil {
 		return nil, fmt.Errorf("error parsing JSON: %w", err)
 	}
 
