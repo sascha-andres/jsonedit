@@ -1,4 +1,4 @@
-package jsonedit
+package compare
 
 import (
 	"testing"
@@ -6,12 +6,6 @@ import (
 
 // TestGetJSONComparison tests the getJSONComparison method of the App struct
 func TestGetJSONComparison(t *testing.T) {
-	// Create a new App instance with default settings
-	app, err := NewApp()
-	if err != nil {
-		t.Fatalf("Failed to create App instance: %v", err)
-	}
-
 	// Test case 1: Identical objects
 	t.Run("IdenticalObjects", func(t *testing.T) {
 		obj1 := map[string]interface{}{
@@ -31,7 +25,7 @@ func TestGetJSONComparison(t *testing.T) {
 			},
 		}
 
-		diff, err := app.getJSONComparison(obj1, obj2)
+		diff, err := GetJSONComparison(obj1, obj2, "  ")
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 		}
@@ -51,7 +45,7 @@ func TestGetJSONComparison(t *testing.T) {
 			"age":  25,
 		}
 
-		diff, err := app.getJSONComparison(obj1, obj2)
+		diff, err := GetJSONComparison(obj1, obj2, "  ")
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 		}
@@ -77,7 +71,7 @@ func TestGetJSONComparison(t *testing.T) {
 			},
 		}
 
-		diff, err := app.getJSONComparison(obj1, obj2)
+		diff, err := GetJSONComparison(obj1, obj2, "  ")
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 		}
@@ -91,7 +85,7 @@ func TestGetJSONComparison(t *testing.T) {
 		obj1 := []interface{}{1, 2, 3}
 		obj2 := []interface{}{1, 2, 4}
 
-		diff, err := app.getJSONComparison(obj1, obj2)
+		diff, err := GetJSONComparison(obj1, obj2, "  ")
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 		}
@@ -108,7 +102,7 @@ func TestGetJSONComparison(t *testing.T) {
 
 		obj2 := map[string]interface{}{"name": "John"}
 
-		_, err := app.getJSONComparison(obj1, obj2)
+		_, err := GetJSONComparison(obj1, obj2, "  ")
 		if err == nil {
 			t.Errorf("Expected error for unmarshalable object, got nil")
 		}
@@ -117,12 +111,10 @@ func TestGetJSONComparison(t *testing.T) {
 	// Test case 6: Different indentation
 	t.Run("DifferentIndentation", func(t *testing.T) {
 		// Create a new App with different indentation
-		appWithIndent, _ := NewApp(WithIndent("    "))
-
 		obj1 := map[string]interface{}{"name": "John"}
 		obj2 := map[string]interface{}{"name": "John"}
 
-		diff, err := appWithIndent.getJSONComparison(obj1, obj2)
+		diff, err := GetJSONComparison(obj1, obj2, "    ")
 		if err != nil {
 			t.Errorf("Unexpected error: %v", err)
 		}

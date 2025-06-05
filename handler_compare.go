@@ -7,6 +7,8 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+
+	"github.com/sascha-andres/jsonedit/json/compare"
 )
 
 // handleCompare processes two JSON files and compares them
@@ -82,7 +84,7 @@ func (app *App) handleCompare(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Compare the two JSON objects
-	diff, err := app.getJSONComparison(jsonData1, jsonData2)
+	diff, err := compare.GetJSONComparison(jsonData1, jsonData2, app.indent)
 	if err != nil {
 		app.logger.Error("failed to compare JSON files", "err", err)
 		http.Error(w, "Failed to compare JSON files: "+err.Error(), http.StatusInternalServerError)
