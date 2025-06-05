@@ -159,6 +159,7 @@ func (app *App) Run() error {
 	mux.HandleFunc("/compare", app.handleCompare)
 	mux.HandleFunc("/flatten", app.handleFlatten)
 	mux.HandleFunc("/from-schema", app.handleFromSchema)
+	mux.HandleFunc("/validate", app.handleValidate)
 
 	app.logger.Info("server starting", "host", app.host, "port", app.port)
 

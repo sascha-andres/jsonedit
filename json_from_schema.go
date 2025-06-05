@@ -2,10 +2,10 @@ package jsonedit
 
 import (
 	"fmt"
-	"io"
 	"log/slog"
 	"slices"
-	"strings"
+
+	"github.com/sascha-andres/jsonedit/json"
 
 	"github.com/santhosh-tekuri/jsonschema/v6"
 )
@@ -18,21 +18,11 @@ type SchemaParser struct {
 	logger *slog.Logger
 }
 
-// InMemoryLoader is a type that loads JSON schema from an in-memory byte slice.
-type InMemoryLoader struct {
-	doc []byte
-}
-
-// Load retrieves the schemaFS data and returns it as an io.ReadCloser. An error is returned if the schemaFS cannot be obtained.
-func (receiver InMemoryLoader) Load(url string) (any, error) {
-	return jsonschema.UnmarshalJSON(io.NopCloser(strings.NewReader(string(receiver.doc))))
-}
-
 // NewSchemaParser creates a new SchemaParser instance
 func NewSchemaParser(logger *slog.Logger, jsonSchema []byte) (*SchemaParser, error) {
 	// Initialize the compiler and add the schema file
 	compiler := jsonschema.NewCompiler()
-	compiler.UseLoader(InMemoryLoader{doc: jsonSchema})
+	compiler.UseLoader(json.InMemoryLoader{Doc: jsonSchema})
 
 	schema, err := compiler.Compile("//")
 	if err != nil {

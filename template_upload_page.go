@@ -65,6 +65,20 @@ const uploadPageTemplate = `
 		<button type="submit">Generate</button>
 	</form>
 
+	<h1>JSON Validation</h1>
+	<form action="/validate" method="post" enctype="multipart/form-data">
+		<h2>Validate JSON against Schema</h2>
+		<div>
+			<label for="schemaFileValidate">JSON Schema File:</label>
+			<input type="file" name="schemaFileValidate" accept=".json" required>
+		</div>
+		<div>
+			<label for="jsonFileValidate">JSON Document:</label>
+			<input type="file" name="jsonFileValidate" accept=".json" required>
+		</div>
+		<button type="submit">Validate</button>
+	</form>
+
 </body>
 </html>
 `
