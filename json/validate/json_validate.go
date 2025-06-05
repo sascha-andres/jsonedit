@@ -1,8 +1,10 @@
 package validate
 
 import (
+	stdJson "encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log/slog"
 	"strings"
 
@@ -57,7 +59,7 @@ func WithJSONSchema(jsonSchema []byte) JsonValidatorOption {
 	}
 }
 
-// NewJSONValidator creates a new instance to validat4e a JSON file against a document
+// NewJSONValidator creates a new instance to validate a JSON file against a document
 func NewJSONValidator(opts ...JsonValidatorOption) (*JSONValidator, error) {
 	v := &JSONValidator{logger: slog.Default()}
 	for i := range opts {
@@ -71,5 +73,18 @@ func NewJSONValidator(opts ...JsonValidatorOption) (*JSONValidator, error) {
 
 // Validate checks the JSON document against the schema and returns an error if validation fails.
 func (v *JSONValidator) Validate() error {
-	return v.schema.Validate(v.document)
+	// Read the document content
+	data, err := ioutil.ReadAll(v.document)
+	if err != nil {
+		return fmt.Errorf("failed to read document: %w", err)
+	}
+
+	// Parse the JSON document
+	var jsonData interface{}
+	if err := stdJson.Unmarshal(data, &jsonData); err != nil {
+		return fmt.Errorf("invalid JSON document: %w", err)
+	}
+
+	// Validate the parsed JSON against the schema
+	return v.schema.Validate(jsonData)
 }
