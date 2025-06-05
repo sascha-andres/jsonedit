@@ -158,6 +158,7 @@ func (app *App) Run() error {
 	mux.HandleFunc("/new-array", app.handleNewArray)
 	mux.HandleFunc("/compare", app.handleCompare)
 	mux.HandleFunc("/flatten", app.handleFlatten)
+	mux.HandleFunc("/from-schema", app.handleFromSchema)
 
 	app.logger.Info("server starting", "host", app.host, "port", app.port)
 

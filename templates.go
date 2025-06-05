@@ -83,6 +83,16 @@ const uploadPageTemplate = `
 		<button type="submit">Flatten</button>
 	</form>
 
+	<h1>Create document from schema</h1>
+	<form action="/from-schema" method="post" enctype="multipart/form-data">
+		<h2>Generate JSON from Schema</h2>
+		<div>
+			<label for="schemaFile">JSON Schema File:</label>
+			<input type="file" name="schemaFile" accept=".json" required>
+		</div>
+		<button type="submit">Generate</button>
+	</form>
+
 </body>
 </html>
 `
