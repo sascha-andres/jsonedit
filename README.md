@@ -51,6 +51,8 @@ An advanced debugging tool available in debug mode that shows:
 
 ![Debug Visualizer](assets/visualizer.png)
 
+Call it at /__viz
+
 ## Usage
 
 ```bash
