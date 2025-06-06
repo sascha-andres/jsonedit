@@ -7,20 +7,16 @@ import (
 	"testing"
 )
 
-// TestGenerateJSONForm tests the generateJSONForm method of the App struct
+// TestGenerateJSONForm tests the GenerateJSONForm method of the App struct
 func TestGenerateJSONForm(t *testing.T) {
 	// Create a new App instance with default settings and a test logger
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelError}))
-	app, err := NewApp(WithLogger(logger))
-	if err != nil {
-		t.Fatalf("Failed to create App instance: %v", err)
-	}
 
 	// Test case 1: Empty object
 	t.Run("EmptyObject", func(t *testing.T) {
 		data := map[string]interface{}{}
-		result := app.generateJSONForm(data, "root", 0)
-		
+		result := GenerateJSONForm(logger, false, data, "root", 0)
+
 		// Check for expected elements in the output
 		if !strings.Contains(result, "<em>Empty object</em>") {
 			t.Errorf("Expected empty object message, not found in result")
@@ -39,8 +35,8 @@ func TestGenerateJSONForm(t *testing.T) {
 			"name": "John",
 			"age":  30,
 		}
-		result := app.generateJSONForm(data, "person", 0)
-		
+		result := GenerateJSONForm(logger, false, data, "person", 0)
+
 		// Check for expected elements in the output
 		if !strings.Contains(result, "<label for=\"person.name\">name:</label>") {
 			t.Errorf("Expected label for name property, not found in result")
@@ -70,8 +66,8 @@ func TestGenerateJSONForm(t *testing.T) {
 				"age":  30,
 			},
 		}
-		result := app.generateJSONForm(data, "root", 0)
-		
+		result := GenerateJSONForm(logger, false, data, "root", 0)
+
 		// Check for expected elements in the output
 		if !strings.Contains(result, "<label for=\"root.person\">person:</label>") {
 			t.Errorf("Expected label for person property, not found in result")
@@ -91,8 +87,8 @@ func TestGenerateJSONForm(t *testing.T) {
 	// Test case 4: Empty array
 	t.Run("EmptyArray", func(t *testing.T) {
 		data := []interface{}{}
-		result := app.generateJSONForm(data, "items", 0)
-		
+		result := GenerateJSONForm(logger, false, data, "items", 0)
+
 		// Check for expected elements in the output
 		if !strings.Contains(result, "<em>Empty array</em>") {
 			t.Errorf("Expected empty array message, not found in result")
@@ -108,8 +104,8 @@ func TestGenerateJSONForm(t *testing.T) {
 	// Test case 5: Array with simple values
 	t.Run("ArrayWithSimpleValues", func(t *testing.T) {
 		data := []interface{}{1, "two", true}
-		result := app.generateJSONForm(data, "items", 0)
-		
+		result := GenerateJSONForm(logger, false, data, "items", 0)
+
 		// Check for expected elements in the output
 		if !strings.Contains(result, "<label for=\"items[0]\">[0]:</label>") {
 			t.Errorf("Expected label for first array item, not found in result")
@@ -149,8 +145,8 @@ func TestGenerateJSONForm(t *testing.T) {
 				"age":  25,
 			},
 		}
-		result := app.generateJSONForm(data, "people", 0)
-		
+		result := GenerateJSONForm(logger, false, data, "people", 0)
+
 		// Check for expected elements in the output
 		if !strings.Contains(result, "<label for=\"people[0]\">[0]:</label>") {
 			t.Errorf("Expected label for first array item, not found in result")
@@ -179,8 +175,8 @@ func TestGenerateJSONForm(t *testing.T) {
 	// Test case 7: Primitive value
 	t.Run("PrimitiveValue", func(t *testing.T) {
 		data := "test string"
-		result := app.generateJSONForm(data, "value", 0)
-		
+		result := GenerateJSONForm(logger, false, data, "value", 0)
+
 		// Check for expected elements in the output
 		if !strings.Contains(result, "<label for=\"value\">Value:</label>") {
 			t.Errorf("Expected label for primitive value, not found in result")
@@ -192,15 +188,12 @@ func TestGenerateJSONForm(t *testing.T) {
 
 	// Test case 8: Read-only mode
 	t.Run("ReadOnlyMode", func(t *testing.T) {
-		// Create a new App instance with read-only mode enabled
-		readOnlyApp, _ := NewApp(WithReadOnly(true), WithLogger(logger))
-		
 		data := map[string]interface{}{
 			"name": "John",
 			"age":  30,
 		}
-		result := readOnlyApp.generateJSONForm(data, "person", 0)
-		
+		result := GenerateJSONForm(logger, true, data, "person", 0)
+
 		// Check for expected elements in the output
 		if !strings.Contains(result, "<label>name:</label>") {
 			t.Errorf("Expected label for name property, not found in result")
@@ -214,7 +207,7 @@ func TestGenerateJSONForm(t *testing.T) {
 		if !strings.Contains(result, "<span style=\"font-family: 'CustomMonoFont', monospace;\">30</span>") {
 			t.Errorf("Expected span for age value, not found in result")
 		}
-		
+
 		// Check that edit controls are not present
 		if strings.Contains(result, "class=\"add-property-btn\"") {
 			t.Errorf("Found add property button in read-only mode, should not be present")
@@ -232,8 +225,8 @@ func TestGenerateJSONForm(t *testing.T) {
 		data := map[string]interface{}{
 			"html": "<script>alert('XSS')</script>",
 		}
-		result := app.generateJSONForm(data, "root", 0)
-		
+		result := GenerateJSONForm(logger, false, data, "root", 0)
+
 		// Check that HTML is properly escaped
 		if strings.Contains(result, "<script>alert('XSS')</script>") {
 			t.Errorf("Found unescaped HTML in result, should be escaped")
@@ -248,8 +241,8 @@ func TestGenerateJSONForm(t *testing.T) {
 		data := map[string]interface{}{
 			"nullValue": nil,
 		}
-		result := app.generateJSONForm(data, "root", 0)
-		
+		result := GenerateJSONForm(logger, false, data, "root", 0)
+
 		// Check for expected elements in the output
 		if !strings.Contains(result, "<label for=\"root.nullValue\">nullValue:</label>") {
 			t.Errorf("Expected label for null value property, not found in result")

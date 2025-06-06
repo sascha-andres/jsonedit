@@ -28,7 +28,7 @@ func (app *App) handleSave(w http.ResponseWriter, r *http.Request) {
 		simpleData := map[string]interface{}{
 			"content": jsonContent,
 		}
-		formContent := app.generateJSONForm(simpleData, "", 0)
+		formContent := GenerateJSONForm(app.logger, app.readOnly, simpleData, "", 0)
 
 		// If we can't parse the JSON, we'll show the error and the form content
 		data := EditPageData{
