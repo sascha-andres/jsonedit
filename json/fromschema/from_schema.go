@@ -1,4 +1,4 @@
-package jsonedit
+package fromschema
 
 import (
 	"fmt"

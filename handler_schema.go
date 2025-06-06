@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/sascha-andres/jsonedit/json/fromschema"
 )
 
 // handleFromSchema processes a JSON schema file and generates an empty JSON document
@@ -40,7 +42,7 @@ func (app *App) handleFromSchema(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Create a schema parser
-	schemaParser, err := NewSchemaParser(app.logger, content)
+	schemaParser, err := fromschema.NewSchemaParser(app.logger, content)
 	if err != nil {
 		app.logger.Error("failed to create schema parser", "err", err)
 		http.Error(w, "Failed to parse JSON schema: "+err.Error(), http.StatusBadRequest)
