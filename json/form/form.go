@@ -63,7 +63,7 @@ func GenerateJSONForm(logger *slog.Logger, readOnly bool, data interface{}, path
 				}
 			}
 
-			logger.Debug(" Add button to add new property at this level")
+			logger.Debug("Add button to add new property at this level")
 			objectPath := path
 			result += fmt.Sprintf(`<div class="json-field" style="margin-left: %dpx;">`, indent*20)
 			result += fmt.Sprintf(`<button type="button" class="add-property-btn" data-path="%s" data-indent="%d" onclick="addProperty(this)">+ Add Property</button>`, objectPath, indent)

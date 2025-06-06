@@ -22,7 +22,7 @@ func (app *App) handleNewObject(w http.ResponseWriter, _ *http.Request) {
 	}
 
 	// Generate form elements for the empty object
-	formContent := form.GenerateJSONForm(app.logger, app.readOnly, jsonData, "", 0)
+	formContent := form.GenerateJSONForm(app.logger.With("module", "form"), app.readOnly, jsonData, "", 0)
 
 	// Render the edit page with the empty object
 	data := EditPageData{
@@ -47,7 +47,7 @@ func (app *App) handleNewArray(w http.ResponseWriter, _ *http.Request) {
 	}
 
 	// Generate form elements for the empty array
-	formContent := form.GenerateJSONForm(app.logger, app.readOnly, jsonData, "", 0)
+	formContent := form.GenerateJSONForm(app.logger.With("module", "form"), app.readOnly, jsonData, "", 0)
 
 	// Render the edit page with the empty array
 	data := EditPageData{

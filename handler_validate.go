@@ -66,7 +66,7 @@ func (app *App) handleValidate(w http.ResponseWriter, r *http.Request) {
 	validator, err := validate.NewJSONValidator(
 		validate.WithJSONSchema(schemaContent),
 		validate.WithJSONDocument(jsonContent),
-		validate.WithLogger(app.logger),
+		validate.WithLogger(app.logger.With("module", "validate")),
 	)
 	if err != nil {
 		app.logger.Error("failed to create JSON validator", "err", err)

@@ -26,7 +26,7 @@ func (app *App) handleEdit(w http.ResponseWriter, r *http.Request) {
 		simpleData := map[string]interface{}{
 			"content": jsonContent,
 		}
-		formContent := form.GenerateJSONForm(app.logger, app.readOnly, simpleData, "", 0)
+		formContent := form.GenerateJSONForm(app.logger.With("module", "form"), app.readOnly, simpleData, "", 0)
 
 		// If we can't parse the JSON, we'll show the error and the form content
 		data := EditPageData{
@@ -48,7 +48,7 @@ func (app *App) handleEdit(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Generate form elements for each JSON field
-	formContent := form.GenerateJSONForm(app.logger, app.readOnly, jsonData, "", 0)
+	formContent := form.GenerateJSONForm(app.logger.With("module", "form"), app.readOnly, jsonData, "", 0)
 
 	// Render the edit page with the JSON content and form elements
 	data := EditPageData{

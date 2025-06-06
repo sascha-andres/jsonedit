@@ -59,7 +59,7 @@ func (app *App) handleUpload(w http.ResponseWriter, r *http.Request) {
 		simpleData := map[string]interface{}{
 			"content": string(content),
 		}
-		formContent := form.GenerateJSONForm(app.logger, app.readOnly, simpleData, "", 0)
+		formContent := form.GenerateJSONForm(app.logger.With("module", "form"), app.readOnly, simpleData, "", 0)
 
 		data := EditPageData{
 			Content:     string(content),
@@ -80,7 +80,7 @@ func (app *App) handleUpload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Generate form elements for each JSON field
-	formContent := form.GenerateJSONForm(app.logger, app.readOnly, jsonData, "", 0)
+	formContent := form.GenerateJSONForm(app.logger.With("module", "form"), app.readOnly, jsonData, "", 0)
 
 	// Render the edit page with the JSON content and form elements
 	data := EditPageData{
