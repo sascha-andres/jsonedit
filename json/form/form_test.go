@@ -1,4 +1,4 @@
-package jsonedit
+package form
 
 import (
 	"log/slog"

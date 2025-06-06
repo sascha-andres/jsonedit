@@ -5,6 +5,8 @@ import (
 	"html/template"
 	"io"
 	"net/http"
+
+	"github.com/sascha-andres/jsonedit/json/form"
 )
 
 // handleUploadPage displays the upload form
@@ -57,7 +59,7 @@ func (app *App) handleUpload(w http.ResponseWriter, r *http.Request) {
 		simpleData := map[string]interface{}{
 			"content": string(content),
 		}
-		formContent := GenerateJSONForm(app.logger, app.readOnly, simpleData, "", 0)
+		formContent := form.GenerateJSONForm(app.logger, app.readOnly, simpleData, "", 0)
 
 		data := EditPageData{
 			Content:     string(content),
@@ -78,7 +80,7 @@ func (app *App) handleUpload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Generate form elements for each JSON field
-	formContent := GenerateJSONForm(app.logger, app.readOnly, jsonData, "", 0)
+	formContent := form.GenerateJSONForm(app.logger, app.readOnly, jsonData, "", 0)
 
 	// Render the edit page with the JSON content and form elements
 	data := EditPageData{

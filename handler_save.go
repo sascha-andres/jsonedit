@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+
+	"github.com/sascha-andres/jsonedit/json/form"
 )
 
 // handleSave processes the edited JSON and provides it as a download
@@ -28,7 +30,7 @@ func (app *App) handleSave(w http.ResponseWriter, r *http.Request) {
 		simpleData := map[string]interface{}{
 			"content": jsonContent,
 		}
-		formContent := GenerateJSONForm(app.logger, app.readOnly, simpleData, "", 0)
+		formContent := form.GenerateJSONForm(app.logger, app.readOnly, simpleData, "", 0)
 
 		// If we can't parse the JSON, we'll show the error and the form content
 		data := EditPageData{
