@@ -49,6 +49,9 @@ type (
 
 		// logger provides structured logging capabilities for the application, supporting various log levels and outputs.
 		logger *slog.Logger
+
+		// noBrowser indicates whether the application should open the default browser after startup.
+		noBrowser bool
 	}
 
 	// AppOption represents a function that configures an App instance and may return an error during the setup process.
@@ -59,11 +62,12 @@ type (
 // and returns the configured App or an error.
 func NewApp(opts ...AppOption) (*App, error) {
 	app := &App{
-		port:     8080,
-		host:     "localhost",
-		indent:   "  ",
-		readOnly: false,
-		logger:   slog.Default(),
+		port:      8080,
+		host:      "localhost",
+		indent:    "  ",
+		readOnly:  false,
+		logger:    slog.Default(),
+		noBrowser: false,
 	}
 	for _, opt := range opts {
 		err := opt(app)
@@ -72,6 +76,14 @@ func NewApp(opts ...AppOption) (*App, error) {
 		}
 	}
 	return app, nil
+}
+
+// WithNoBrowser sets the noBrowser field in the App to determine if the app should refrain from opening a browser on startup.
+func WithNoBrowser(noBrowser bool) AppOption {
+	return func(app *App) error {
+		app.noBrowser = noBrowser
+		return nil
+	}
 }
 
 // WithDebug sets the debug mode for the application, enabling detailed logging for requests and responses.
@@ -164,13 +176,15 @@ func (app *App) Run() error {
 
 	app.logger.Info("server starting", "host", app.host, "port", app.port)
 
-	// Open browser after a short delay to ensure server is ready
-	go func() {
-		time.Sleep(500 * time.Millisecond)
-		url := fmt.Sprintf("http://%s:%d", app.host, app.port)
-		app.logger.Info("opening browser", "url", url)
-		openBrowser(url)
-	}()
+	if !app.noBrowser {
+		// Open browser after a short delay to ensure server is ready
+		go func() {
+			time.Sleep(500 * time.Millisecond)
+			url := fmt.Sprintf("http://%s:%d", app.host, app.port)
+			app.logger.Info("opening browser", "url", url)
+			openBrowser(url)
+		}()
+	}
 
 	if app.debug {
 		// Wrap with GoVisual
