@@ -4,22 +4,95 @@
     font-weight: normal;
     font-style: normal;
 }
+
 @font-face {
     font-family: 'CustomMonoFont';
     src: url('/assets/mono.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
-body { 
-    font-family: 'CustomFont', sans-serif; 
-    margin: 20px; 
-    background-color: #1E293B; 
-    color: #38BDF8; 
+
+/* Reset default margins and paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
+body { 
+    font-family: 'CustomFont', sans-serif;
+    background-color: #1E293B; 
+    color: #38BDF8;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+/* Container takes full viewport */
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* First row - 75px height */
+.row.header {
+    height: 75px;
+    border: 1px solid black;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Header left and right sections */
+.header-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+/* Logo styling */
+.header-logo {
+    width: 70px;
+    height: 70px;
+    margin-right: 15px;
+}
+
+.header-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Second row - fills remaining space */
+.row.content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* First column - 250px width */
+.column.sidebar {
+    width: 250px;
+    border: 1px solid black;
+    padding: 10px;
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+}
+
+/* Second column - fills remaining space */
+.column.main {
+    flex: 1;
+    border: 1px solid black;
+    padding: 10px;
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+}
+
 h1 { 
     color: #38BDF8; 
 }
-pre { 
+
+pre {
     background-color: #0F172A; 
     padding: 10px; 
     border-radius: 5px; 
@@ -27,10 +100,12 @@ pre {
     color: #E2E8F0; 
     font-family: 'CustomMonoFont', monospace; 
 }
+
 form { 
     margin: 20px 0; 
 }
-textarea { 
+
+textarea {
     width: 100%; 
     height: 300px; 
     margin: 10px 0; 
@@ -39,7 +114,8 @@ textarea {
     color: #38BDF8; 
     border: 1px solid #2D3748; 
 }
-button { 
+
+button {
     padding: 8px 15px; 
     background: #0F172A; 
     color: #38BDF8; 
@@ -47,31 +123,38 @@ button {
     cursor: pointer; 
     margin-right: 10px; 
 }
-button:hover { 
+
+button:hover {
     background: #0F172A; 
 }
-.delete-property-btn, .delete-array-item-btn { 
+
+.delete-property-btn, .delete-array-item-btn {
     background: #f44336; 
     color: white; 
 }
-.delete-property-btn:hover, .delete-array-item-btn:hover { 
+
+.delete-property-btn:hover, .delete-array-item-btn:hover {
     background: #d32f2f; 
     color: white; 
 }
-.error { 
+
+.error {
     color: red; 
 }
-.json-field { 
+
+.json-field {
     margin: 5px 0; 
     display: flex; 
     align-items: center; 
 }
-.json-field label { 
+
+.json-field label {
     min-width: 150px; 
     margin-right: 10px; 
     font-weight: bold; 
 }
-.json-field input { 
+
+.json-field input {
     flex-grow: 1; 
     padding: 5px; 
     font-family: 'CustomMonoFont', monospace; 
@@ -79,56 +162,70 @@ button:hover {
     color: #38BDF8; 
     border: 1px solid #2D3748; 
 }
-select { 
+
+select {
     background-color: #0F172A; 
     color: #38BDF8; 
     border: 1px solid #2D3748; 
     padding: 5px; 
 }
-.hidden { 
+
+.hidden {
     display: none; 
 }
-.logo-container { 
+
+.logo-container {
     text-align: center; 
     margin-bottom: 20px; 
 }
-.button-container { 
+
+.button-container {
     margin: 20px 0; 
 }
-input { 
+
+input {
     background-color: #0F172A; 
     color: #38BDF8; 
     border: 1px solid #2D3748; 
     padding: 5px; 
 }
+
 .comparison-result {
     margin-top: 10px;
 }
+
 /* Classes for dynamically created elements in JavaScript */
 .property-form {
     margin-left: 20px;
 }
+
 .name-label {
     min-width: 150px;
     margin-right: 10px;
 }
+
 .value-label {
     min-width: 50px;
     margin-right: 10px;
 }
+
 .type-label {
     min-width: 50px;
     margin-right: 10px;
 }
+
 .input-field {
     margin-right: 10px;
 }
+
 .select-field {
     margin-right: 10px;
 }
+
 .element-hidden {
     display: none;
 }
+
 .element-visible {
     display: block;
 }
