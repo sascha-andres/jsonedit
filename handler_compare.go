@@ -13,6 +13,15 @@ import (
 
 // handleCompare processes two JSON files and compares them
 func (app *App) handleCompare(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		app.renderCompareResult(w, r)
+	}
+	if r.Method == http.MethodGet {
+		app.renderCompareForm(w, r)
+	}
+}
+
+func (app *App) renderCompareResult(w http.ResponseWriter, r *http.Request) {
 	// Parse the multipart form
 	err := r.ParseMultipartForm(10 << 20) // 10 MB max
 	if err != nil {
