@@ -32,7 +32,7 @@ func init() {
 	flag.StringVar(&indent, "indent", indent, "Indentation level")
 	flag.StringVar(&logLevel, "log-level", logLevel, "Log level (debug, info, warn, error)")
 	flag.BoolVar(&readOnly, "read-only", readOnly, "Read-only mode")
-	flag.BoolVar(&noBrowser, "no-browaer", noBrowser, "Do not open browser")
+	flag.BoolVar(&noBrowser, "no-browser", noBrowser, "Do not open browser")
 }
 
 // main is the entry point of the application, parsing flags and handling any initialization errors during startup.
