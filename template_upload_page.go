@@ -31,30 +31,6 @@ const uploadPageTemplate = `
         <button onclick="window.location.href='/new-array'">Create New Array</button>
     </div>
 
-	<h1>JSON Compare</h1>
-	<form action="/compare" method="post" enctype="multipart/form-data">
-		<h2>Compare Two JSON Files</h2>
-		<div>
-			<label for="jsonFile1">First JSON File:</label>
-			<input type="file" name="jsonFile1" accept=".json" required>
-		</div>
-		<div>
-			<label for="jsonFile2">Second JSON File:</label>
-			<input type="file" name="jsonFile2" accept=".json" required>
-		</div>
-		<button type="submit">Compare</button>
-	</form>
-
-	<h1>JSON Flatten</h1>
-	<form action="/flatten" method="post" enctype="multipart/form-data">
-		<h2>Flatten JSON File</h2>
-		<div>
-			<label for="jsonFileFlat">JSON File:</label>
-			<input type="file" name="jsonFileFlat" accept=".json" required>
-		</div>
-		<button type="submit">Flatten</button>
-	</form>
-
 	<h1>Create document from schema</h1>
 	<form action="/from-schema" method="post" enctype="multipart/form-data">
 		<h2>Generate JSON from Schema</h2>

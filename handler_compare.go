@@ -122,3 +122,12 @@ func (app *App) renderCompareResult(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to render page", http.StatusInternalServerError)
 	}
 }
+
+func (app *App) renderCompareForm(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.New("compare").Parse(compareFormTemplate))
+	err := tmpl.Execute(w, nil)
+	if err != nil {
+		app.logger.Error("failed to render upload page template", "err", err)
+		http.Error(w, "Failed to render page", http.StatusInternalServerError)
+	}
+}
