@@ -24,37 +24,6 @@ const uploadPageTemplate = `
         <input type="file" name="jsonFile" accept=".json" required>
         <button type="submit">Upload</button>
     </form>
-
-    <div class="button-container">
-        <h2>Or Create New JSON</h2>
-        <button onclick="window.location.href='/new'">Create New Object</button>
-        <button onclick="window.location.href='/new-array'">Create New Array</button>
-    </div>
-
-	<h1>Create document from schema</h1>
-	<form action="/from-schema" method="post" enctype="multipart/form-data">
-		<h2>Generate JSON from Schema</h2>
-		<div>
-			<label for="schemaFile">JSON Schema File:</label>
-			<input type="file" name="schemaFile" accept=".json" required>
-		</div>
-		<button type="submit">Generate</button>
-	</form>
-
-	<h1>JSON Validation</h1>
-	<form action="/validate" method="post" enctype="multipart/form-data">
-		<h2>Validate JSON against Schema</h2>
-		<div>
-			<label for="schemaFileValidate">JSON Schema File:</label>
-			<input type="file" name="schemaFileValidate" accept=".json" required>
-		</div>
-		<div>
-			<label for="jsonFileValidate">JSON Document:</label>
-			<input type="file" name="jsonFileValidate" accept=".json" required>
-		</div>
-		<button type="submit">Validate</button>
-	</form>
-
 </body>
 </html>
 `
