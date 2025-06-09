@@ -13,7 +13,7 @@ const indexTemplate = `
 	<link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
 	<meta name="apple-mobile-web-app-title" content="JSON edit" />
 	<link rel="manifest" href="/assets/site.webmanifest" />
-	<script src="https://unpkg.com/htmx.org@2.0.4"></script>
+	<script src="/assets/htmx.js"></script>
     <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
@@ -31,27 +31,17 @@ const indexTemplate = `
         <div class="row content" id="content">
             <div class="column sidebar" id="sidebar">
                 <!-- First column content -->
-                <h2>Sidebar</h2>
-				<button hx-get="/new" hx-swap="innerHTML" hx-target="#main">Upload JSON</button>
-                <p>This is the sidebar content with fixed width of 250px.</p>
-                <!-- Adding some dummy content to demonstrate scrolling -->
-                <div class="dummy-content">
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                    <p>Scroll content example.</p>
-                </div>
+                <h2>Edit</h2>
+				<div hx-get="/new" hx-swap="innerHTML" hx-target="#main">Edit existing JSON</div>
+				<div hx-get="/new" hx-swap="innerHTML" hx-target="#main">New JSON object</div>
+				<div hx-get="/new-array" hx-swap="innerHTML" hx-target="#main">New JSON array</div>
+				<h2>Functions</h2>
+				<h3>Functionality</h3>
+				<div hx-get="/compare" hx-swap="innerHTML" hx-target="#main">Compare documents</div>
+				<div hx-get="/flatten" hx-swap="innerHTML" hx-target="#main">Flatten document</div>
+				<h3>Schema</h3>
+				<div hx-get="/from-schema" hx-swap="innerHTML" hx-target="#main">JSON Document from schema</div>
+				<div hx-get="/validate" hx-swap="innerHTML" hx-target="#main">Validate JSON document</div>
             </div>
             <div class="column main" id="main">
                 <!-- Second column content -->
