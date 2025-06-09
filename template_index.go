@@ -14,6 +14,7 @@ const indexTemplate = `
 	<meta name="apple-mobile-web-app-title" content="JSON edit" />
 	<link rel="manifest" href="/assets/site.webmanifest" />
 	<script src="/assets/htmx.js"></script>
+	<script src="/assets/json-edit.js"></script>
     <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
@@ -32,7 +33,7 @@ const indexTemplate = `
             <div class="column sidebar" id="sidebar">
                 <!-- First column content -->
                 <h2>Edit</h2>
-				<div hx-get="/new" hx-swap="innerHTML" hx-target="#main">Edit existing JSON</div>
+				<div hx-get="/upload" hx-swap="innerHTML" hx-target="#main">Edit existing JSON</div>
 				<div hx-get="/new" hx-swap="innerHTML" hx-target="#main">New JSON object</div>
 				<div hx-get="/new-array" hx-swap="innerHTML" hx-target="#main">New JSON array</div>
 				<h2>Functions</h2>
