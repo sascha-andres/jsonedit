@@ -11,7 +11,7 @@ const validateFormTemplate = `
 		<label for="jsonFileValidate">JSON Document:</label>
 		<input type="file" name="jsonFileValidate" accept=".json" required>
 	</div>
-	<button form="form_validate" type="submit" hx-post="/validate" hx-swap="innerHTML" hx-target="#main">Compare</button>
+	<button form="form_validate" type="submit" hx-post="/validate" hx-swap="innerHTML" hx-target="#main">Validate</button>
 </form>
 `
 

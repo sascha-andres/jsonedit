@@ -7,7 +7,7 @@ const flattenFormTemplate = `
 		<label for="jsonFileFlat">JSON File:</label>
 		<input type="file" name="jsonFileFlat" accept=".json" required>
 	</div>
-	<button form="form_compare" type="submit" hx-post="/flatten" hx-swap="innerHTML" hx-target="#main">Compare</button>
+	<button form="form_compare" type="submit" hx-post="/flatten" hx-swap="innerHTML" hx-target="#main">Flatten</button>
 </form>
 `
 

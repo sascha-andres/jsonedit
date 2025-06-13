@@ -4,7 +4,7 @@ const editPageFormTemplate = `
 <form action="/upload" method="post" enctype="multipart/form-data" id="form_edit" hx-encoding="multipart/form-data">
 	<h2>Upload JSON File</h2>
 	<input type="file" name="jsonFile" accept=".json" required>
-	<button form="form_compare" type="submit" hx-post="/upload" hx-swap="innerHTML" hx-target="#main">Compare</button>
+	<button form="form_compare" type="submit" hx-post="/upload" hx-swap="innerHTML" hx-target="#main">Edit</button>
 </form>
 `
 
@@ -22,6 +22,6 @@ const editPageTemplate = `
 	{{if not .ReadOnly}}
 	<button type="submit">Save and Download</button>
 	{{end}}
-	<button type="button" onclick="window.location.href='/'">Back to Upload</button>
+	<button type="button" onclick="window.location.href='/'">Return to Home</button>
 </form>
 `

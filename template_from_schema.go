@@ -7,6 +7,6 @@ const fromSchemaFormTemplate = `
 		<label for="schemaFile">JSON Schema File:</label>
 		<input type="file" name="schemaFile" accept=".json" required>
 	</div>
-	<button form="form_from_schema" type="submit" hx-redirect="/from-schema">Compare</button>
+	<button form="form_from_schema" type="submit" hx-redirect="/from-schema">Generate</button>
 </form>
 `
