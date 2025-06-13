@@ -549,3 +549,34 @@ function deleteArrayItem(button) {
         }
     });
 }
+
+// Function to handle sidebar menu item selection
+document.addEventListener('DOMContentLoaded', function() {
+    // Find all sidebar menu items
+    const sidebarMenuItems = document.querySelectorAll('.column.sidebar div[hx-get]');
+
+    // Add click event listeners to each menu item
+    sidebarMenuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove 'selected' class from all menu items
+            sidebarMenuItems.forEach(menuItem => {
+                menuItem.classList.remove('selected');
+            });
+
+            // Add 'selected' class to the clicked menu item
+            this.classList.add('selected');
+
+            // Store the selected menu item's hx-get attribute in localStorage
+            localStorage.setItem('selectedMenuItem', this.getAttribute('hx-get'));
+        });
+    });
+
+    // Check if there's a stored selected menu item and apply the 'selected' class
+    const selectedMenuItem = localStorage.getItem('selectedMenuItem');
+    if (selectedMenuItem) {
+        const menuItem = document.querySelector(`.column.sidebar div[hx-get="${selectedMenuItem}"]`);
+        if (menuItem) {
+            menuItem.classList.add('selected');
+        }
+    }
+});

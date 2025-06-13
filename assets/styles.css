@@ -80,6 +80,19 @@ body {
     overflow-y: auto; /* Enable vertical scrolling if content overflows */
 }
 
+/* Style for sidebar menu items */
+.column.sidebar div[hx-get] {
+    text-decoration: underline;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+/* Style for currently selected menu item */
+.column.sidebar div.selected {
+    font-weight: bold;
+    font-style: italic;
+}
+
 /* Second column - fills remaining space */
 .column.main {
     flex: 1;
