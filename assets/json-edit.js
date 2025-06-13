@@ -138,9 +138,12 @@ function addProperty(button) {
             jsonContent.value = JSON.stringify(jsonData, null, 4);
 
             // Use HTMX to update the main div without page reload
-            htmx.ajax('GET', '/edit?jsonContent=' + encodeURIComponent(jsonContent.value), {
+            htmx.ajax('POST', '/edit', {
                 target: '#main',
-                swap: 'innerHTML'
+                swap: 'innerHTML',
+                values: {
+                    jsonContent: jsonContent.value
+                }
             });
         } else {
             // For primitive types, add a simple input field
@@ -309,9 +312,12 @@ function addArrayItem(button) {
             jsonContent.value = JSON.stringify(jsonData, null, 4);
 
             // Use HTMX to update the main div without page reload
-            htmx.ajax('GET', '/edit?jsonContent=' + encodeURIComponent(jsonContent.value), {
+            htmx.ajax('POST', '/edit', {
                 target: '#main',
-                swap: 'innerHTML'
+                swap: 'innerHTML',
+                values: {
+                    jsonContent: jsonContent.value
+                }
             });
         } else {
             // For primitive types, add a simple input field
@@ -488,9 +494,12 @@ function deleteProperty(button) {
     jsonContent.value = JSON.stringify(jsonData, null, 4);
 
     // Use HTMX to update the main div without page reload
-    htmx.ajax('GET', '/edit?jsonContent=' + encodeURIComponent(jsonContent.value), {
+    htmx.ajax('POST', '/edit', {
         target: '#main',
-        swap: 'innerHTML'
+        swap: 'innerHTML',
+        values: {
+            jsonContent: jsonContent.value
+        }
     });
 }
 
@@ -532,8 +541,11 @@ function deleteArrayItem(button) {
     jsonContent.value = JSON.stringify(jsonData, null, 4);
 
     // Use HTMX to update the main div without page reload
-    htmx.ajax('GET', '/edit?jsonContent=' + encodeURIComponent(jsonContent.value), {
+    htmx.ajax('POST', '/edit', {
         target: '#main',
-        swap: 'innerHTML'
+        swap: 'innerHTML',
+        values: {
+            jsonContent: jsonContent.value
+        }
     });
 }
