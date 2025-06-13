@@ -21,26 +21,26 @@ The landing page of the application provides quick access to all main features. 
 - Open an existing JSON file
 - Access the comparison tool
 
-![Home Page](assets/home.png)
+![Home Page](page_assets/home.png)
 
 ### JSON Editor
 A full-featured JSON editor with syntax highlighting and validation. This view allows you to:
 - Edit JSON content
 - Save changes to files
 
-![JSON Editor](assets/edit.png)
+![JSON Editor](page_assets/edit.png)
 
 ### JSON Viewer
 A read-only view for JSON documents with collapsible sections. This view is ideal for:
 - Reviewing JSON data without risk of accidental changes
 
-![JSON Viewer](assets/view.png)
+![JSON Viewer](page_assets/view.png)
 
 ### JSON Comparison
 A comparison tool that highlights differences between two JSON documents. Features include:
 - Visual highlighting of added, modified, and removed elements
 
-![JSON Comparison](assets/compare.png)
+![JSON Comparison](page_assets/compare.png)
 
 ### Debug Visualizer
 An advanced debugging tool available in debug mode that shows:
@@ -49,7 +49,7 @@ An advanced debugging tool available in debug mode that shows:
 - Performance metrics
 - Request tracing information
 
-![Debug Visualizer](assets/visualizer.png)
+![Debug Visualizer](page_assets/visualizer.png)
 
 Call it at /__viz
 
