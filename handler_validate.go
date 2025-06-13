@@ -10,6 +10,26 @@ import (
 
 // handleValidate processes the JSON schema and document files and validates the document against the schema
 func (app *App) handleValidate(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		app.renderValidateResult(w, r)
+	}
+	if r.Method == http.MethodGet {
+		app.renderValidateForm(w, r)
+	}
+}
+
+// renderValidateForm renders the validation form on a separate page
+func (app *App) renderValidateForm(w http.ResponseWriter, _ *http.Request) {
+	tmpl := template.Must(template.New("compare").Parse(validateFormTemplate))
+	err := tmpl.Execute(w, nil)
+	if err != nil {
+		app.logger.Error("failed to render upload page template", "err", err)
+		http.Error(w, "Failed to render page", http.StatusInternalServerError)
+	}
+}
+
+// renderValidateResult processes the JSON schema and document files and validates the document against the schema and renders the result on a separate page
+func (app *App) renderValidateResult(w http.ResponseWriter, r *http.Request) {
 	// Parse the multipart form
 	err := r.ParseMultipartForm(10 << 20) // 10 MB max
 	if err != nil {

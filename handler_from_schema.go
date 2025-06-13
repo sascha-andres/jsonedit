@@ -3,6 +3,7 @@ package jsonedit
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io"
 	"net/http"
 
@@ -11,6 +12,26 @@ import (
 
 // handleFromSchema processes a JSON schema file and generates an empty JSON document
 func (app *App) handleFromSchema(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		app.renderJSONDocument(w, r)
+	}
+	if r.Method == http.MethodGet {
+		app.renderJSONDocumentForm(w, r)
+	}
+}
+
+// renderJSONDocumentForm renders the JSON document form on a separate page
+func (app *App) renderJSONDocumentForm(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.New("compare").Parse(fromSchemaFormTemplate))
+	err := tmpl.Execute(w, nil)
+	if err != nil {
+		app.logger.Error("failed to render upload page template", "err", err)
+		http.Error(w, "Failed to render page", http.StatusInternalServerError)
+	}
+}
+
+// renderJSONDocument processes a JSON schema file and generates an empty JSON document and renders the result on a separate page
+func (app *App) renderJSONDocument(w http.ResponseWriter, r *http.Request) {
 	// Parse the multipart form
 	err := r.ParseMultipartForm(10 << 20) // 10 MB max
 	if err != nil {

@@ -10,6 +10,16 @@ import (
 
 // handleFlatten processes a JSON file and flattens it
 func (app *App) handleFlatten(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		app.renderFlattenResult(w, r)
+	}
+	if r.Method == http.MethodGet {
+		app.renderFlattenForm(w, r)
+	}
+}
+
+// renderFlattenResult processes a JSON file and flattens it and renders the result on a separate page
+func (app *App) renderFlattenResult(w http.ResponseWriter, r *http.Request) {
 	// Parse the multipart form
 	err := r.ParseMultipartForm(10 << 20) // 10 MB max
 	if err != nil {
@@ -70,6 +80,16 @@ func (app *App) handleFlatten(w http.ResponseWriter, r *http.Request) {
 	err = tmpl.Execute(w, data)
 	if err != nil {
 		app.logger.Error("failed to render flatten result template", "err", err)
+		http.Error(w, "Failed to render page", http.StatusInternalServerError)
+	}
+}
+
+// renderFlattenForm renders the flatten form on a separate page
+func (app *App) renderFlattenForm(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.New("compare").Parse(flattenFormTemplate))
+	err := tmpl.Execute(w, nil)
+	if err != nil {
+		app.logger.Error("failed to render upload page template", "err", err)
 		http.Error(w, "Failed to render page", http.StatusInternalServerError)
 	}
 }

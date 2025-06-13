@@ -8,10 +8,25 @@ import (
 	"github.com/sascha-andres/jsonedit/json/form"
 )
 
-// handleEdit processes the JSON content from a GET request and renders the edit page
+// handleEdit processes the JSON content from a GET or POST request and renders the edit page
 func (app *App) handleEdit(w http.ResponseWriter, r *http.Request) {
-	// Get the JSON content from the query parameter
-	jsonContent := r.URL.Query().Get("jsonContent")
+	var jsonContent string
+
+	// Check request method and get JSON content accordingly
+	if r.Method == "POST" {
+		// For POST requests, get the JSON content from the form data
+		err := r.ParseForm()
+		if err != nil {
+			app.logger.Error("failed to parse form", "err", err)
+			http.Error(w, "Failed to parse form data", http.StatusBadRequest)
+			return
+		}
+		jsonContent = r.FormValue("jsonContent")
+	} else {
+		// For GET requests, get the JSON content from the query parameter
+		jsonContent = r.URL.Query().Get("jsonContent")
+	}
+
 	if jsonContent == "" {
 		app.logger.Error("invalid json content")
 		http.Error(w, "Missing JSON content", http.StatusBadRequest)

@@ -13,6 +13,15 @@ import (
 
 // handleCompare processes two JSON files and compares them
 func (app *App) handleCompare(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		app.renderCompareResult(w, r)
+	}
+	if r.Method == http.MethodGet {
+		app.renderCompareForm(w, r)
+	}
+}
+
+func (app *App) renderCompareResult(w http.ResponseWriter, r *http.Request) {
 	// Parse the multipart form
 	err := r.ParseMultipartForm(10 << 20) // 10 MB max
 	if err != nil {
@@ -110,6 +119,15 @@ func (app *App) handleCompare(w http.ResponseWriter, r *http.Request) {
 	err = tmpl.Execute(w, data)
 	if err != nil {
 		app.logger.Error("failed to render comparison result template", "err", err)
+		http.Error(w, "Failed to render page", http.StatusInternalServerError)
+	}
+}
+
+func (app *App) renderCompareForm(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.New("compare").Parse(compareFormTemplate))
+	err := tmpl.Execute(w, nil)
+	if err != nil {
+		app.logger.Error("failed to render upload page template", "err", err)
 		http.Error(w, "Failed to render page", http.StatusInternalServerError)
 	}
 }
