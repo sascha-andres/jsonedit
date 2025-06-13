@@ -137,25 +137,11 @@ function addProperty(button) {
             // Update the JSON content
             jsonContent.value = JSON.stringify(jsonData, null, 4);
 
-            // Submit the form to update the page without triggering a POST request resend
-            const form = document.getElementById('editForm');
-            const formData = new FormData(form);
-
-            // Create a temporary form to submit a GET request
-            const tempForm = document.createElement('form');
-            tempForm.method = 'get';
-            tempForm.action = '/edit';
-
-            // Add the JSON content as a parameter
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'jsonContent';
-            input.value = jsonContent.value;
-            tempForm.appendChild(input);
-
-            // Submit the form
-            document.body.appendChild(tempForm);
-            tempForm.submit();
+            // Use HTMX to update the main div without page reload
+            htmx.ajax('GET', '/edit?jsonContent=' + encodeURIComponent(jsonContent.value), {
+                target: '#main',
+                swap: 'innerHTML'
+            });
         } else {
             // For primitive types, add a simple input field
             const newField = document.createElement('div');
@@ -322,25 +308,11 @@ function addArrayItem(button) {
             setValueByPath(jsonData, [...pathParts, newIndex], value);
             jsonContent.value = JSON.stringify(jsonData, null, 4);
 
-            // Submit the form to update the page without triggering a POST request resend
-            const form = document.getElementById('editForm');
-            const formData = new FormData(form);
-
-            // Create a temporary form to submit a GET request
-            const tempForm = document.createElement('form');
-            tempForm.method = 'get';
-            tempForm.action = '/edit';
-
-            // Add the JSON content as a parameter
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'jsonContent';
-            input.value = jsonContent.value;
-            tempForm.appendChild(input);
-
-            // Submit the form
-            document.body.appendChild(tempForm);
-            tempForm.submit();
+            // Use HTMX to update the main div without page reload
+            htmx.ajax('GET', '/edit?jsonContent=' + encodeURIComponent(jsonContent.value), {
+                target: '#main',
+                swap: 'innerHTML'
+            });
         } else {
             // For primitive types, add a simple input field
             const newInput = document.createElement('input');
@@ -515,21 +487,11 @@ function deleteProperty(button) {
     // Update the JSON content
     jsonContent.value = JSON.stringify(jsonData, null, 4);
 
-    // Create a temporary form to submit a GET request
-    const tempForm = document.createElement('form');
-    tempForm.method = 'get';
-    tempForm.action = '/edit';
-
-    // Add the JSON content as a parameter
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'jsonContent';
-    input.value = jsonContent.value;
-    tempForm.appendChild(input);
-
-    // Submit the form
-    document.body.appendChild(tempForm);
-    tempForm.submit();
+    // Use HTMX to update the main div without page reload
+    htmx.ajax('GET', '/edit?jsonContent=' + encodeURIComponent(jsonContent.value), {
+        target: '#main',
+        swap: 'innerHTML'
+    });
 }
 
 // Function to delete an item from an array
@@ -569,19 +531,9 @@ function deleteArrayItem(button) {
     // Update the JSON content
     jsonContent.value = JSON.stringify(jsonData, null, 4);
 
-    // Create a temporary form to submit a GET request
-    const tempForm = document.createElement('form');
-    tempForm.method = 'get';
-    tempForm.action = '/edit';
-
-    // Add the JSON content as a parameter
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'jsonContent';
-    input.value = jsonContent.value;
-    tempForm.appendChild(input);
-
-    // Submit the form
-    document.body.appendChild(tempForm);
-    tempForm.submit();
+    // Use HTMX to update the main div without page reload
+    htmx.ajax('GET', '/edit?jsonContent=' + encodeURIComponent(jsonContent.value), {
+        target: '#main',
+        swap: 'innerHTML'
+    });
 }
