@@ -550,7 +550,7 @@ function deleteArrayItem(button) {
     });
 }
 
-// Function to handle sidebar menu item selection
+// Function to handle sidebar menu item selection and theme toggle
 document.addEventListener('DOMContentLoaded', function() {
     // Find all sidebar menu items
     const sidebarMenuItems = document.querySelectorAll('.column.sidebar div[hx-get]');
@@ -578,5 +578,25 @@ document.addEventListener('DOMContentLoaded', function() {
         if (menuItem) {
             menuItem.classList.add('selected');
         }
+    }
+
+    // Theme toggle functionality
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    if (themeToggleBtn) {
+        // Check if user has a saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+        }
+
+        // Add click event listener to toggle theme
+        themeToggleBtn.addEventListener('click', function() {
+            // Toggle light-theme class on body
+            document.body.classList.toggle('light-theme');
+
+            // Save theme preference to localStorage
+            const currentTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+            localStorage.setItem('theme', currentTheme);
+        });
     }
 });

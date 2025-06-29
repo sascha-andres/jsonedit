@@ -26,7 +26,10 @@ const indexTemplate = `
                 <h1>JSON edit</h1>
             </div>
             <div class="header-right" id="header-right">
-				<!-- no content cxurrently -->
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <span class="light-mode-icon">☀️</span>
+                    <span class="dark-mode-icon">🌙</span>
+                </button>
             </div>
         </div>
         <div class="row content" id="content">
