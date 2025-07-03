@@ -41,7 +41,7 @@ func GenerateJSONForm(logger *slog.Logger, readOnly bool, data interface{}, path
 				logger.Debug("Add field label with indentation")
 				result += fmt.Sprintf(`<div class="json-field" style="margin-left: %dpx;">`, indent*20)
 				logger.Debug("Add delete button for objects and arrays")
-				result += fmt.Sprintf(`<button type="button" class="delete-property-btn" data-path="%s" data-key="%s" onclick="deleteProperty(this)">Delete</button>`, path, key)
+				result += fmt.Sprintf(`<button type="button" class="delete-property-btn" data-path="%s" data-key="%s" onclick="deleteProperty(this)">×</button>`, path, key)
 
 				logger.Debug("Handle nested objects and arrays differently")
 				switch value.(type) {
@@ -83,7 +83,7 @@ func GenerateJSONForm(logger *slog.Logger, readOnly bool, data interface{}, path
 				logger.Debug("Add array index label with indentation")
 				result += fmt.Sprintf(`<div class="json-field" style="margin-left: %dpx;">`, indent*20)
 				logger.Debug("Add delete button for array items")
-				result += fmt.Sprintf(`<button type="button" class="delete-array-item-btn" data-path="%s" data-index="%d" onclick="deleteArrayItem(this)">Delete</button>`, path, i)
+				result += fmt.Sprintf(`<button type="button" class="delete-array-item-btn" data-path="%s" data-index="%d" onclick="deleteArrayItem(this)">×</button>`, path, i)
 				result += fmt.Sprintf(`<label for="%s">[%d]:</label>`, fieldPath, i)
 
 				logger.Debug("Handle nested objects and arrays differently")
