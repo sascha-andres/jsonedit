@@ -35,17 +35,23 @@ const csv2jsonFormTemplate = `
 		<label for="named">Use Named Columns:</label>
 		<input type="checkbox" name="named" checked>
 	</div>
-	<button form="form_csv2json" type="submit" hx-post="/csv2json" hx-swap="innerHTML" hx-target="#main">Convert</button>
+	<button form="form_csv2json" type="submit" hx-redirect="/csv2json">Convert</button>
 </form>
 `
 
 // Define template for the CSV2JSON result page
 const csv2jsonResultTemplate = `
 <h1>CSV to JSON Conversion Result</h1>
+{{if .Error}}
+<div class="error-message">
+	<p>Error: {{.Error}}</p>
+</div>
+{{else}}
 <div class="result-info">
 	<p>Content Type: {{.ContentType}}</p>
 </div>
 <div class="conversion-result">
 	<pre>{{.Result}}</pre>
 </div>
+{{end}}
 `

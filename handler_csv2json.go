@@ -2,6 +2,7 @@ package jsonedit
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"io"
 	"net/http"
@@ -95,12 +96,29 @@ func (app *App) renderCSV2JSONResult(w http.ResponseWriter, r *http.Request) {
 	result, contentType, err := c2j.MapCSV2JSON(options, csvContent, mappingContent)
 	if err != nil {
 		app.logger.Error("failed to convert CSV to JSON", "err", err)
-		http.Error(w, "Failed to convert CSV to JSON: "+err.Error(), http.StatusInternalServerError)
+
+		// Render error page
+		tmpl := template.Must(template.New("csv2json").Parse(csv2jsonResultTemplate))
+
+		data := struct {
+			Result      string
+			ContentType string
+			Error       string
+		}{
+			Result:      "",
+			ContentType: "",
+			Error:       "Failed to convert CSV to JSON: " + err.Error(),
+		}
+
+		err = tmpl.Execute(w, data)
+		if err != nil {
+			app.logger.Error("failed to render CSV2JSON result template", "err", err)
+			http.Error(w, "Failed to render page", http.StatusInternalServerError)
+		}
 		return
 	}
 
-	// Format the JSON for display
-	var formattedResult string
+	// Format the JSON for display if it's JSON
 	if options.OutputType == "json" {
 		var jsonObj interface{}
 		err = json.Unmarshal(result, &jsonObj)
@@ -109,33 +127,40 @@ func (app *App) renderCSV2JSONResult(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Failed to parse JSON result: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-		
+
 		formattedJSON, err := json.MarshalIndent(jsonObj, "", app.indent)
 		if err != nil {
 			app.logger.Error("failed to format JSON result", "err", err)
 			http.Error(w, "Failed to format JSON result: "+err.Error(), http.StatusInternalServerError)
 			return
 		}
-		formattedResult = string(formattedJSON)
-	} else {
-		formattedResult = string(result)
+		result = formattedJSON
 	}
 
-	// Render the result
-	tmpl := template.Must(template.New("csv2json").Parse(csv2jsonResultTemplate))
+	// Set headers for file download
+	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Content-Disposition", "attachment; filename=converted-data."+getFileExtension(options.OutputType))
+	w.Header().Set("Content-Length", fmt.Sprintf("%d", len(result)))
 
-	data := struct {
-		Result      string
-		ContentType string
-	}{
-		Result:      formattedResult,
-		ContentType: contentType,
-	}
-
-	err = tmpl.Execute(w, data)
+	// Write the result directly to the response
+	_, err = w.Write(result)
 	if err != nil {
-		app.logger.Error("failed to render CSV2JSON result template", "err", err)
-		http.Error(w, "Failed to render page", http.StatusInternalServerError)
+		app.logger.Error("failed to write result to response", "err", err)
+		http.Error(w, "Failed to send file", http.StatusInternalServerError)
+	}
+}
+
+// getFileExtension returns the appropriate file extension based on the output type
+func getFileExtension(outputType string) string {
+	switch outputType {
+	case "json":
+		return "json"
+	case "yaml":
+		return "yaml"
+	case "toml":
+		return "toml"
+	default:
+		return "txt"
 	}
 }
 
