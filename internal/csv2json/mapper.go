@@ -113,6 +113,12 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 		return nil, err
 	}
 
+	// Cast writer to *bytes.Buffer to retrieve the result later
+	buffer, ok := writer.(*bytes.Buffer)
+	if !ok {
+		return nil, errors.New("writer is not a bytes.Buffer")
+	}
+
 	csvIn := csv.NewReader(reader)
 	csvIn.Comma = m.separator
 	csvIn.ReuseRecord = false
@@ -200,7 +206,9 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 		}
 		_, _ = writer.Write(d)
 	}
-	return out, nil
+
+	// Return the actual content from the buffer
+	return buffer.Bytes(), nil
 }
 
 // mapCSVFields maps CSV records to a nested output structure using a header and mapping configuration. Returns the updated map or an error.
