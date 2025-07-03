@@ -183,11 +183,19 @@ button:hover {
     min-height: 24px;
     max-width: 24px;
     max-height: 24px;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
 }
 
 .delete-property-btn:hover, .delete-array-item-btn:hover {
     background: var(--delete-btn-hover); 
     color: white; 
+}
+
+/* Show delete buttons when hovering over the parent json-field */
+.json-field:hover > .delete-property-btn,
+.json-field:hover > .delete-array-item-btn {
+    opacity: 1;
 }
 
 .error {
