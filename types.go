@@ -172,6 +172,7 @@ func (app *App) Run() error {
 	mux.HandleFunc("/flatten", app.handleFlatten)
 	mux.HandleFunc("/from-schema", app.handleFromSchema)
 	mux.HandleFunc("/validate", app.handleValidate)
+	mux.HandleFunc("/csv2json", app.handleCSV2JSON)
 
 	app.logger.Info("server starting", "host", app.host, "port", app.port)
 

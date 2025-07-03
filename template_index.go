@@ -43,6 +43,7 @@ const indexTemplate = `
 				<h3>Functionality</h3>
 				<div hx-get="/compare" hx-swap="innerHTML" hx-target="#main">Compare documents</div>
 				<div hx-get="/flatten" hx-swap="innerHTML" hx-target="#main">Flatten document</div>
+				<div hx-get="/csv2json" hx-swap="innerHTML" hx-target="#main">CSV to JSON</div>
 				<h3>Schema</h3>
 				<div hx-get="/from-schema" hx-swap="innerHTML" hx-target="#main">JSON Document from schema</div>
 				<div hx-get="/validate" hx-swap="innerHTML" hx-target="#main">Validate JSON document</div>

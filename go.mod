@@ -3,11 +3,13 @@ module github.com/sascha-andres/jsonedit
 go 1.24.0
 
 require (
+	github.com/BurntSushi/toml v1.5.0
 	github.com/doganarif/govisual v0.1.9
 	github.com/google/go-cmp v0.7.0
 	github.com/google/gops v0.3.28
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2
 	github.com/sascha-andres/reuse v0.10.0
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
