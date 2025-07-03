@@ -10,6 +10,7 @@ A web-based JSON editor application.
 
 - Edit JSON files via a web interface
 - Compare JSON files
+- Convert CSV to JSON, YAML, or TOML with custom mapping
 - Read-only mode option
 - Configurable indentation
 
@@ -41,6 +42,13 @@ A comparison tool that highlights differences between two JSON documents. Featur
 - Visual highlighting of added, modified, and removed elements
 
 ![JSON Comparison](page_assets/compare.png)
+
+### CSV to JSON Converter
+A tool that converts CSV data to JSON, YAML, or TOML format using a custom mapping file. Features include:
+- Support for custom CSV separators
+- Option to wrap output in an array
+- Named column mapping
+- Multiple output formats (JSON, YAML, TOML)
 
 ### Debug Visualizer
 An advanced debugging tool available in debug mode that shows:
