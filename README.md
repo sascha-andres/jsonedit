@@ -50,6 +50,8 @@ A tool that converts CSV data to JSON, YAML, or TOML format using a custom mappi
 - Named column mapping
 - Multiple output formats (JSON, YAML, TOML)
 
+![JSON Editor](page_assets/csv2json.png)
+
 ### Debug Visualizer
 An advanced debugging tool available in debug mode that shows:
 - HTTP request and response details
