@@ -111,6 +111,18 @@ function addProperty(button) {
             newLabel.setAttribute('for', fullPath);
             newLabel.textContent = propertyName + ':';
 
+            // Create delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.textContent = '×';
+            deleteButton.className = 'delete-property-btn';
+            deleteButton.setAttribute('data-path', path);
+            deleteButton.setAttribute('data-key', propertyName);
+            deleteButton.onclick = function() {
+                deleteProperty(this);
+            };
+
+            newField.appendChild(deleteButton);
             newField.appendChild(newLabel);
             newField.appendChild(document.createElement('div')); // Placeholder
 
@@ -161,6 +173,18 @@ function addProperty(button) {
             newInput.id = fullPath;
             newInput.value = propertyValue;
 
+            // Create delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.textContent = '×';
+            deleteButton.className = 'delete-property-btn';
+            deleteButton.setAttribute('data-path', path);
+            deleteButton.setAttribute('data-key', propertyName);
+            deleteButton.onclick = function() {
+                deleteProperty(this);
+            };
+
+            newField.appendChild(deleteButton);
             newField.appendChild(newLabel);
             newField.appendChild(newInput);
 
@@ -269,7 +293,7 @@ function addArrayItem(button) {
         // Create a new input field for the item
         const newField = document.createElement('div');
         newField.className = 'json-field';
-        newField.style.marginLeft = ((indent+1) * 20) + 'px';
+        newField.style.marginLeft = ((indent) * 20) + 'px';
 
         const newLabel = document.createElement('label');
         newLabel.setAttribute('for', fullPath);
@@ -301,6 +325,19 @@ function addArrayItem(button) {
 
         if (itemType === 'object' || itemType === 'array') {
             // For objects and arrays, we'll add a nested structure
+
+            // Create delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.textContent = '×';
+            deleteButton.className = 'delete-array-item-btn';
+            deleteButton.setAttribute('data-path', path);
+            deleteButton.setAttribute('data-index', newIndex);
+            deleteButton.onclick = function() {
+                deleteArrayItem(this);
+            };
+
+            newField.appendChild(deleteButton);
             newField.appendChild(newLabel);
             newField.appendChild(document.createElement('div')); // Placeholder
 
@@ -327,6 +364,18 @@ function addArrayItem(button) {
             newInput.id = fullPath;
             newInput.value = itemValue;
 
+            // Create delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.textContent = '×';
+            deleteButton.className = 'delete-array-item-btn';
+            deleteButton.setAttribute('data-path', path);
+            deleteButton.setAttribute('data-index', newIndex);
+            deleteButton.onclick = function() {
+                deleteArrayItem(this);
+            };
+
+            newField.appendChild(deleteButton);
             newField.appendChild(newLabel);
             newField.appendChild(newInput);
 
