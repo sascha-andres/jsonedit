@@ -227,7 +227,7 @@ function addArrayItem(button) {
     // Create a form for adding a new item
     const itemForm = document.createElement('div');
     itemForm.className = 'json-field property-form';
-    itemForm.style.marginLeft = (indent * 20) + 'px';
+    itemForm.style.marginLeft = ((indent+1) * 20) + 'px';
 
     // Create input for item value
     const valueLabel = document.createElement('label');
@@ -269,7 +269,7 @@ function addArrayItem(button) {
         // Create a new input field for the item
         const newField = document.createElement('div');
         newField.className = 'json-field';
-        newField.style.marginLeft = (indent * 20) + 'px';
+        newField.style.marginLeft = ((indent+1) * 20) + 'px';
 
         const newLabel = document.createElement('label');
         newLabel.setAttribute('for', fullPath);
