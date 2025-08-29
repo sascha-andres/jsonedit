@@ -10,7 +10,7 @@ before:
     - go mod tidy
 
 builds:
-  - id: jsonedit
+  - id: "jsonedit"
     main: ./cmd/jsonedit/main.go
     binary: jsonedit
     env:
@@ -27,6 +27,7 @@ builds:
         goarch: arm64
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+
   - id: csv2json
     main: ./cmd/csv2json/main.go
     binary: csv2json
