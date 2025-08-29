@@ -36,8 +36,19 @@ type (
 		separator rune
 	}
 
+	// PropertyConfiguration defines the mapping configuration for a single property, including its name and data type.
+	PropertyConfiguration struct {
+		// Property specifies the name of the column property in the mapping configuration.
+		Property string `json:"property"`
+
+		// Type specifies the data type of the column in the mapping configuration.
+		Type string `json:"type"`
+	}
+
 	// ColumnConfiguration defines the structure for configuring a column's property and type in a mapping.
 	ColumnConfiguration struct {
+		// Properties represents a list of property configurations defining column mappings in the mapping structure.
+		Properties []PropertyConfiguration `json:"properties"`
 
 		// Property specifies the name of the column property in the mapping configuration.
 		Property string `json:"property"`

@@ -102,6 +102,13 @@ func NewMapper(options ...OptionFunc) (*Mapper, error) {
 		mapper.marshaler = toml.Marshal
 		break
 	}
+
+	for _, configuration := range mapper.configuration.Mapping {
+		if !configuration.IsValid() {
+			return nil, errors.New("invalid mapping configuration")
+		}
+	}
+
 	return mapper, nil
 }
 
