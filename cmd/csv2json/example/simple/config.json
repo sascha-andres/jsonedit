@@ -1,0 +1,16 @@
+{
+  "mapping": {
+    "0": {
+      "property": "id",
+      "type": "int"
+    },
+    "1": {
+      "property": "name",
+      "type": "string"
+    },
+    "2": {
+      "property": "email",
+      "type": "string"
+    }
+  }
+}
