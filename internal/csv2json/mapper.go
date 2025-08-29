@@ -230,13 +230,23 @@ func (m *Mapper) mapCSVFields(record []string, header []string, out map[string]a
 			ok bool
 		)
 		if v, ok = m.configuration.Mapping[key]; !ok {
-			return out, nil
+			continue
 		}
-		val, err := convertToType(v.Type, record[i])
-		if err != nil {
-			return nil, err
+		if len(v.Properties) > 0 {
+			for _, property := range v.Properties {
+				val, err := convertToType(property.Type, record[i])
+				if err != nil {
+					return nil, err
+				}
+				out = setValue(strings.Split(property.Property, "."), val, out)
+			}
+		} else {
+			val, err := convertToType(v.Type, record[i])
+			if err != nil {
+				return nil, err
+			}
+			out = setValue(strings.Split(v.Property, "."), val, out)
 		}
-		out = setValue(strings.Split(v.Property, "."), val, out)
 	}
 	return out, nil
 }
