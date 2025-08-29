@@ -10,7 +10,7 @@
           "property": "id2",
           "type": "int"
         }
-      ],
+      ]
     },
     "1": {
       "property": "name",

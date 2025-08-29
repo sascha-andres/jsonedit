@@ -1,5 +1,7 @@
 package csv2json
 
+import "log/slog"
+
 type (
 
 	// Mapper defines a structure for mapping input data to output data, applying configuration and marshaling as needed.
@@ -34,6 +36,9 @@ type (
 
 		// separator defines the byte value used as a delimiter or boundary in certain operations within the Mapper.
 		separator rune
+
+		// logger holds a reference to an slog.Logger for logging messages and errors within the Mapper's operations.
+		logger *slog.Logger
 	}
 
 	// PropertyConfiguration defines the mapping configuration for a single property, including its name and data type.

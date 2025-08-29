@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 
 	"github.com/sascha-andres/reuse/flag"
@@ -12,13 +13,13 @@ import (
 )
 
 var (
-	separator                     = ";"
-	outputType                    = "json"
-	configurationFile             string
-	inputFilePath                 = "-"
-	outputFilePath                = "-"
-	nestedPropertyName            = ""
-	generateArray, accessByHeader bool
+	separator                            = ";"
+	outputType                           = "json"
+	configurationFile                    string
+	inputFilePath                        = "-"
+	outputFilePath                       = "-"
+	nestedPropertyName                   = ""
+	generateArray, accessByHeader, debug bool
 )
 
 func init() {
@@ -30,6 +31,7 @@ func init() {
 	flag.BoolVar(&accessByHeader, "access-by-header", accessByHeader, "Access the CSV by header instead of by index")
 	flag.StringVar(&inputFilePath, "input-file", inputFilePath, "Path to the input file (- for Stdin)")
 	flag.StringVar(&outputFilePath, "output-file", outputFilePath, "Path to the output file (- for Stdout)")
+	flag.BoolVar(&debug, "debug", debug, "Enable debug mode")
 }
 
 // main serves as the entry point of the application, initializing and executing the primary logic within the program.
@@ -51,6 +53,11 @@ func run() error {
 		return err
 	}
 
+	var logger *slog.Logger
+	if debug {
+		logger = slog.New(slog.NewTextHandler(os.Stdout, nil))
+	}
+
 	mapper, err := csv2json.NewMapper(
 		csv2json.WithNamed(accessByHeader),
 		csv2json.WithSeparator(separator),
@@ -58,6 +65,7 @@ func run() error {
 		csv2json.WithNestedPropertyName(nestedPropertyName),
 		csv2json.WithArray(generateArray),
 		csv2json.WithOptions(data),
+		csv2json.WithLogger(logger),
 	)
 	if err != nil {
 		return err

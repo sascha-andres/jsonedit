@@ -58,6 +58,7 @@ cat input.csv | csv2json --configuration-file=config.json > output.json
 | `--access-by-header` | `false` | Access CSV columns by header name instead of by index |
 | `--input-file` | `-` (stdin) | Path to the input file (`-` for stdin) |
 | `--output-file` | `-` (stdout) | Path to the output file (`-` for stdout) |
+| `--debug` | `false` | Enable debug mode with detailed logging to stdout |
 
 ## Configuration File Format
 

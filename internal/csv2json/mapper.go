@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"slices"
 	"strconv"
@@ -19,6 +20,14 @@ import (
 
 // OptionFunc defines a function signature for configuring a Mapper instance with specific options or parameters.
 type OptionFunc func(*Mapper) error
+
+// WithLogger sets a custom logger for the Mapper instance. Returns an OptionFunc to configure the logger.
+func WithLogger(lofgger *slog.Logger) OptionFunc {
+	return func(mapper *Mapper) error {
+		mapper.logger = lofgger
+		return nil
+	}
+}
 
 // WithArray sets the "array" field of the Mapper instance to the provided boolean value.
 func WithArray(array bool) OptionFunc {
@@ -103,8 +112,8 @@ func NewMapper(options ...OptionFunc) (*Mapper, error) {
 		break
 	}
 
-	for _, configuration := range mapper.configuration.Mapping {
-		if !configuration.IsValid() {
+	for key, configuration := range mapper.configuration.Mapping {
+		if !configuration.IsValid(mapper.logger, key) {
 			return nil, errors.New("invalid mapping configuration")
 		}
 	}
