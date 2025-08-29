@@ -1,0 +1,24 @@
+{
+  "mapping": {
+    "0": {
+      "properties": [
+        {
+          "property": "id",
+          "type": "int"
+        },
+        {
+          "property": "id2",
+          "type": "int"
+        }
+      ],
+    },
+    "1": {
+      "property": "name",
+      "type": "string"
+    },
+    "2": {
+      "property": "email",
+      "type": "string"
+    }
+  }
+}
