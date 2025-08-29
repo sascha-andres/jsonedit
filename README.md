@@ -17,7 +17,9 @@ A web-based JSON editor application.
 ## Show me
 
 ### Home Page
+
 The landing page of the application provides quick access to all main features. From here, you can:
+
 - Create a new JSON document
 - Open an existing JSON file
 - Access the comparison tool
@@ -25,26 +27,34 @@ The landing page of the application provides quick access to all main features. 
 ![Home Page](page_assets/home.png)
 
 ### JSON Editor
+
 A full-featured JSON editor with syntax highlighting and validation. This view allows you to:
+
 - Edit JSON content
 - Save changes to files
 
 ![JSON Editor](page_assets/edit.png)
 
 ### JSON Viewer
+
 A read-only view for JSON documents with collapsible sections. This view is ideal for:
+
 - Reviewing JSON data without risk of accidental changes
 
 ![JSON Viewer](page_assets/view.png)
 
 ### JSON Comparison
+
 A comparison tool that highlights differences between two JSON documents. Features include:
+
 - Visual highlighting of added, modified, and removed elements
 
 ![JSON Comparison](page_assets/compare.png)
 
 ### CSV to JSON Converter
+
 A tool that converts CSV data to JSON, YAML, or TOML format using a custom mapping file. Features include:
+
 - Support for custom CSV separators
 - Option to wrap output in an array
 - Named column mapping
@@ -53,7 +63,9 @@ A tool that converts CSV data to JSON, YAML, or TOML format using a custom mappi
 ![JSON Editor](page_assets/csv2json.png)
 
 ### Debug Visualizer
+
 An advanced debugging tool available in debug mode that shows:
+
 - HTTP request and response details
 - Application logs and events
 - Performance metrics
@@ -114,6 +126,7 @@ The built binaries will be available in the `dist/` directory.
 To create a new release:
 
 1. Tag the commit you want to release:
+
    ```bash
    git tag -a v0.1.0 -m "First release"
    git push origin v0.1.0
@@ -136,9 +149,27 @@ This project uses the following dependencies not from the same author:
 ### Used Fonts
 
 This project uses the following fonts:
+
 - [Monaspace](https://github.com/githubnext/monaspace) - Used for monospaced text
 - [Jost](https://github.com/indestructible-type/Jost) - Used for non-monospaced text
 
 ## License
 
-This project is licensed under the [Apache License 2.0](LICENSE) - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [Apache License 2.0](LICENSE) - see the [LICENSE](LICENSE) file for details except `internal/csv2json`
+
+### License restrictions
+
+The code in `internal/csv2json` is proprietary, this means:
+
+- It is allowed for use only within the jsonedit product or if explicitly granted by the initial creator
+- To abtain a license for usage in a different product or a derivative work contact the repository owner
+- A license must be given in written form and does not allow providing licences to third parties
+
+#### Fixing issues in internal/csv2json
+
+You may fix issues and/or contribute to internal/csv2json as long as
+
+1. those fixes are contributed back
+2. you grant the license to use your changes without any restrictions including licensing to existing and future grantees
+
+You have to document that agreement by providing a signed agreement.
