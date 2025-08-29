@@ -167,6 +167,8 @@ The code in `internal/csv2json` is proprietary, this means:
 - To abtain a license for usage in a different product or a derivative work contact the repository owner
 - A license must be given in written form and does not allow providing licences to third parties
 
+For detailed documentation on the CSV to JSON mapping configuration, see the [internal csv2json README](internal/csv2json/README.md).
+
 #### Fixing issues in internal/csv2json
 
 You may fix issues and/or contribute to internal/csv2json as long as
