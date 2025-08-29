@@ -1,5 +1,7 @@
 package csv2json
 
+import "log/slog"
+
 type (
 
 	// Mapper defines a structure for mapping input data to output data, applying configuration and marshaling as needed.
@@ -34,10 +36,24 @@ type (
 
 		// separator defines the byte value used as a delimiter or boundary in certain operations within the Mapper.
 		separator rune
+
+		// logger holds a reference to an slog.Logger for logging messages and errors within the Mapper's operations.
+		logger *slog.Logger
+	}
+
+	// PropertyConfiguration defines the mapping configuration for a single property, including its name and data type.
+	PropertyConfiguration struct {
+		// Property specifies the name of the column property in the mapping configuration.
+		Property string `json:"property"`
+
+		// Type specifies the data type of the column in the mapping configuration.
+		Type string `json:"type"`
 	}
 
 	// ColumnConfiguration defines the structure for configuring a column's property and type in a mapping.
 	ColumnConfiguration struct {
+		// Properties represents a list of property configurations defining column mappings in the mapping structure.
+		Properties []PropertyConfiguration `json:"properties"`
 
 		// Property specifies the name of the column property in the mapping configuration.
 		Property string `json:"property"`
