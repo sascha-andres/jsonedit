@@ -42,6 +42,93 @@ Where:
   - `bool` - converts the value to a boolean
   - `string` (default) - keeps the value as a string
 
+## Multiple Properties from a Single Column
+
+In addition to mapping a column to a single property, you can map a single column to multiple properties using the `properties` array. This is useful when a column contains data that needs to be split into multiple fields or when you want to duplicate a value across multiple properties.
+
+```json
+{
+  "mapping": {
+    "columnKey": {
+      "properties": [
+        {
+          "property": "firstProperty",
+          "type": "dataType"
+        },
+        {
+          "property": "nested.secondProperty",
+          "type": "dataType"
+        }
+      ]
+    }
+  }
+}
+```
+
+Where:
+- `columnKey` is either a column index or name (depending on whether you're using the `-named` flag)
+- Each item in the `properties` array defines a separate output property that will receive the value from the same input column
+- Each property definition has the same structure as a regular mapping (with `property` and `type` fields)
+- You can use dot notation in the `property` field to create nested structures
+
+### Example
+
+Given a CSV with an address column that contains full addresses:
+
+```csv
+id,name,address
+1,"John Doe","123 Main St, Springfield, IL 62701"
+```
+
+You can map the address column to multiple properties:
+
+```json
+{
+  "mapping": {
+    "id": {
+      "property": "userId",
+      "type": "int"
+    },
+    "name": {
+      "property": "fullName",
+      "type": "string"
+    },
+    "address": {
+      "properties": [
+        {
+          "property": "originalAddress",
+          "type": "string"
+        },
+        {
+          "property": "contact.address",
+          "type": "string"
+        },
+        {
+          "property": "shipping.address",
+          "type": "string"
+        }
+      ]
+    }
+  }
+}
+```
+
+This will produce:
+
+```json
+{
+  "userId": 1,
+  "fullName": "John Doe",
+  "originalAddress": "123 Main St, Springfield, IL 62701",
+  "contact": {
+    "address": "123 Main St, Springfield, IL 62701"
+  },
+  "shipping": {
+    "address": "123 Main St, Springfield, IL 62701"
+  }
+}
+```
+
 ## Calculated Fields
 
 Calculated fields allow you to add dynamic values to your output that are not directly derived from the CSV input. These fields are defined in the `calculated` array of the mapping configuration.
