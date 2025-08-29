@@ -23,6 +23,19 @@ func (cc *ColumnConfiguration) IsValid(logger *slog.Logger, key string) bool {
 			}
 			return false
 		}
+		if property.Condition != nil {
+			if property.Condition.Value == "" && property.Condition.Column == "" {
+				if logger != nil {
+					logger.Warn("column configuration has a property defined but no type", "key", key)
+				}
+				return false
+			}
+			if property.Condition.Operator != "=" && property.Condition.Operator != "!=" && property.Condition.Operator != ">" && property.Condition.Operator != "<" {
+				if logger != nil {
+					logger.Warn("column configuration has a property defined but no type", "key", key)
+				}
+			}
+		}
 	}
 	return true
 }

@@ -41,6 +41,19 @@ type (
 		logger *slog.Logger
 	}
 
+	// Condition defines a structure for representing a condition with a value and an associated operator.
+	Condition struct {
+
+		// Value is a static value, which is used to compare with the columns value using the Operator
+		Value string `json:"value"`
+
+		// Column represents the name or index (depending on named) of the column to be used in the condition within the configuration.
+		Column string `json:"column"`
+
+		// Operator specifies the condition operator (e.g., '=', '!=', '>', '<') to be applied for comparison in the mapping configuration.
+		Operator string `json:"operator"`
+	}
+
 	// PropertyConfiguration defines the mapping configuration for a single property, including its name and data type.
 	PropertyConfiguration struct {
 		// Property specifies the name of the column property in the mapping configuration.
@@ -48,6 +61,9 @@ type (
 
 		// Type specifies the data type of the column in the mapping configuration.
 		Type string `json:"type"`
+
+		// Condition specifies the logical condition to be evaluated for a property, including value, column, and comparison operator.
+		Condition *Condition `json:"condition,omitempty"`
 	}
 
 	// ColumnConfiguration defines the structure for configuring a column's property and type in a mapping.
