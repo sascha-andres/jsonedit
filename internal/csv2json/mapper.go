@@ -243,6 +243,11 @@ func (m *Mapper) mapCSVFields(record []string, header []string, out map[string]a
 		}
 		if len(v.Properties) > 0 {
 			for _, property := range v.Properties {
+				if property.Condition != nil {
+					if !property.Applies(m.logger, m.named, record, header) {
+						continue
+					}
+				}
 				val, err := convertToType(property.Type, record[i])
 				if err != nil {
 					return nil, err

@@ -41,14 +41,23 @@ type (
 		logger *slog.Logger
 	}
 
+	Operand struct {
+
+		// Type is whether to use a column or static value (column vs value)
+		Type string `json:"type"`
+
+		// Either the column index (or name if working named) or the static value
+		Value string `json:"value"`
+	}
+
 	// Condition defines a structure for representing a condition with a value and an associated operator.
 	Condition struct {
 
-		// Value is a static value, which is used to compare with the columns value using the Operator
-		Value string `json:"value"`
+		// Operand1 represents the first operand in a condition, which defines a value and its type for evaluation.
+		Operand1 Operand `json:"operand1"`
 
-		// Column represents the name or index (depending on named) of the column to be used in the condition within the configuration.
-		Column string `json:"column"`
+		// Operand2 represents the second operand in a condition, defining its type and value for evaluation.
+		Operand2 Operand `json:"operand2"`
 
 		// Operator specifies the condition operator (e.g., '=', '!=', '>', '<') to be applied for comparison in the mapping configuration.
 		Operator string `json:"operator"`
@@ -56,6 +65,7 @@ type (
 
 	// PropertyConfiguration defines the mapping configuration for a single property, including its name and data type.
 	PropertyConfiguration struct {
+
 		// Property specifies the name of the column property in the mapping configuration.
 		Property string `json:"property"`
 
