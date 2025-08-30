@@ -8,7 +8,7 @@ func (pc *PropertyConfiguration) Applies(logger *slog.Logger, named bool, record
 	if pc.Condition == nil {
 		return true
 	}
-	switch pc.Type {
+	switch pc.Condition.Type {
 	case "int":
 		return pc.intApplies(logger, named, record, header)
 	case "float":

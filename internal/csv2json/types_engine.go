@@ -61,6 +61,9 @@ type (
 
 		// Operator specifies the condition operator (e.g., '=', '!=', '>', '<') to be applied for comparison in the mapping configuration.
 		Operator string `json:"operator"`
+
+		// Type denotes the data type for the comparison
+		Type string `json:"type"`
 	}
 
 	// PropertyConfiguration defines the mapping configuration for a single property, including its name and data type.
