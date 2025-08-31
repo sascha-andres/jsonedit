@@ -42,6 +42,93 @@ Where:
   - `bool` - converts the value to a boolean
   - `string` (default) - keeps the value as a string
 
+## Multiple Properties from a Single Column
+
+In addition to mapping a column to a single property, you can map a single column to multiple properties using the `properties` array. This is useful when a column contains data that needs to be split into multiple fields or when you want to duplicate a value across multiple properties.
+
+```json
+{
+  "mapping": {
+    "columnKey": {
+      "properties": [
+        {
+          "property": "firstProperty",
+          "type": "dataType"
+        },
+        {
+          "property": "nested.secondProperty",
+          "type": "dataType"
+        }
+      ]
+    }
+  }
+}
+```
+
+Where:
+- `columnKey` is either a column index or name (depending on whether you're using the `-named` flag)
+- Each item in the `properties` array defines a separate output property that will receive the value from the same input column
+- Each property definition has the same structure as a regular mapping (with `property` and `type` fields)
+- You can use dot notation in the `property` field to create nested structures
+
+### Example
+
+Given a CSV with an address column that contains full addresses:
+
+```csv
+id,name,address
+1,"John Doe","123 Main St, Springfield, IL 62701"
+```
+
+You can map the address column to multiple properties:
+
+```json
+{
+  "mapping": {
+    "id": {
+      "property": "userId",
+      "type": "int"
+    },
+    "name": {
+      "property": "fullName",
+      "type": "string"
+    },
+    "address": {
+      "properties": [
+        {
+          "property": "originalAddress",
+          "type": "string"
+        },
+        {
+          "property": "contact.address",
+          "type": "string"
+        },
+        {
+          "property": "shipping.address",
+          "type": "string"
+        }
+      ]
+    }
+  }
+}
+```
+
+This will produce:
+
+```json
+{
+  "userId": 1,
+  "fullName": "John Doe",
+  "originalAddress": "123 Main St, Springfield, IL 62701",
+  "contact": {
+    "address": "123 Main St, Springfield, IL 62701"
+  },
+  "shipping": {
+    "address": "123 Main St, Springfield, IL 62701"
+  }
+}
+```
+
 ## Calculated Fields
 
 Calculated fields allow you to add dynamic values to your output that are not directly derived from the CSV input. These fields are defined in the `calculated` array of the mapping configuration.
@@ -181,6 +268,85 @@ Record-level fields (added to each record):
 Document-level fields (added to the top-level document when using array output):
 - `_meta.totalRecords`: The total number of records processed
 - `_meta.processedAt`: The date and time when the document was processed
+
+## Conditional Properties
+
+Conditional properties allow you to include or exclude properties in the output based on specific conditions. This feature is useful when you want to selectively include fields only when certain criteria are met.
+
+### Condition Structure
+
+A condition is defined as an object with the following properties:
+- `operator`: The comparison operator to use (e.g., `=`, `!=`, `>`, `<`, `>=`, `<=`)
+- `operand1`: The first operand in the comparison
+- `operand2`: The second operand in the comparison
+- `type`: The data type to use for comparison (`string`, `int`, `float`, or `bool`)
+
+Each operand is an object with:
+- `type`: Either `value` for a fixed value or `column` for a value from a CSV column
+- `value`: Either a literal value (when `type` is `value`) or a column index/name (when `type` is `column`)
+
+### Example
+
+```json
+{
+  "mapping": {
+    "0": {
+      "properties": [
+        {
+          "property": "id",
+          "type": "int"
+        },
+        {
+          "property": "premiumId",
+          "type": "int",
+          "condition": {
+            "operator": "=",
+            "operand1": {
+              "type": "column",
+              "value": "3"
+            },
+            "operand2": {
+              "type": "value",
+              "value": "premium"
+            },
+            "type": "string"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+In this example:
+- The `id` property is always included
+- The `premiumId` property is only included when the value in column 3 equals "premium"
+- The comparison is done as strings
+
+### Supported Operators
+
+- `=`: Equal to
+- `!=`: Not equal to
+- `>`: Greater than
+- `<`: Less than
+- `>=`: Greater than or equal to
+- `<=`: Less than or equal to
+
+### Comparison Types
+
+The `type` field in the condition determines how the values are compared:
+- `string`: Values are compared as strings (lexicographically)
+- `int`: Values are converted to integers before comparison
+- `float`: Values are converted to floating-point numbers before comparison
+- `bool`: Values are converted to booleans before comparison
+
+### Use Cases
+
+Conditional properties are useful for:
+1. Including special fields only for certain types of records
+2. Creating different output structures based on data values
+3. Implementing business logic in the mapping process
+4. Filtering out unwanted or irrelevant data
 
 # Output Behavior
 

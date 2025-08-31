@@ -1,0 +1,36 @@
+{
+  "mapping": {
+    "0": {
+      "properties": [
+        {
+          "property": "id",
+          "type": "int"
+        },
+        {
+          "property": "id2",
+          "type": "int",
+          "condition": {
+            "operator": "=",
+            "operand1": {
+              "type": "value",
+              "value": "john@example.com"
+            },
+            "operand2": {
+              "type": "column",
+              "value": "2"
+            },
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "1": {
+      "property": "name",
+      "type": "string"
+    },
+    "2": {
+      "property": "email",
+      "type": "string"
+    }
+  }
+}
