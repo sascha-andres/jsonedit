@@ -5,8 +5,28 @@
 {
   "mapping": {
     "0": {
-      "property": "id",
-      "type": "int"
+      "properties": [
+        {
+          "property": "id",
+          "type": "int"
+        },
+        {
+          "property": "id2",
+          "type": "int",
+          "condition": {
+            "operator": "=",
+            "operand1": {
+              "type": "value",
+              "value": "john@example.com"
+            },
+            "operand2": {
+              "type": "column",
+              "value": "2"
+            },
+            "type": "string"
+          }
+        }
+      ]
     },
     "1": {
       "property": "name",
@@ -19,7 +39,7 @@
   }
 }
 -- output --
-{"email":"john@example.com","id":1,"name":"John Doe"}
+{"email":"john@example.com","id":1,"id2":1,"name":"John Doe"}
 {"email":"jane@example.com","id":2,"name":"Jane Smith"}
 -- parameters --
 {
