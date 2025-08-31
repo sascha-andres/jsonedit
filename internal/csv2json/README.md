@@ -19,7 +19,8 @@ The mapping configuration is a JSON file that defines how CSV columns are mapped
       "property": "calculatedProperty",
       "kind": "kindOfCalculation",
       "format": "formatString",
-      "type": "dataType"
+      "type": "dataType",
+      "location": "record"
     }
   ],
   "extra_variables": {
