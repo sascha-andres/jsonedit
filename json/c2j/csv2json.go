@@ -1,6 +1,8 @@
 package c2j
 
 import (
+	"log/slog"
+
 	"github.com/sascha-andres/jsonedit/internal/csv2json"
 )
 
@@ -19,6 +21,9 @@ type C2JOptions struct {
 
 	// separator defines the byte value used as a delimiter or boundary in certain operations within the Mapper.
 	Separator string
+
+	// Logger is used to log some information to console
+	Logger *slog.Logger
 }
 
 // MapCSV2JSON converts CSV data to JSON, applying mapping rules and configurations provided via options and mappings.
@@ -30,6 +35,7 @@ func MapCSV2JSON(options C2JOptions, in, mapping []byte) ([]byte, string, error)
 	opts = append(opts, csv2json.WithOutputType(options.OutputType))
 	opts = append(opts, csv2json.WithSeparator(options.Separator))
 	opts = append(opts, csv2json.WithOptions(mapping))
+	opts = append(opts, csv2json.WithLogger(options.Logger))
 	app, err := csv2json.NewMapper(opts...)
 	if err != nil {
 		return nil, "", err

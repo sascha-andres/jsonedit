@@ -80,6 +80,7 @@ func (app *App) renderCSV2JSONResult(w http.ResponseWriter, r *http.Request) {
 		OutputType:         r.FormValue("outputType"),
 		NestedPropertyName: r.FormValue("nestedPropertyName"),
 		Separator:          r.FormValue("separator"),
+		Logger:             app.logger.With("module", "csv2json"),
 	}
 
 	// If separator is empty, use default comma
