@@ -1,0 +1,100 @@
+-- input.csv --
+1;John Doe;john@example.com
+2;Jane Smith;jane@example.com
+-- config.json --
+{
+  "mapping": {
+    "0": {
+      "properties": [
+        {
+          "property": "id",
+          "type": "int"
+        },
+        {
+          "property": "id2",
+          "type": "int",
+          "condition": {
+            "operator": "=",
+            "operand1": {
+              "type": "value",
+              "value": "john@example.com"
+            },
+            "operand2": {
+              "type": "column",
+              "value": "2"
+            },
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "1": {
+      "property": "name",
+      "type": "string"
+    },
+    "2": {
+      "property": "email",
+      "type": "string"
+    }
+  },
+  "calculated": [
+    {
+      "property": "calculatedProperty",
+      "kind": "extra",
+      "format": "variable-name",
+      "type": "string",
+      "location": "record"
+    },
+    {
+      "property": "_meta.data",
+      "kind": "extra",
+      "format": "variable-document",
+      "type": "string",
+      "location": "document"
+    }
+  ],
+  "extra_variables": {
+    "variable-name": {
+      "value": "variable-value"
+    },
+    "variable-document": {
+      "value": "variable-value-document"
+    }
+  }
+}
+-- output --
+{
+  "_data": [
+    {
+      "calculatedProperty": "variable-value",
+      "email": "john@example.com",
+      "id": 1,
+      "id2": 1,
+      "name": "John Doe"
+    },
+    {
+      "calculatedProperty": "variable-value",
+      "email": "jane@example.com",
+      "id": 2,
+      "name": "Jane Smith"
+    }
+  ],
+  "_meta": {
+    "data": "variable-value-document"
+  }
+}
+-- parameters --
+{
+		"access_by_header": false,
+		"separator": ";",
+		"output_type": "json",
+		"nested_property_name": "_data",
+		"array": true,
+		"generateArray": false,
+		"logger": true
+}
+-- expectation --
+{
+    "construct_error": false,
+    "error": false
+}
