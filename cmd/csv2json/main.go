@@ -55,7 +55,7 @@ func run() error {
 
 	var logger *slog.Logger
 	if debug {
-		logger = slog.New(slog.NewTextHandler(os.Stdout, nil))
+		logger = slog.New(slog.NewTextHandler(os.Stdout, nil)).With("project", "csv2json")
 	}
 
 	mapper, err := csv2json.NewMapper(
