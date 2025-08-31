@@ -76,7 +76,7 @@ func (op *Operand) getFloatValueForApplies(logger *slog.Logger, named bool, reco
 		if named {
 			for i := range header {
 				if header[i] == op.Value {
-					c, err := convertToType("bool", record[i])
+					c, err := convertToType("float", record[i])
 					if err != nil {
 						if logger != nil {
 							logger.Error("error converting value to float64", "err", err, "value", record[i])
@@ -95,7 +95,7 @@ func (op *Operand) getFloatValueForApplies(logger *slog.Logger, named bool, reco
 				}
 			}
 			if i < len(record) {
-				c, err := convertToType("bool", record[i])
+				c, err := convertToType("float", record[i])
 				if err != nil {
 					if logger != nil {
 						logger.Error("error converting value to float64", "err", err, "value", record[i])
@@ -130,7 +130,7 @@ func (op *Operand) getIntValueForApplies(logger *slog.Logger, named bool, record
 		if named {
 			for i := range header {
 				if header[i] == op.Value {
-					c, err := convertToType("bool", record[i])
+					c, err := convertToType("int", record[i])
 					if err != nil {
 						if logger != nil {
 							logger.Error("error converting value to int", "err", err, "value", record[i])
@@ -149,7 +149,7 @@ func (op *Operand) getIntValueForApplies(logger *slog.Logger, named bool, record
 				}
 			}
 			if i < len(record) {
-				c, err := convertToType("bool", record[i])
+				c, err := convertToType("int", record[i])
 				if err != nil {
 					if logger != nil {
 						logger.Error("error converting value to int", "err", err, "value", record[i])

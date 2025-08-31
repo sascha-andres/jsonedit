@@ -58,6 +58,7 @@ A tool that converts CSV data to JSON, YAML, or TOML format using a custom mappi
 - Support for custom CSV separators
 - Option to wrap output in an array
 - Named column mapping
+- Conditional property mapping
 - Multiple output formats (JSON, YAML, TOML)
 
 For detailed documentation on the command-line utility, see the [csv2json README](cmd/csv2json/README.md).

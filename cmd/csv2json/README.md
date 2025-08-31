@@ -118,6 +118,14 @@ The `mapping` section maps CSV columns to output properties:
   - A single `property` and `type` for direct mapping
   - Multiple `properties` for mapping one column to multiple output fields
 
+#### Conditional Mapping
+
+Properties can be conditionally included in the output based on specified criteria:
+
+- Add a `condition` object to a property mapping to make it conditional
+- The condition compares two operands using an operator
+- The property will only be included in the output when the condition is true
+
 #### Supported Types
 
 - `string` - Text values
