@@ -22,7 +22,6 @@ type Parameters struct {
 	Separator          string `json:"separator"`
 	OutputType         string `json:"output_type"`
 	NestedPropertyName string `json:"nested_property_name"`
-	GenerateArray      bool   `json:"generateArray"`
 	Logger             bool   `json:"logger"`
 	Array              bool   `json:"array"`
 }
@@ -103,6 +102,16 @@ func TestMapper(t *testing.T) {
 
 			result := string(out)
 			expectData := string(output)
+			if parameters.Array {
+				result, err = prettyPrint(out)
+				if err != nil {
+					t.Fatal(err)
+				}
+				expectData, err = prettyPrint(output)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
 
 			if diff := cmp.Diff(strings.TrimSpace(expectData), strings.TrimSpace(result)); diff != "" {
 				t.Errorf("mismatch (-want +got):\n%s", diff)
@@ -110,6 +119,20 @@ func TestMapper(t *testing.T) {
 			}
 		})
 	}
+}
+
+// prettyPrint accepts a JSON byte slice, formats it with indentation, and returns it as a pretty string or an error.
+func prettyPrint(in []byte) (string, error) {
+	var a any
+	err := json.Unmarshal(in, &a)
+	if err != nil {
+		return "", err
+	}
+	out, err := json.MarshalIndent(a, "", "  ")
+	if err != nil {
+		return "", err
+	}
+	return string(out), nil
 }
 
 // writeCandidateFile writes a result string to a new file in the "testdata" directory with a ".candidate" suffix.
