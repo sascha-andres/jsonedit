@@ -1,0 +1,39 @@
+-- input.csv --
+id;name;mail
+1;John Doe;john@example.com
+2;Jane Smith;jane@example.com
+-- config.json --
+{
+  "mapping": {
+    "id": {
+      "property": "id",
+      "type": "int"
+    },
+    "name": {
+      "property": "name",
+      "type": "string"
+    },
+    "mail": {
+      "property": "email",
+      "type": "string"
+    }
+  }
+}
+-- output --
+{"email":"john@example.com","id":1,"name":"John Doe"}
+{"email":"jane@example.com","id":2,"name":"Jane Smith"}
+-- parameters --
+{
+		"access_by_header": true,
+		"separator": ";",
+		"output_type": "json",
+		"nested_property_name": "",
+		"array": false,
+		"generateArray": false,
+		"logger": true
+}
+-- expectation --
+{
+    "construct_error": false,
+    "error": false
+}
