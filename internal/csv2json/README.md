@@ -349,6 +349,61 @@ Conditional properties are useful for:
 3. Implementing business logic in the mapping process
 4. Filtering out unwanted or irrelevant data
 
+## Advanced Callback Functions
+
+The csv2json package provides two callback functions that can be used for advanced use cases:
+
+### NewRecordFunc
+
+`NewRecordFunc` is a callback function that is called when a new record is being processed. It receives the current record and header as parameters:
+
+```
+NewRecordFunc func([]string, []string)
+```
+
+This function can be used to:
+- Store record data for later use
+- Perform custom validation on records
+- Implement custom logging or monitoring
+- Trigger external actions based on record content
+
+The function is called before any mapping or transformation is applied to the record, giving you access to the raw CSV data.
+
+### AskForValueFunc
+
+`AskForValueFunc` is a callback function that dynamically provides values for calculated fields with the "ask" kind. It receives the current record, header, and the calculated field definition as parameters:
+
+```
+AskForValueFunc func(record, header []string, field CalculatedField) (string, error)
+```
+
+This function can be used to:
+- Retrieve values from external sources
+- Compute values based on record data
+- Implement complex business logic
+- Access values stored by NewRecordFunc
+
+To use the "ask" kind in calculated fields, define a calculated field with:
+- `kind`: "ask"
+- `format`: A string that can be used to identify what value to retrieve
+
+Example configuration:
+```json
+{
+  "calculated": [
+    {
+      "property": "dynamicValue",
+      "kind": "ask",
+      "format": "some-identifier",
+      "type": "string",
+      "location": "record"
+    }
+  ]
+}
+```
+
+When this calculated field is processed, the AskForValueFunc will be called with the current record, header, and the field definition. The function should return the value to use for the field, or an error if the value cannot be determined.
+
 # Output Behavior
 
 ## Without `-array`
