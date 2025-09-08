@@ -132,6 +132,11 @@ func (m *Mapper) SetNewRecordFunc(n NewRecordFunc) {
 	m.newRecordFunc = n
 }
 
+// SetAskForValueFunc sets the function responsible for dynamically providing string values based on record, header, and field.
+func (m *Mapper) SetAskForValueFunc(f AskForValueFunc) {
+	m.askForValueFunc = f
+}
+
 // Map processes input CSV data, maps it to JSON according to the configuration, and writes the result to the output destination.
 func (m *Mapper) Map(in []byte) ([]byte, error) {
 	out := make([]byte, 0)
@@ -363,6 +368,15 @@ func (m *Mapper) applyCalculatedFields(record, header []string, recordNumber int
 			if !isSet && defaultMapping != nil {
 				val, err = convertToType(field.Type, *defaultMapping)
 			}
+		case "ask":
+			if m.askForValueFunc == nil {
+				return nil, errors.New("ask value function not set")
+			}
+			answer, err := m.askForValueFunc(record, header, field)
+			if err != nil {
+				return nil, err
+			}
+			val, err = convertToType(field.Type, answer)
 		default:
 			return nil, errors.New("unknown kind " + field.Kind)
 		}

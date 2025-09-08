@@ -22,7 +22,7 @@ type (
 		// mappingFile specifies the path to a JSON file containing the mapping configuration for the data transformation process.
 		mappingFile string
 
-		// marshalWith specifies a custom Marshaler to be used for serializing data during the mapping process. json, yaml or toml
+		// marshalWith specifies a custom Marshaler to be used for serializing data during the mapping process. json, yaml, or toml
 		marshalWith string
 
 		// nestedPropertyName specifies the property name to use for TOML array output (defaults to "data")
@@ -42,6 +42,9 @@ type (
 
 		// newRecordFunc is called when a new record is being processed
 		newRecordFunc NewRecordFunc
+
+		// askForValueFunc defines a function type used to request a specific value dynamically during runtime operations.
+		askForValueFunc AskForValueFunc
 	}
 
 	Operand struct {
@@ -139,6 +142,9 @@ type (
 
 	// NewRecordFunc represents a function called when a new record is being processed
 	NewRecordFunc func([]string, []string)
+
+	// AskForValueFunc defines a function type that calculates a string value based on a record, header, and a calculated field.
+	AskForValueFunc func(record, header []string, field CalculatedField) (string, error)
 )
 
 const RecordLocation FieldLocation = "record"

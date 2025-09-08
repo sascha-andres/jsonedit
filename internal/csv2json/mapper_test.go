@@ -2,6 +2,7 @@ package csv2json
 
 import (
 	"encoding/json"
+	"errors"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -14,8 +15,6 @@ import (
 
 var nrData = make(map[string]map[string]string)
 
-type newRecordFuncFactory func(string) NewRecordFunc
-
 // getStoreNewRecordFunc returns a function that processes record and header slices to store data under a specific test key.
 // It initializes a data map for the provided test key if it doesn't already exist.
 func getStoreNewRecordFunc(test string) NewRecordFunc {
@@ -27,8 +26,24 @@ func getStoreNewRecordFunc(test string) NewRecordFunc {
 	}
 }
 
+type newRecordFuncFactory func(string) NewRecordFunc
+
 var nrFunctions = map[string]newRecordFuncFactory{
 	"store": getStoreNewRecordFunc,
+}
+
+type askForValueFuncFactory func(string) AskForValueFunc
+
+var afvFunctions = map[string]askForValueFuncFactory{
+	"from-store": func(test string) AskForValueFunc {
+		return func(record, header []string, field CalculatedField) (string, error) {
+			if _, ok := nrData[test]["expect"]; !ok {
+				return "", errors.New("no expect value set")
+			} else {
+				return nrData[test]["expect"], nil
+			}
+		}
+	},
 }
 
 type Expectation struct {
@@ -46,6 +61,7 @@ type Parameters struct {
 	EnvVariables       map[string]string `json:"env_variables"`
 	NewRecordFunc      string            `json:"new_record_func"`
 	NewRecordExpect    string            `json:"new_record_expect"`
+	AskForValueFunc    string            `json:"ask_for_value_func"`
 }
 
 // TestMapper tests the Mapper object's functionality using various configurations and expectations from testdata files.
@@ -120,6 +136,14 @@ func TestMapper(t *testing.T) {
 					t.Fatal("new record function not found")
 				}
 				mapper.SetNewRecordFunc(f(t.Name()))
+			}
+
+			if parameters.AskForValueFunc != "" {
+				f, ok := afvFunctions[parameters.AskForValueFunc]
+				if !ok {
+					t.Fatal("ask for value function not found")
+				}
+				mapper.SetAskForValueFunc(f(t.Name()))
 			}
 
 			out, err := mapper.Map(input)
