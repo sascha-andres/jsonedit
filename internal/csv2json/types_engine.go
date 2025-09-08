@@ -91,6 +91,9 @@ type (
 		Type string `json:"type"`
 	}
 
+	// FieldLocation represents the location or identifier of a specific field within a system or context as a string.
+	FieldLocation string
+
 	// CalculatedField defines a structure for representing dynamically computed fields within a configuration.
 	CalculatedField struct {
 
@@ -108,7 +111,7 @@ type (
 
 		// Location specifies the location or context where the calculated field applies in the mapping.
 		//Either document or record
-		Location string `json:"location"`
+		Location FieldLocation `json:"location"`
 	}
 
 	// ExtraVariable is used to store a static extra variable in the mapping
@@ -131,3 +134,6 @@ type (
 		Mapping map[string]ColumnConfiguration `json:"mapping"`
 	}
 )
+
+const RecordLocation FieldLocation = "record"
+const DocumentLocation FieldLocation = "document"

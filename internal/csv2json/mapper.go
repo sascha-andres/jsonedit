@@ -112,6 +112,12 @@ func NewMapper(options ...OptionFunc) (*Mapper, error) {
 		break
 	}
 
+	for _, field := range mapper.configuration.Calculated {
+		if !field.Location.IsValid() {
+			return nil, errors.New("invalid calculated field location")
+		}
+	}
+
 	for key, configuration := range mapper.configuration.Mapping {
 		if !configuration.IsValid(mapper.logger, key) {
 			return nil, errors.New("invalid mapping configuration")
@@ -266,7 +272,7 @@ func (m *Mapper) mapCSVFields(record []string, header []string, out map[string]a
 }
 
 // applyCalculatedFields applies calculated fields to the output based on the configuration and specified record number.
-func (m *Mapper) applyCalculatedFields(record, header []string, recordNumber int, out map[string]any, loc string) (map[string]any, error) {
+func (m *Mapper) applyCalculatedFields(record, header []string, recordNumber int, out map[string]any, loc FieldLocation) (map[string]any, error) {
 	var err error
 
 	for _, field := range m.configuration.Calculated {
