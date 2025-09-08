@@ -134,8 +134,8 @@ func TestMapper(t *testing.T) {
 			}
 
 			if parameters.NewRecordFunc != "" {
-				if nrData[t.Name()]["expect"] != nrData[t.Name()][parameters.NewRecordExpect] {
-					t.Errorf("new record function: expected %s but got %s", nrData[t.Name()][parameters.NewRecordExpect], nrData[t.Name()]["expect"])
+				if nrData[t.Name()]["expect"] != parameters.NewRecordExpect {
+					t.Errorf("new record function: expected [%s] but got [%s]", parameters.NewRecordExpect, nrData[t.Name()]["expect"])
 				}
 			}
 

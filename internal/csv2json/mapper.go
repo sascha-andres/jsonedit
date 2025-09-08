@@ -177,6 +177,9 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
+		if m.newRecordFunc != nil {
+			m.newRecordFunc(record, header)
+		}
 		out := make(map[string]interface{})
 		out, err = m.mapCSVFields(record, header, out)
 		if err != nil {
