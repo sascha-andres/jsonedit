@@ -127,6 +127,11 @@ func NewMapper(options ...OptionFunc) (*Mapper, error) {
 	return mapper, nil
 }
 
+// SetNewRecordFunc sets the function to be called when processing a new record.
+func (m *Mapper) SetNewRecordFunc(n NewRecordFunc) {
+	m.newRecordFunc = n
+}
+
 // Map processes input CSV data, maps it to JSON according to the configuration, and writes the result to the output destination.
 func (m *Mapper) Map(in []byte) ([]byte, error) {
 	out := make([]byte, 0)
