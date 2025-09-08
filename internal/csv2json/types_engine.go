@@ -39,6 +39,9 @@ type (
 
 		// logger holds a reference to an slog.Logger for logging messages and errors within the Mapper's operations.
 		logger *slog.Logger
+
+		// newRecordFunc is called when a new record is being processed
+		newRecordFunc NewRecordFunc
 	}
 
 	Operand struct {
@@ -133,6 +136,9 @@ type (
 		// Mapping represents a map of keys to their corresponding column configurations in the mapping structure.
 		Mapping map[string]ColumnConfiguration `json:"mapping"`
 	}
+
+	// NewRecordFunc represents a function called when a new record is being processed
+	NewRecordFunc func([]string, []string)
 )
 
 const RecordLocation FieldLocation = "record"
