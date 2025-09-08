@@ -18,12 +18,13 @@ type Expectation struct {
 }
 
 type Parameters struct {
-	AccessByHeader     bool   `json:"access_by_header"`
-	Separator          string `json:"separator"`
-	OutputType         string `json:"output_type"`
-	NestedPropertyName string `json:"nested_property_name"`
-	Logger             bool   `json:"logger"`
-	Array              bool   `json:"array"`
+	AccessByHeader     bool              `json:"access_by_header"`
+	Separator          string            `json:"separator"`
+	OutputType         string            `json:"output_type"`
+	NestedPropertyName string            `json:"nested_property_name"`
+	Logger             bool              `json:"logger"`
+	Array              bool              `json:"array"`
+	EnvVariables       map[string]string `json:"env_variables"`
 }
 
 // TestMapper tests the Mapper object's functionality using various configurations and expectations from testdata files.
@@ -60,6 +61,9 @@ func TestMapper(t *testing.T) {
 			var parameters Parameters
 			if err := json.NewDecoder(strings.NewReader(string(params))).Decode(&parameters); err != nil {
 				t.Fatal(err)
+			}
+			for k, v := range parameters.EnvVariables {
+				t.Setenv(k, v)
 			}
 
 			var expectation Expectation
