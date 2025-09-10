@@ -4,14 +4,15 @@ import "log/slog"
 
 // Apply checks whether all conditions apply to the specified record and header.
 func (cs *Conditions) Apply(logger *slog.Logger, property string, named bool, record, header []string) bool {
-	if cs == nil {
+	if cs == nil || len(*cs) == 0 {
 		return false
 	}
-	result := true
 	for _, condition := range *cs {
-		result = result && condition.Applies(logger, property, named, record, header)
+		if !condition.Applies(logger, property, named, record, header) {
+			return false
+		}
 	}
-	return result
+	return true
 }
 
 // Applies checks whether the condition applies to the specified record and header.
@@ -35,7 +36,6 @@ func (c *Condition) Applies(logger *slog.Logger, property string, named bool, re
 
 // intApplies evaluates an integer condition based on the specified operator and operand values extracted from the record and header.
 func (c *Condition) intApplies(logger *slog.Logger, named bool, record, header []string) bool {
-	// TODO floating point comparison needs a bit more uncertainty
 	op1 := c.Operand1.getIntValueForApplies(logger, named, record, header)
 	op2 := c.Operand2.getIntValueForApplies(logger, named, record, header)
 	if c.Operator == "=" {
