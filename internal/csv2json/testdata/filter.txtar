@@ -22,7 +22,7 @@
          "operator": "=",
          "operand1": {
            "type": "value",
-           "value": ""
+           "value": "1"
          },
          "operand2": {
            "type": "column",

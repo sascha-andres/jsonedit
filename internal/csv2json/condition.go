@@ -2,6 +2,18 @@ package csv2json
 
 import "log/slog"
 
+// Apply checks whether all conditions apply to the specified record and header.
+func (cs *Conditions) Apply(logger *slog.Logger, property string, named bool, record, header []string) bool {
+	if cs == nil {
+		return false
+	}
+	result := true
+	for _, condition := range *cs {
+		result = result && condition.Applies(logger, property, named, record, header)
+	}
+	return result
+}
+
 // Applies checks whether the condition applies to the specified record and header.
 func (c *Condition) Applies(logger *slog.Logger, property string, named bool, record, header []string) bool {
 	switch c.Type {
