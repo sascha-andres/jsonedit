@@ -184,7 +184,9 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 		}
 		filtered := false
 		for group, conditions := range m.configuration.Filter {
-			m.logger.Debug("checking filter", slog.Any("group", group), slog.Any("conditions", conditions))
+			if m.logger != nil {
+				m.logger.Debug("checking filter", slog.Any("group", group), slog.Any("conditions", conditions))
+			}
 			if conditions.Apply(m.logger, group, m.named, record, header) {
 				filtered = true
 				break
