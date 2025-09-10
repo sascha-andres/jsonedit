@@ -349,6 +349,113 @@ Conditional properties are useful for:
 3. Implementing business logic in the mapping process
 4. Filtering out unwanted or irrelevant data
 
+## Row Filtering
+
+You can filter out (skip) input CSV rows before mapping them by defining a filter section in the configuration. A row is skipped if it matches any of the defined filter groups.
+
+- A filter is a map of named groups to an array of conditions.
+- Conditions inside the same group are combined with AND (all must be true).
+- Different groups are combined with OR (if any group is true, the row is filtered out).
+
+Configuration schema:
+
+```json
+{
+  "filter": {
+    "groupName": [
+      {
+        "operator": "=|!=|>|<",
+        "operand1": { "type": "value|column", "value": "..." },
+        "operand2": { "type": "value|column", "value": "..." },
+        "type": "string|int|float|bool"
+      }
+    ]
+  }
+}
+```
+
+- operator: Supported operators are =, !=, >, < (for bool only = and != are meaningful).
+- type: Comparison type. Values are coerced to this type before comparing.
+- operand.type:
+  - value: use a literal value from the configuration.
+  - column: read the value from a CSV column. Use the numeric index as string (e.g., "0", "1", …). If you run in named/header mode, you can use the header name instead of the index.
+
+### Examples
+
+Filter rows where id equals 1:
+
+```json
+{
+  "mapping": {
+    "0": { "property": "id", "type": "int" },
+    "1": { "property": "name", "type": "string" },
+    "2": { "property": "email", "type": "string" }
+  },
+  "filter": {
+    "id_is_1": [
+      {
+        "operator": "=",
+        "operand1": { "type": "value", "value": "1" },
+        "operand2": { "type": "column", "value": "0" },
+        "type": "string"
+      }
+    ]
+  }
+}
+```
+
+Filter rows where name is "John Doe" AND email is "john2@example.com":
+
+```json
+{
+  "filter": {
+    "john_with_second_email": [
+      {
+        "operator": "=",
+        "operand1": { "type": "value", "value": "John Doe" },
+        "operand2": { "type": "column", "value": "1" },
+        "type": "string"
+      },
+      {
+        "operator": "=",
+        "operand1": { "type": "value", "value": "john2@example.com" },
+        "operand2": { "type": "column", "value": "2" },
+        "type": "string"
+      }
+    ]
+  }
+}
+```
+
+Filter rows where id is 1 OR id is 3 (two groups, OR logic between them):
+
+```json
+{
+  "filter": {
+    "id_1": [
+      {
+        "operator": "=",
+        "operand1": { "type": "value", "value": "1" },
+        "operand2": { "type": "column", "value": "0" },
+        "type": "string"
+      }
+    ],
+    "id_3": [
+      {
+        "operator": "=",
+        "operand1": { "type": "value", "value": "3" },
+        "operand2": { "type": "column", "value": "0" },
+        "type": "string"
+      }
+    ]
+  }
+}
+```
+
+Notes:
+- Filtering happens before mapping and calculated fields are applied. Filtered rows are completely skipped from the output.
+- Use named/header mode if you prefer to reference columns by their header names rather than indices.
+
 ## Advanced Callback Functions
 
 The csv2json package provides two callback functions that can be used for advanced use cases:
