@@ -1,0 +1,51 @@
+-- input.csv --
+1;John Doe;john@example.com
+2;Jane Smith;jane@example.com
+-- config.json --
+{
+  "mapping": {
+    "0": {
+      "property": "id",
+      "type": "int"
+    },
+    "1": {
+      "property": "name",
+      "type": "string"
+    },
+    "2": {
+      "property": "email",
+      "type": "string"
+    }
+  },
+  "filter": {
+    "john": [{
+         "operator": "=",
+         "operand1": {
+           "type": "value",
+           "value": "1"
+         },
+         "operand2": {
+           "type": "column",
+           "value": "0"
+         },
+         "type": "string"
+   }]
+  }
+}
+-- output --
+{"email":"jane@example.com","id":2,"name":"Jane Smith"}
+-- parameters --
+{
+		"access_by_header": false,
+		"separator": ";",
+		"output_type": "json",
+		"nested_property_name": "",
+		"array": false,
+		"generateArray": false,
+		"logger": true
+}
+-- expectation --
+{
+    "construct_error": false,
+    "error": false
+}

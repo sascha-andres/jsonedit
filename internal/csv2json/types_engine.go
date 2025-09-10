@@ -72,6 +72,9 @@ type (
 		Type string `json:"type"`
 	}
 
+	// Conditions defines a slice of conditions to be evaluated for filtering data
+	Conditions []Condition
+
 	// PropertyConfiguration defines the mapping configuration for a single property, including its name and data type.
 	PropertyConfiguration struct {
 
@@ -138,6 +141,9 @@ type (
 
 		// Mapping represents a map of keys to their corresponding column configurations in the mapping structure.
 		Mapping map[string]ColumnConfiguration `json:"mapping"`
+
+		// Filter represents a mapping of key-value pairs where each key maps to a slice of conditions for filtering data.
+		Filter map[string]Conditions `json:"filter"`
 	}
 
 	// NewRecordFunc represents a function called when a new record is being processed
