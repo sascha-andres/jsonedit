@@ -136,27 +136,15 @@ func (m *Mapper) SetAskForValueFunc(f AskForValueFunc) {
 	m.askForValueFunc = f
 }
 
-// Map processes input CSV data, maps it to JSON according to the configuration, and writes the result to the output destination.
-func (m *Mapper) Map(in []byte) ([]byte, error) {
-	out := make([]byte, 0)
-	reader, writer, err := m.initialize(in, out)
-	if err != nil {
-		return nil, err
-	}
-
-	// Cast writer to *bytes.Buffer to retrieve the result later
-	buffer, ok := writer.(*bytes.Buffer)
-	if !ok {
-		return nil, errors.New("writer is not a bytes.Buffer")
-	}
-
-	csvIn := csv.NewReader(reader)
+func (m *Mapper) MapIo(in io.Reader, writer io.Writer) error {
+	csvIn := csv.NewReader(in)
 	csvIn.Comma = m.separator
 	csvIn.ReuseRecord = false
 
 	var (
 		arrResult []map[string]any
 		header    []string
+		err       error
 	)
 
 	var headerIndex map[string]int
@@ -164,7 +152,7 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 	if m.named {
 		header, err = csvIn.Read()
 		if err != nil {
-			return nil, err
+			return err
 		}
 		// build header index cache
 		headerIndex = make(map[string]int, len(header))
@@ -185,7 +173,7 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 			break
 		}
 		if err != nil {
-			return nil, err
+			return err
 		}
 		recordInfo := &RecordWithInformation{
 			Record: record,
@@ -213,26 +201,26 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 		out := make(map[string]interface{})
 		out, err = m.mapCSVFields(out, recordInfo)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		// calculated fields
 		out, err = m.applyCalculatedFields(recordNumber, out, "record", recordInfo)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		if m.array {
 			arrResult = append(arrResult, out)
 		} else {
 			d, err := m.marshaler(out)
 			if err != nil {
-				return nil, err
+				return err
 			}
 			if recordNumber > 0 {
 				_, _ = writer.Write([]byte("\n"))
 			}
 			_, err = writer.Write(d)
 			if err != nil {
-				return nil, err
+				return err
 			}
 		}
 		recordNumber++
@@ -252,19 +240,40 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 			}
 			outputData, err = m.applyCalculatedFields(recordNumber, outputData, "document", nil)
 			if err != nil {
-				return nil, err
+				return err
 			}
 			d, err = m.marshaler(outputData)
 			if err != nil {
-				return nil, err
+				return err
 			}
 		} else {
 			d, err = m.marshaler(arrResult)
 			if err != nil {
-				return nil, err
+				return err
 			}
 		}
 		_, _ = writer.Write(d)
+	}
+	return nil
+}
+
+// Map processes input CSV data, maps it to JSON according to the configuration, and writes the result to the output destination.
+func (m *Mapper) Map(in []byte) ([]byte, error) {
+	out := make([]byte, 0)
+	reader, writer, err := m.initialize(in, out)
+	if err != nil {
+		return nil, err
+	}
+
+	err = m.MapIo(reader, writer)
+	if err != nil {
+		return nil, err
+	}
+
+	// Cast writer to *bytes.Buffer to retrieve the result later
+	buffer, ok := writer.(*bytes.Buffer)
+	if !ok {
+		return nil, errors.New("writer is not a bytes.Buffer")
 	}
 
 	// Return the actual content from the buffer
