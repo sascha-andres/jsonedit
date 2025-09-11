@@ -2,7 +2,6 @@ package csv2json
 
 import (
 	"log/slog"
-	"strconv"
 )
 
 // getBoolValueForApplies evaluates and retrieves a boolean value for a condition based on the provided record and header data.
@@ -19,45 +18,14 @@ func (op *Operand) getBoolValueForApplies(logger *slog.Logger, recordInfo *Recor
 		value = c.(bool)
 	}
 	if op.Type == "column" {
-		if recordInfo.HeaderIndex != nil {
-			if idx, ok := recordInfo.HeaderIndex[op.Value]; ok {
-				if idx < len(recordInfo.Record) {
-					c, err := convertToType("bool", recordInfo.Record[idx])
-					if err != nil {
-						if logger != nil {
-							logger.Error("error converting value to bool", "err", err, "value", recordInfo.Record[idx])
-						}
-						return false
-					}
-					value = c.(bool)
-				} else if logger != nil {
-					logger.Error("index out of range", "index", idx, "length", len(recordInfo.Record))
-				}
-			} else if logger != nil {
-				logger.Error("header not found", "name", op.Value)
+		val, err := recordInfo.GetValue(logger, "bool", op.Value)
+		if err != nil {
+			if logger != nil {
+				logger.Error("error converting value to bool", "err", err)
 			}
-		} else {
-			i, err := strconv.Atoi(op.Value)
-			if err != nil {
-				if logger != nil {
-					logger.Error("error converting value to int for index", "err", err, "value", op.Value)
-				}
-			}
-			if i < len(recordInfo.Record) {
-				c, err := convertToType("bool", recordInfo.Record[i])
-				if err != nil {
-					if logger != nil {
-						logger.Error("error converting value to bool", "err", err, "value", recordInfo.Record[i])
-					}
-					return false
-				}
-				value = c.(bool)
-			} else {
-				if logger != nil {
-					logger.Error("index out of range", "index", i, "length", len(recordInfo.Record))
-				}
-			}
+			return false
 		}
+		value = val.(bool)
 	}
 	return value
 }
@@ -69,52 +37,21 @@ func (op *Operand) getFloatValueForApplies(logger *slog.Logger, recordInfo *Reco
 		c, err := convertToType("float", op.Value)
 		if err != nil {
 			if logger != nil {
-				logger.Error("error converting value to bool", "err", err, "value", op.Value)
+				logger.Error("error converting value to float64", "err", err, "value", op.Value)
 			}
 			return 0.0
 		}
 		value = c.(float64)
 	}
 	if op.Type == "column" {
-		if recordInfo.HeaderIndex != nil {
-			if idx, ok := recordInfo.HeaderIndex[op.Value]; ok {
-				if idx < len(recordInfo.Record) {
-					c, err := convertToType("float", recordInfo.Record[idx])
-					if err != nil {
-						if logger != nil {
-							logger.Error("error converting value to float64", "err", err, "value", recordInfo.Record[idx])
-						}
-						return 0.0
-					}
-					value = c.(float64)
-				} else if logger != nil {
-					logger.Error("index out of range", "index", idx, "length", len(recordInfo.Record))
-				}
-			} else if logger != nil {
-				logger.Error("header not found", "name", op.Value)
+		val, err := recordInfo.GetValue(logger, "float", op.Value)
+		if err != nil {
+			if logger != nil {
+				logger.Error("error converting value to float", "err", err)
 			}
-		} else {
-			i, err := strconv.Atoi(op.Value)
-			if err != nil {
-				if logger != nil {
-					logger.Error("error converting value to int for index", "err", err, "value", op.Value)
-				}
-			}
-			if i < len(recordInfo.Record) {
-				c, err := convertToType("float", recordInfo.Record[i])
-				if err != nil {
-					if logger != nil {
-						logger.Error("error converting value to float64", "err", err, "value", recordInfo.Record[i])
-					}
-					return 0.0
-				}
-				value = c.(float64)
-			} else {
-				if logger != nil {
-					logger.Error("index out of range", "index", i, "length", len(recordInfo.Record))
-				}
-			}
+			return 0
 		}
+		value = val.(float64)
 	}
 	return value
 }
@@ -133,45 +70,14 @@ func (op *Operand) getIntValueForApplies(logger *slog.Logger, recordInfo *Record
 		value = c.(int)
 	}
 	if op.Type == "column" {
-		if recordInfo.HeaderIndex != nil {
-			if idx, ok := recordInfo.HeaderIndex[op.Value]; ok {
-				if idx < len(recordInfo.Record) {
-					c, err := convertToType("int", recordInfo.Record[idx])
-					if err != nil {
-						if logger != nil {
-							logger.Error("error converting value to int", "err", err, "value", recordInfo.Record[idx])
-						}
-						return 0
-					}
-					value = c.(int)
-				} else if logger != nil {
-					logger.Error("index out of range", "index", idx, "length", len(recordInfo.Record))
-				}
-			} else if logger != nil {
-				logger.Error("header not found", "name", op.Value)
+		val, err := recordInfo.GetValue(logger, "int", op.Value)
+		if err != nil {
+			if logger != nil {
+				logger.Error("error converting value to int", "err", err)
 			}
-		} else {
-			i, err := strconv.Atoi(op.Value)
-			if err != nil {
-				if logger != nil {
-					logger.Error("error converting value to int for index", "err", err, "value", op.Value)
-				}
-			}
-			if i < len(recordInfo.Record) {
-				c, err := convertToType("int", recordInfo.Record[i])
-				if err != nil {
-					if logger != nil {
-						logger.Error("error converting value to int", "err", err, "value", recordInfo.Record[i])
-					}
-					return 0
-				}
-				value = c.(int)
-			} else {
-				if logger != nil {
-					logger.Error("index out of range", "index", i, "length", len(recordInfo.Record))
-				}
-			}
+			return 0
 		}
+		value = val.(int)
 	}
 	return value
 }
@@ -183,31 +89,14 @@ func (op *Operand) getStringValueForApplies(logger *slog.Logger, recordInfo *Rec
 		value = op.Value
 	}
 	if op.Type == "column" {
-		if recordInfo.HeaderIndex != nil {
-			if idx, ok := recordInfo.HeaderIndex[op.Value]; ok {
-				if idx < len(recordInfo.Record) {
-					value = recordInfo.Record[idx]
-				} else if logger != nil {
-					logger.Error("index out of range", "index", idx, "length", len(recordInfo.Record))
-				}
-			} else if logger != nil {
-				logger.Error("header not found", "name", op.Value)
+		val, err := recordInfo.GetValue(logger, "string", op.Value)
+		if err != nil {
+			if logger != nil {
+				logger.Error("error converting value to string", "err", err)
 			}
-		} else {
-			i, err := strconv.Atoi(op.Value)
-			if err != nil {
-				if logger != nil {
-					logger.Error("error converting value to int for index", "err", err, "value", op.Value)
-				}
-			}
-			if i < len(recordInfo.Record) {
-				value = recordInfo.Record[i]
-			} else {
-				if logger != nil {
-					logger.Error("index out of range", "index", i, "length", len(recordInfo.Record))
-				}
-			}
+			return ""
 		}
+		value = val.(string)
 	}
 	return value
 }

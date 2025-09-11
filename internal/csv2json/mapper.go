@@ -21,9 +21,9 @@ import (
 type OptionFunc func(*Mapper) error
 
 // WithLogger sets a custom logger for the Mapper instance. Returns an OptionFunc to configure the logger.
-func WithLogger(lofgger *slog.Logger) OptionFunc {
+func WithLogger(logger *slog.Logger) OptionFunc {
 	return func(mapper *Mapper) error {
-		mapper.logger = lofgger
+		mapper.logger = logger
 		return nil
 	}
 }
