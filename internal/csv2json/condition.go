@@ -1,6 +1,8 @@
 package csv2json
 
-import "log/slog"
+import (
+	"log/slog"
+)
 
 // Apply checks whether all conditions apply to the specified record and header.
 func (cs *Conditions) Apply(logger *slog.Logger, property string, named bool, record, header []string) bool {
