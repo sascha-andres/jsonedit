@@ -9,7 +9,6 @@ import (
 	"io"
 	"log/slog"
 	"os"
-	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -166,6 +165,11 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
+		// build header index cache
+		m.headerIndex = make(map[string]int, len(header))
+		for i, h := range header {
+			m.headerIndex[h] = i
+		}
 	}
 	// from now on we can reuse the record
 	csvIn.ReuseRecord = true
@@ -187,7 +191,7 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 			if m.logger != nil {
 				m.logger.Debug("checking filter", slog.Any("group", group), slog.Any("conditions", conditions))
 			}
-			if conditions.Apply(m.logger, group, m.named, record, header) {
+			if conditions.Apply(m.logger, group, m.named, record, header, m.headerIndex) {
 				filtered = true
 				break
 			}
@@ -199,7 +203,7 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 			m.newRecordFunc(record, header)
 		}
 		out := make(map[string]interface{})
-		out, err = m.mapCSVFields(record, header, out)
+		out, err = m.mapCSVFields(record, header, out, m.headerIndex)
 		if err != nil {
 			return nil, err
 		}
@@ -260,7 +264,7 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 }
 
 // mapCSVFields maps CSV records to a nested output structure using a header and mapping configuration. Returns the updated map or an error.
-func (m *Mapper) mapCSVFields(record []string, header []string, out map[string]any) (map[string]any, error) {
+func (m *Mapper) mapCSVFields(record []string, header []string, out map[string]any, headerIndex map[string]int) (map[string]any, error) {
 	for i := range record {
 		key := fmt.Sprintf("%d", i)
 		if m.named {
@@ -276,7 +280,7 @@ func (m *Mapper) mapCSVFields(record []string, header []string, out map[string]a
 		if len(v.Properties) > 0 {
 			for _, property := range v.Properties {
 				if property.Condition != nil {
-					if !property.Applies(m.logger, m.named, record, header) {
+					if !property.Applies(m.logger, m.named, record, header, headerIndex) {
 						continue
 					}
 				}
@@ -345,10 +349,14 @@ func (m *Mapper) applyCalculatedFields(record, header []string, recordNumber int
 			}
 			var currentValue string
 			if m.named {
-				if !slices.Contains(header, splitFormat[0]) {
+				idx, ok := m.headerIndex[splitFormat[0]]
+				if !ok {
 					return nil, errors.New("mapping field " + splitFormat[0] + " not found in header")
 				}
-				currentValue = record[slices.Index(header, splitFormat[0])]
+				if idx >= len(record) {
+					return nil, errors.New("mapping field " + splitFormat[0] + " not found as it does not exist in the record")
+				}
+				currentValue = record[idx]
 			} else {
 				var i int
 				if i, err = strconv.Atoi(splitFormat[0]); err != nil {

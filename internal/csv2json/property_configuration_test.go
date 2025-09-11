@@ -11,12 +11,12 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 
 	tests := []struct {
-		name      string
-		pc        PropertyConfiguration
-		named     bool
-		record    []string
-		header    []string
-		want      bool
+		name   string
+		pc     PropertyConfiguration
+		named  bool
+		record []string
+		header []string
+		want   bool
 	}{
 		{
 			name: "nil condition",
@@ -357,7 +357,12 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := tt.pc.Applies(logger, tt.named, tt.record, tt.header)
+			// build header index cache
+			headerIndex := make(map[string]int, len(tt.header))
+			for i, h := range tt.header {
+				headerIndex[h] = i
+			}
+			got := tt.pc.Applies(logger, tt.named, tt.record, tt.header, headerIndex)
 			if got != tt.want {
 				t.Errorf("PropertyConfiguration.Applies() = %v, want %v", got, tt.want)
 			}

@@ -45,6 +45,9 @@ type (
 
 		// askForValueFunc defines a function type used to request a specific value dynamically during runtime operations.
 		askForValueFunc AskForValueFunc
+
+		// headerIndex caches header name to index for named CSVs to avoid linear scans during mapping and filtering
+		headerIndex map[string]int
 	}
 
 	Operand struct {

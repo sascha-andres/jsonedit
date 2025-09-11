@@ -6,7 +6,7 @@ import (
 )
 
 // getBoolValueForApplies evaluates and retrieves a boolean value for a condition based on the provided record and header data.
-func (op *Operand) getBoolValueForApplies(logger *slog.Logger, named bool, record []string, header []string) bool {
+func (op *Operand) getBoolValueForApplies(logger *slog.Logger, named bool, record []string, header []string, headerIndex map[string]int) bool {
 	value := false
 	if op.Type == "value" {
 		c, err := convertToType("bool", op.Value)
@@ -20,18 +20,21 @@ func (op *Operand) getBoolValueForApplies(logger *slog.Logger, named bool, recor
 	}
 	if op.Type == "column" {
 		if named {
-			for i := range header {
-				if header[i] == op.Value {
-					c, err := convertToType("bool", record[i])
+			if idx, ok := headerIndex[op.Value]; ok {
+				if idx < len(record) {
+					c, err := convertToType("bool", record[idx])
 					if err != nil {
 						if logger != nil {
-							logger.Error("error converting value to bool", "err", err, "value", record[i])
+							logger.Error("error converting value to bool", "err", err, "value", record[idx])
 						}
 						return false
 					}
 					value = c.(bool)
-					break
+				} else if logger != nil {
+					logger.Error("index out of range", "index", idx, "length", len(record))
 				}
+			} else if logger != nil {
+				logger.Error("header not found", "name", op.Value)
 			}
 		} else {
 			i, err := strconv.Atoi(op.Value)
@@ -60,7 +63,7 @@ func (op *Operand) getBoolValueForApplies(logger *slog.Logger, named bool, recor
 }
 
 // getFloatValueForApplies retrieves a float value based on the operand configuration and the provided record and header data.
-func (op *Operand) getFloatValueForApplies(logger *slog.Logger, named bool, record []string, header []string) float64 {
+func (op *Operand) getFloatValueForApplies(logger *slog.Logger, named bool, record []string, header []string, headerIndex map[string]int) float64 {
 	value := 0.0
 	if op.Type == "value" {
 		c, err := convertToType("float", op.Value)
@@ -74,18 +77,21 @@ func (op *Operand) getFloatValueForApplies(logger *slog.Logger, named bool, reco
 	}
 	if op.Type == "column" {
 		if named {
-			for i := range header {
-				if header[i] == op.Value {
-					c, err := convertToType("float", record[i])
+			if idx, ok := headerIndex[op.Value]; ok {
+				if idx < len(record) {
+					c, err := convertToType("float", record[idx])
 					if err != nil {
 						if logger != nil {
-							logger.Error("error converting value to float64", "err", err, "value", record[i])
+							logger.Error("error converting value to float64", "err", err, "value", record[idx])
 						}
 						return 0.0
 					}
 					value = c.(float64)
-					break
+				} else if logger != nil {
+					logger.Error("index out of range", "index", idx, "length", len(record))
 				}
+			} else if logger != nil {
+				logger.Error("header not found", "name", op.Value)
 			}
 		} else {
 			i, err := strconv.Atoi(op.Value)
@@ -114,7 +120,7 @@ func (op *Operand) getFloatValueForApplies(logger *slog.Logger, named bool, reco
 }
 
 // getIntValueForApplies retrieves an integer value based on the operand configuration and the provided record and header data.
-func (op *Operand) getIntValueForApplies(logger *slog.Logger, named bool, record []string, header []string) int {
+func (op *Operand) getIntValueForApplies(logger *slog.Logger, named bool, record []string, header []string, headerIndex map[string]int) int {
 	value := 0
 	if op.Type == "value" {
 		c, err := convertToType("int", op.Value)
@@ -128,18 +134,21 @@ func (op *Operand) getIntValueForApplies(logger *slog.Logger, named bool, record
 	}
 	if op.Type == "column" {
 		if named {
-			for i := range header {
-				if header[i] == op.Value {
-					c, err := convertToType("int", record[i])
+			if idx, ok := headerIndex[op.Value]; ok {
+				if idx < len(record) {
+					c, err := convertToType("int", record[idx])
 					if err != nil {
 						if logger != nil {
-							logger.Error("error converting value to int", "err", err, "value", record[i])
+							logger.Error("error converting value to int", "err", err, "value", record[idx])
 						}
 						return 0
 					}
 					value = c.(int)
-					break
+				} else if logger != nil {
+					logger.Error("index out of range", "index", idx, "length", len(record))
 				}
+			} else if logger != nil {
+				logger.Error("header not found", "name", op.Value)
 			}
 		} else {
 			i, err := strconv.Atoi(op.Value)
@@ -168,18 +177,21 @@ func (op *Operand) getIntValueForApplies(logger *slog.Logger, named bool, record
 }
 
 // getStringValueForApplies retrieves a string value based on the operand configuration and the provided record and header data.
-func (op *Operand) getStringValueForApplies(logger *slog.Logger, named bool, record []string, header []string) string {
+func (op *Operand) getStringValueForApplies(logger *slog.Logger, named bool, record []string, header []string, headerIndex map[string]int) string {
 	value := ""
 	if op.Type == "value" {
 		value = op.Value
 	}
 	if op.Type == "column" {
 		if named {
-			for i := range header {
-				if header[i] == op.Value {
-					value = record[i]
-					break
+			if idx, ok := headerIndex[op.Value]; ok {
+				if idx < len(record) {
+					value = record[idx]
+				} else if logger != nil {
+					logger.Error("index out of range", "index", idx, "length", len(record))
 				}
+			} else if logger != nil {
+				logger.Error("header not found", "name", op.Value)
 			}
 		} else {
 			i, err := strconv.Atoi(op.Value)
