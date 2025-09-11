@@ -357,12 +357,19 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// build header index cache
-			headerIndex := make(map[string]int, len(tt.header))
-			for i, h := range tt.header {
-				headerIndex[h] = i
+			recordInfo := &RecordWithInformation{
+				Record: tt.record,
+				Header: tt.header,
 			}
-			got := tt.pc.Applies(logger, tt.named, tt.record, tt.header, headerIndex)
+			if tt.named {
+				// build header index cache
+				headerIndex := make(map[string]int, len(tt.header))
+				for i, h := range tt.header {
+					headerIndex[h] = i
+				}
+				recordInfo.HeaderIndex = headerIndex
+			}
+			got := tt.pc.Applies(logger, recordInfo)
 			if got != tt.want {
 				t.Errorf("PropertyConfiguration.Applies() = %v, want %v", got, tt.want)
 			}
