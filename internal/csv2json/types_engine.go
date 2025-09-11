@@ -4,6 +4,19 @@ import "log/slog"
 
 type (
 
+	// RecordWithInformation represents a structured data record with a header and associated metadata.
+	RecordWithInformation struct {
+
+		// Record represents a collection of string values, typically used to store multiple related pieces of data.
+		Record []string
+
+		// Header represents a collection of strings typically used for storing key names or metadata information.
+		Header []string
+
+		// HeaderIndex maps header names to their corresponding column indices for quick lookup in a data processing context.
+		HeaderIndex map[string]int
+	}
+
 	// Mapper defines a structure for mapping input data to output data, applying configuration and marshaling as needed.
 	Mapper struct {
 

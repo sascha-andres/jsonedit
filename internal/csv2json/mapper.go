@@ -9,7 +9,6 @@ import (
 	"io"
 	"log/slog"
 	"os"
-	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -22,9 +21,9 @@ import (
 type OptionFunc func(*Mapper) error
 
 // WithLogger sets a custom logger for the Mapper instance. Returns an OptionFunc to configure the logger.
-func WithLogger(lofgger *slog.Logger) OptionFunc {
+func WithLogger(logger *slog.Logger) OptionFunc {
 	return func(mapper *Mapper) error {
-		mapper.logger = lofgger
+		mapper.logger = logger
 		return nil
 	}
 }
@@ -160,11 +159,17 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 		header    []string
 	)
 
+	var headerIndex map[string]int
 	// Read header if needed
 	if m.named {
 		header, err = csvIn.Read()
 		if err != nil {
 			return nil, err
+		}
+		// build header index cache
+		headerIndex = make(map[string]int, len(header))
+		for i, h := range header {
+			headerIndex[h] = i
 		}
 	}
 	// from now on we can reuse the record
@@ -182,12 +187,19 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
+		recordInfo := &RecordWithInformation{
+			Record: record,
+			Header: header,
+		}
+		if headerIndex != nil {
+			recordInfo.HeaderIndex = headerIndex
+		}
 		filtered := false
 		for group, conditions := range m.configuration.Filter {
 			if m.logger != nil {
 				m.logger.Debug("checking filter", slog.Any("group", group), slog.Any("conditions", conditions))
 			}
-			if conditions.Apply(m.logger, group, m.named, record, header) {
+			if conditions.Apply(m.logger, group, recordInfo) {
 				filtered = true
 				break
 			}
@@ -199,12 +211,12 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 			m.newRecordFunc(record, header)
 		}
 		out := make(map[string]interface{})
-		out, err = m.mapCSVFields(record, header, out)
+		out, err = m.mapCSVFields(out, recordInfo)
 		if err != nil {
 			return nil, err
 		}
 		// calculated fields
-		out, err = m.applyCalculatedFields(record, header, recordNumber, out, "record")
+		out, err = m.applyCalculatedFields(recordNumber, out, "record", recordInfo)
 		if err != nil {
 			return nil, err
 		}
@@ -238,7 +250,7 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 			outputData := map[string]any{
 				propertyName: arrResult,
 			}
-			outputData, err = m.applyCalculatedFields(nil, nil, recordNumber, outputData, "document")
+			outputData, err = m.applyCalculatedFields(recordNumber, outputData, "document", nil)
 			if err != nil {
 				return nil, err
 			}
@@ -260,11 +272,11 @@ func (m *Mapper) Map(in []byte) ([]byte, error) {
 }
 
 // mapCSVFields maps CSV records to a nested output structure using a header and mapping configuration. Returns the updated map or an error.
-func (m *Mapper) mapCSVFields(record []string, header []string, out map[string]any) (map[string]any, error) {
-	for i := range record {
+func (m *Mapper) mapCSVFields(out map[string]any, recordInfo *RecordWithInformation) (map[string]any, error) {
+	for i := range recordInfo.Record {
 		key := fmt.Sprintf("%d", i)
-		if m.named {
-			key = header[i]
+		if recordInfo.HeaderIndex != nil {
+			key = recordInfo.Header[i]
 		}
 		var (
 			v  ColumnConfiguration
@@ -276,18 +288,18 @@ func (m *Mapper) mapCSVFields(record []string, header []string, out map[string]a
 		if len(v.Properties) > 0 {
 			for _, property := range v.Properties {
 				if property.Condition != nil {
-					if !property.Applies(m.logger, m.named, record, header) {
+					if !property.Applies(m.logger, recordInfo) {
 						continue
 					}
 				}
-				val, err := convertToType(property.Type, record[i])
+				val, err := convertToType(property.Type, recordInfo.Record[i])
 				if err != nil {
 					return nil, err
 				}
 				out = setValue(strings.Split(property.Property, "."), val, out)
 			}
 		} else {
-			val, err := convertToType(v.Type, record[i])
+			val, err := convertToType(v.Type, recordInfo.Record[i])
 			if err != nil {
 				return nil, err
 			}
@@ -298,7 +310,7 @@ func (m *Mapper) mapCSVFields(record []string, header []string, out map[string]a
 }
 
 // applyCalculatedFields applies calculated fields to the output based on the configuration and specified record number.
-func (m *Mapper) applyCalculatedFields(record, header []string, recordNumber int, out map[string]any, loc FieldLocation) (map[string]any, error) {
+func (m *Mapper) applyCalculatedFields(recordNumber int, out map[string]any, loc FieldLocation, recordInfo *RecordWithInformation) (map[string]any, error) {
 	var err error
 
 	for _, field := range m.configuration.Calculated {
@@ -336,7 +348,7 @@ func (m *Mapper) applyCalculatedFields(record, header []string, recordNumber int
 				return nil, err
 			}
 		case "mapping":
-			if record == nil {
+			if recordInfo == nil {
 				continue
 			}
 			splitFormat := strings.Split(field.Format, ":")
@@ -344,19 +356,23 @@ func (m *Mapper) applyCalculatedFields(record, header []string, recordNumber int
 				return nil, errors.New(fmt.Sprintf("expected format field:mapping list, %q", field.Format))
 			}
 			var currentValue string
-			if m.named {
-				if !slices.Contains(header, splitFormat[0]) {
+			if recordInfo.HeaderIndex != nil {
+				idx, ok := recordInfo.HeaderIndex[splitFormat[0]]
+				if !ok {
 					return nil, errors.New("mapping field " + splitFormat[0] + " not found in header")
 				}
-				currentValue = record[slices.Index(header, splitFormat[0])]
+				if idx >= len(recordInfo.Record) {
+					return nil, errors.New("mapping field " + splitFormat[0] + " not found as it does not exist in the record")
+				}
+				currentValue = recordInfo.Record[idx]
 			} else {
 				var i int
 				if i, err = strconv.Atoi(splitFormat[0]); err != nil {
 					return nil, errors.New("mapping field " + splitFormat[0] + " not found as it is an invalid index")
-				} else if i >= len(record) {
+				} else if i >= len(recordInfo.Record) {
 					return nil, errors.New("mapping field " + splitFormat[0] + " not found as it does not exist in the record")
 				}
-				currentValue = record[i]
+				currentValue = recordInfo.Record[i]
 			}
 			splitMappings := strings.Split(splitFormat[1], ",")
 			var (
@@ -385,7 +401,12 @@ func (m *Mapper) applyCalculatedFields(record, header []string, recordNumber int
 			if m.askForValueFunc == nil {
 				return nil, errors.New("ask value function not set")
 			}
-			answer, err := m.askForValueFunc(record, header, field)
+			var answer string
+			if recordInfo == nil {
+				answer, err = m.askForValueFunc(nil, nil, field)
+			} else {
+				answer, err = m.askForValueFunc(recordInfo.Record, recordInfo.Header, field)
+			}
 			if err != nil {
 				return nil, err
 			}
