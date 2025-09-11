@@ -2,11 +2,11 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"log/slog"
 	"os"
 
+	"github.com/sascha-andres/reuse"
 	"github.com/sascha-andres/reuse/flag"
 
 	"github.com/sascha-andres/jsonedit/internal/csv2json"
@@ -81,20 +81,18 @@ func run() error {
 		}
 		reader = f
 	}
+	var writer io.Writer
 
-	data, err = io.ReadAll(reader)
-	if err != nil {
-		return err
-	}
-	result, err := mapper.Map(data)
-	if err != nil {
-		return err
-	}
 	if outputFilePath == "-" {
-		fmt.Println(string(result))
+		writer = os.Stdout
 	} else {
-		err = os.WriteFile(outputFilePath, result, 0640)
+		if reuse.FileExists(outputFilePath) {
+			return errors.New("output file already exists")
+		}
+		writer, err = os.Create(outputFilePath)
+		if err != nil {
+			return err
+		}
 	}
-
-	return err
+	return mapper.MapIo(reader, writer)
 }
