@@ -17,6 +17,20 @@ type (
 		HeaderIndex map[string]int
 	}
 
+	Splitter struct {
+		// in specifies the input file path or '-' for standard input in the splitting process.
+		in string
+
+		// arrayPath allows to set the path to the sarray to split. If != "" every property that is not the array will be duplicatesd
+		arrayPath string
+
+		// splitConfiguration is the path to the configuration to use
+		splitConfiguration string
+
+		// logger holds a reference to an slog.Logger for logging messages and errors within the Mapper's operations.
+		logger *slog.Logger
+	}
+
 	// Mapper defines a structure for mapping input data to output data, applying configuration and marshaling as needed.
 	Mapper struct {
 
@@ -165,6 +179,16 @@ type (
 
 		// Filter represents a mapping of key-value pairs where each key maps to a slice of conditions for filtering data.
 		Filter map[string]Conditions `json:"filter"`
+	}
+
+	// SplitConfiguration is the information used to split a json file
+	SplitConfiguration struct {
+
+		// OutputEmptyGroups indicates whether empty groups should be included in the output.
+		OutputEmptyGroups bool `json:"output_empty_groups"`
+
+		// Groups are all new groups to be created
+		Groups map[string]Conditions `json:"groups"`
 	}
 
 	// NewRecordFunc represents a function called when a new record is being processed
