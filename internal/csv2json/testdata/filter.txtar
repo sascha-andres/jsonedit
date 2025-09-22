@@ -42,7 +42,9 @@
 		"nested_property_name": "",
 		"array": false,
 		"generateArray": false,
-		"logger": true
+		"logger": true,
+		"filter_notify": "count",
+		"filter_expect": 1
 }
 -- expectation --
 {

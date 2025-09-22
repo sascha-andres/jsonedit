@@ -136,6 +136,12 @@ func (m *Mapper) SetAskForValueFunc(f AskForValueFunc) {
 	m.askForValueFunc = f
 }
 
+// SetFilteredNotification can be used to provide a callback to be notified if a record is filtered
+func (m *Mapper) SetFilteredNotification(f FilteredNotification) {
+	m.filteredNotification = f
+}
+
+// MapIo processes CSV input data, applies mapping logic, and writes the mapped output to the provided writer.
 func (m *Mapper) MapIo(in io.Reader, writer io.Writer) error {
 	csvIn := csv.NewReader(in)
 	csvIn.Comma = m.separator
@@ -189,6 +195,9 @@ func (m *Mapper) MapIo(in io.Reader, writer io.Writer) error {
 			}
 			if conditions.Apply(m.logger, group, recordInfo) {
 				filtered = true
+				if m.filteredNotification != nil {
+					m.filteredNotification(record, header)
+				}
 				break
 			}
 		}

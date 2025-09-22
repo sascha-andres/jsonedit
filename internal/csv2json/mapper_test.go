@@ -46,6 +46,18 @@ var afvFunctions = map[string]askForValueFuncFactory{
 	},
 }
 
+type filterNotificationFactory func(string) FilteredNotification
+
+var fnCount map[string]int = make(map[string]int)
+
+var filterNotificationFunctions = map[string]filterNotificationFactory{
+	"count": func(test string) FilteredNotification {
+		return func(record, header []string) {
+			fnCount[test]++
+		}
+	},
+}
+
 type Expectation struct {
 	ConstructError bool `json:"construct_error"`
 	Error          bool `json:"error"`
@@ -62,6 +74,8 @@ type Parameters struct {
 	NewRecordFunc      string            `json:"new_record_func"`
 	NewRecordExpect    string            `json:"new_record_expect"`
 	AskForValueFunc    string            `json:"ask_for_value_func"`
+	Filter             string            `json:"filter_notify"`
+	FilterExpect       int               `json:"filter_expect"`
 }
 
 // TestMapper tests the Mapper object's functionality using various configurations and expectations from testdata files.
@@ -146,6 +160,14 @@ func TestMapper(t *testing.T) {
 				mapper.SetAskForValueFunc(f(t.Name()))
 			}
 
+			if parameters.Filter != "" {
+				f, ok := filterNotificationFunctions[parameters.Filter]
+				if !ok {
+					t.Fatal("filter notification function not found")
+				}
+				mapper.SetFilteredNotification(f(t.Name()))
+			}
+
 			out, err := mapper.Map(input)
 			if err != nil && !expectation.Error {
 				t.Fatal(err)
@@ -173,6 +195,12 @@ func TestMapper(t *testing.T) {
 				expectData, err = prettyPrint(output)
 				if err != nil {
 					t.Fatal(err)
+				}
+			}
+
+			if parameters.Filter != "" {
+				if fnCount[t.Name()] != parameters.FilterExpect {
+					t.Errorf("filter notification: expected [%d] but got [%d]", parameters.FilterExpect, fnCount[t.Name()])
 				}
 			}
 
