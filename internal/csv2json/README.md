@@ -511,6 +511,44 @@ Example configuration:
 
 When this calculated field is processed, the AskForValueFunc will be called with the current record, header, and the field definition. The function should return the value to use for the field, or an error if the value cannot be determined.
 
+### FilteredNotification
+
+FilteredNotification lets you observe when a row is filtered out by the filter rules described in the Row Filtering section. This is useful for metrics, audits, or debug logging.
+
+Signature:
+```
+FilteredNotification func(record, header []string)
+```
+
+- record: the raw CSV fields for the filtered row
+- header: the CSV header row when running in named/header mode; it can be nil when not using named mode
+
+How it works:
+- During processing, before mapping or calculated fields, each input row is checked against the configured filter groups.
+- If the row matches any group (i.e., will be skipped), the FilteredNotification callback is invoked with the raw record and header.
+- After the callback returns, the row is skipped and does not appear in the output.
+
+Usage example (counting filtered rows):
+```
+mapper, err := csv2json.NewMapper(
+    csv2json.WithOptions(cfgBytes),
+    csv2json.WithNamed(true), // optional; provides header slice
+)
+if err != nil { /* handle */ }
+
+var filtered int
+mapper.SetFilteredNotification(func(record, header []string) {
+    filtered++
+})
+
+out, err := mapper.Map(inputCSV)
+// use out; 'filtered' contains the number of rows skipped by filters
+```
+
+Note:
+- This callback is only triggered for rows excluded by the filter configuration; it is not called for rows that pass filtering.
+- See Row Filtering for how to define filters and when rows are considered filtered.
+
 # Output Behavior
 
 ## Without `-array`
