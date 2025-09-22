@@ -58,6 +58,9 @@ type (
 
 		// askForValueFunc defines a function type used to request a specific value dynamically during runtime operations.
 		askForValueFunc AskForValueFunc
+
+		// filteredNotification gets called if a record is filtered
+		filteredNotification FilteredNotification
 	}
 
 	Operand struct {
@@ -164,6 +167,9 @@ type (
 
 	// AskForValueFunc defines a function type that calculates a string value based on a record, header, and a calculated field.
 	AskForValueFunc func(record, header []string, field CalculatedField) (string, error)
+
+	// FilteredNotification is called if a record got filtered
+	FilteredNotification func(record, header []string)
 )
 
 const RecordLocation FieldLocation = "record"
