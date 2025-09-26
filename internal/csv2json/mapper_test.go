@@ -137,7 +137,7 @@ func TestMapper(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			options := []OptionFunc{}
+			options := []MapperOptionFunc{}
 			if parameters.Logger {
 				options = append(options, WithLogger(slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))))
 			}

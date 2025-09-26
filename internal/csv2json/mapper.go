@@ -18,11 +18,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// OptionFunc defines a function signature for configuring a Mapper instance with specific options or parameters.
-type OptionFunc func(*Mapper) error
+// MapperOptionFunc defines a function signature for configuring a Mapper instance with specific options or parameters.
+type MapperOptionFunc func(*Mapper) error
 
-// WithLogger sets a custom logger for the Mapper instance. Returns an OptionFunc to configure the logger.
-func WithLogger(logger *slog.Logger) OptionFunc {
+// WithLogger sets a custom logger for the Mapper instance. Returns an MapperOptionFunc to configure the logger.
+func WithLogger(logger *slog.Logger) MapperOptionFunc {
 	return func(mapper *Mapper) error {
 		mapper.logger = logger
 		return nil
@@ -30,7 +30,7 @@ func WithLogger(logger *slog.Logger) OptionFunc {
 }
 
 // WithArray sets the "array" field of the Mapper instance to the provided boolean value.
-func WithArray(array bool) OptionFunc {
+func WithArray(array bool) MapperOptionFunc {
 	return func(mapper *Mapper) error {
 		mapper.array = array
 		return nil
@@ -38,15 +38,15 @@ func WithArray(array bool) OptionFunc {
 }
 
 // WithNamed sets the "named" field of the Mapper instance to the provided boolean value.
-func WithNamed(named bool) OptionFunc {
+func WithNamed(named bool) MapperOptionFunc {
 	return func(mapper *Mapper) error {
 		mapper.named = named
 		return nil
 	}
 }
 
-// WithSeparator returns an OptionFunc that sets the character delimiter for CSV records in the Mapper instance.
-func WithSeparator(separator string) OptionFunc {
+// WithSeparator returns an MapperOptionFunc that sets the character delimiter for CSV records in the Mapper instance.
+func WithSeparator(separator string) MapperOptionFunc {
 	return func(mapper *Mapper) error {
 		if len(separator) != 1 {
 			return errors.New(fmt.Sprintf("separator must be 1 character long (%q)", separator))
@@ -57,7 +57,7 @@ func WithSeparator(separator string) OptionFunc {
 }
 
 // WithOutputType sets the specified output type for marshaling data in a Mapper instance.
-func WithOutputType(outputType string) OptionFunc {
+func WithOutputType(outputType string) MapperOptionFunc {
 	return func(mapper *Mapper) error {
 		mapper.marshalWith = outputType
 		switch outputType {
@@ -76,22 +76,22 @@ func WithOutputType(outputType string) OptionFunc {
 }
 
 // WithOptions sets the options for the mapper
-func WithOptions(mapping []byte) OptionFunc {
+func WithOptions(mapping []byte) MapperOptionFunc {
 	return func(mapper *Mapper) error {
 		return json.Unmarshal(mapping, &mapper.configuration)
 	}
 }
 
 // WithNestedPropertyName sets the property name for TOML array output.
-func WithNestedPropertyName(propertyName string) OptionFunc {
+func WithNestedPropertyName(propertyName string) MapperOptionFunc {
 	return func(mapper *Mapper) error {
 		mapper.nestedPropertyName = propertyName
 		return nil
 	}
 }
 
-// NewMapper creates and initializes a new Mapper instance using the provided OptionFunc configurations.
-func NewMapper(options ...OptionFunc) (*Mapper, error) {
+// NewMapper creates and initializes a new Mapper instance using the provided MapperOptionFunc configurations.
+func NewMapper(options ...MapperOptionFunc) (*Mapper, error) {
 	mapper := &Mapper{separator: ','}
 	for _, option := range options {
 		if err := option(mapper); err != nil {
