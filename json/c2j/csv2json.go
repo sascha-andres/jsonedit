@@ -28,7 +28,7 @@ type C2JOptions struct {
 
 // MapCSV2JSON converts CSV data to JSON, applying mapping rules and configurations provided via options and mappings.
 func MapCSV2JSON(options C2JOptions, in, mapping []byte) ([]byte, string, error) {
-	opts := make([]csv2json.OptionFunc, 0)
+	opts := make([]csv2json.MapperOptionFunc, 0)
 	opts = append(opts, csv2json.WithArray(options.Array))
 	opts = append(opts, csv2json.WithNestedPropertyName(options.NestedPropertyName))
 	opts = append(opts, csv2json.WithNamed(options.Named))
