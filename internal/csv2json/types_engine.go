@@ -1,6 +1,8 @@
 package csv2json
 
-import "log/slog"
+import (
+	"log/slog"
+)
 
 type (
 
@@ -17,28 +19,14 @@ type (
 		HeaderIndex map[string]int
 	}
 
-	Splitter struct {
-		// in specifies the input file path or '-' for standard input in the splitting process.
-		in string
-
-		// arrayPath allows to set the path to the sarray to split. If != "" every property that is not the array will be duplicatesd
-		arrayPath string
-
-		// splitConfiguration is the path to the configuration to use
-		splitConfiguration string
-
-		// logger holds a reference to an slog.Logger for logging messages and errors within the Mapper's operations.
-		logger *slog.Logger
-	}
-
 	// Mapper defines a structure for mapping input data to output data, applying configuration and marshaling as needed.
 	Mapper struct {
 
-		// in specifies the input file path or '-' for standard input in the mapping process.
-		in string
-
-		// out specifies the output file path or '-' for standard output in the mapping process.
-		out string
+		//// in specifies the input file path or '-' for standard input in the mapping process.
+		//in string
+		//
+		//// out specifies the output file path or '-' for standard output in the mapping process.
+		//out string
 
 		// array indicates whether the JSON output should be wrapped in an array format during the mapping process.
 		array bool
@@ -79,34 +67,6 @@ type (
 		// preProcess is called before the record is about to be processed and may be used for complex mappings
 		preProcess PreProcess
 	}
-
-	Operand struct {
-
-		// Type is whether to use a column or static value (column vs value)
-		Type string `json:"type"`
-
-		// Either the column index (or name if working named) or the static value
-		Value string `json:"value"`
-	}
-
-	// Condition defines a structure for representing a condition with a value and an associated operator.
-	Condition struct {
-
-		// Operand1 represents the first operand in a condition, which defines a value and its type for evaluation.
-		Operand1 Operand `json:"operand1"`
-
-		// Operand2 represents the second operand in a condition, defining its type and value for evaluation.
-		Operand2 Operand `json:"operand2"`
-
-		// Operator specifies the condition operator (e.g., '=', '!=', '>', '<') to be applied for comparison in the mapping configuration.
-		Operator string `json:"operator"`
-
-		// Type denotes the data type for the comparison
-		Type string `json:"type"`
-	}
-
-	// Conditions defines a slice of conditions to be evaluated for filtering data
-	Conditions []Condition
 
 	// PropertyConfiguration defines the mapping configuration for a single property, including its name and data type.
 	PropertyConfiguration struct {
@@ -179,16 +139,6 @@ type (
 
 		// Filter represents a mapping of key-value pairs where each key maps to a slice of conditions for filtering data.
 		Filter map[string]Conditions `json:"filter"`
-	}
-
-	// SplitConfiguration is the information used to split a json file
-	SplitConfiguration struct {
-
-		// OutputEmptyGroups indicates whether empty groups should be included in the output.
-		OutputEmptyGroups bool `json:"output_empty_groups"`
-
-		// Groups are all new groups to be created
-		Groups map[string]Conditions `json:"groups"`
 	}
 
 	// NewRecordFunc represents a function called when a new record is being processed
