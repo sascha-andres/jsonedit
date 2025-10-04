@@ -2,10 +2,12 @@ package splitter
 
 import (
 	"log/slog"
+
+	"github.com/sascha-andres/jsonedit/internal/dataabstraction"
 )
 
 // Apply checks whether all conditions apply to the specified record and header.
-func (cs *Conditions) Apply(logger *slog.Logger, property string, recordInfo *RecordWithInformation) bool {
+func (cs *Conditions) Apply(logger *slog.Logger, property string, recordInfo dataabstraction.ValueGetter) bool {
 	if cs == nil || len(*cs) == 0 {
 		return false
 	}
@@ -18,7 +20,7 @@ func (cs *Conditions) Apply(logger *slog.Logger, property string, recordInfo *Re
 }
 
 // Applies checks whether the condition applies to the specified record and header.
-func (c *Condition) Applies(logger *slog.Logger, property string, recordInfo *RecordWithInformation) bool {
+func (c *Condition) Applies(logger *slog.Logger, property string, recordInfo dataabstraction.ValueGetter) bool {
 	switch c.Type {
 	case "int":
 		return c.intApplies(logger, recordInfo)
@@ -37,7 +39,7 @@ func (c *Condition) Applies(logger *slog.Logger, property string, recordInfo *Re
 }
 
 // intApplies evaluates an integer condition based on the specified operator and operand values extracted from the record and header.
-func (c *Condition) intApplies(logger *slog.Logger, recordInfo *RecordWithInformation) bool {
+func (c *Condition) intApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) bool {
 	op1 := c.Operand1.getIntValueForApplies(logger, recordInfo)
 	op2 := c.Operand2.getIntValueForApplies(logger, recordInfo)
 	if c.Operator == "=" {
@@ -56,7 +58,7 @@ func (c *Condition) intApplies(logger *slog.Logger, recordInfo *RecordWithInform
 }
 
 // floatApplies evaluates a float condition using the specified operator and extracted float values from the record and header.
-func (c *Condition) floatApplies(logger *slog.Logger, recordInfo *RecordWithInformation) bool {
+func (c *Condition) floatApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) bool {
 	// TODO floating point comparison needs a bit more uncertainty
 	op1 := c.Operand1.getFloatValueForApplies(logger, recordInfo)
 	op2 := c.Operand2.getFloatValueForApplies(logger, recordInfo)
@@ -76,7 +78,7 @@ func (c *Condition) floatApplies(logger *slog.Logger, recordInfo *RecordWithInfo
 }
 
 // stringApplies evaluates a string condition using the specified operator and extracted values from the record and header.
-func (c *Condition) stringApplies(logger *slog.Logger, recordInfo *RecordWithInformation) bool {
+func (c *Condition) stringApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) bool {
 	op1 := c.Operand1.getStringValueForApplies(logger, recordInfo)
 	op2 := c.Operand2.getStringValueForApplies(logger, recordInfo)
 	if c.Operator == "=" {
@@ -95,7 +97,7 @@ func (c *Condition) stringApplies(logger *slog.Logger, recordInfo *RecordWithInf
 }
 
 // boolApplies evaluates a boolean condition based on the specified operator and the extracted value from the record and header.
-func (c *Condition) boolApplies(logger *slog.Logger, recordInfo *RecordWithInformation) bool {
+func (c *Condition) boolApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) bool {
 	if c.Operator == ">" || c.Operator == "<" {
 		logger.Error("boolApplies not supported for operators >, <, will always return false")
 		return false

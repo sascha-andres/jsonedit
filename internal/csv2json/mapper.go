@@ -16,6 +16,8 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/dimchansky/utfbom"
 	"gopkg.in/yaml.v3"
+
+	"github.com/sascha-andres/jsonedit/internal/dataabstraction"
 )
 
 // MapperOptionFunc defines a function signature for configuring a Mapper instance with specific options or parameters.
@@ -326,14 +328,14 @@ func (m *Mapper) mapCSVFields(out map[string]any, recordInfo *RecordWithInformat
 						continue
 					}
 				}
-				val, err := convertToType(property.Type, recordInfo.Record[i])
+				val, err := dataabstraction.ConvertToType(property.Type, recordInfo.Record[i])
 				if err != nil {
 					return nil, err
 				}
 				out = setValue(strings.Split(property.Property, "."), val, out)
 			}
 		} else {
-			val, err := convertToType(v.Type, recordInfo.Record[i])
+			val, err := dataabstraction.ConvertToType(v.Type, recordInfo.Record[i])
 			if err != nil {
 				return nil, err
 			}
@@ -501,9 +503,9 @@ func (m *Mapper) getDateTimeValue(field CalculatedField) (any, error) {
 func (m *Mapper) getApplicationValue(field CalculatedField, i int) (any, error) {
 	switch field.Format {
 	case "record":
-		return convertToType("int", strconv.Itoa(i))
+		return dataabstraction.ConvertToType("int", strconv.Itoa(i))
 	case "records":
-		return convertToType("int", strconv.Itoa(i))
+		return dataabstraction.ConvertToType("int", strconv.Itoa(i))
 	}
 	return nil, errors.New("unknown format " + field.Format)
 }
