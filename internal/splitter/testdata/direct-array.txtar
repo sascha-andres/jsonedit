@@ -1,0 +1,18 @@
+-- input.json --
+[
+    {
+        "prop": "a"
+    },
+    {
+        "prop": "b"
+    }
+]
+-- expectations.json --
+{
+    "is_array": true,
+    "is_array_err": false,
+    "extract_error": false,
+    "array_path": "",
+    "all_array_elements_are_values": false,
+    "all_array_elements_are_values_err": false
+}

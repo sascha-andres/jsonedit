@@ -1,0 +1,11 @@
+-- input.json --
+["a", "b"]
+-- expectations.json --
+{
+    "is_array": true,
+    "is_array_err": false,
+    "array_path": "",
+    "extract_error": false,
+    "all_array_elements_are_values": true,
+    "all_array_elements_are_values_err": false
+}
