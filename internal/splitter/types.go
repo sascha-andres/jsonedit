@@ -7,6 +7,8 @@ import (
 )
 
 type (
+	JsonObj map[string]any
+
 	Splitter struct {
 		// in specifies the input file path or '-' for standard input in the splitting process.
 		in string

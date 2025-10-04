@@ -2,13 +2,15 @@ package csv2json
 
 import (
 	"log/slog"
+
+	"github.com/sascha-andres/jsonedit/internal/dataabstraction"
 )
 
 // getBoolValueForApplies evaluates and retrieves a boolean value for a condition based on the provided record and header data.
-func (op *Operand) getBoolValueForApplies(logger *slog.Logger, recordInfo *RecordWithInformation) bool {
+func (op *Operand) getBoolValueForApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) bool {
 	value := false
 	if op.Type == "value" {
-		c, err := convertToType("bool", op.Value)
+		c, err := dataabstraction.ConvertToType("bool", op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to bool", "err", err, "value", op.Value)
@@ -31,10 +33,10 @@ func (op *Operand) getBoolValueForApplies(logger *slog.Logger, recordInfo *Recor
 }
 
 // getFloatValueForApplies retrieves a float value based on the operand configuration and the provided record and header data.
-func (op *Operand) getFloatValueForApplies(logger *slog.Logger, recordInfo *RecordWithInformation) float64 {
+func (op *Operand) getFloatValueForApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) float64 {
 	value := 0.0
 	if op.Type == "value" {
-		c, err := convertToType("float", op.Value)
+		c, err := dataabstraction.ConvertToType("float", op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to float64", "err", err, "value", op.Value)
@@ -57,10 +59,10 @@ func (op *Operand) getFloatValueForApplies(logger *slog.Logger, recordInfo *Reco
 }
 
 // getIntValueForApplies retrieves an integer value based on the operand configuration and the provided record and header data.
-func (op *Operand) getIntValueForApplies(logger *slog.Logger, recordInfo *RecordWithInformation) int {
+func (op *Operand) getIntValueForApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) int {
 	value := 0
 	if op.Type == "value" {
-		c, err := convertToType("int", op.Value)
+		c, err := dataabstraction.ConvertToType("int", op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to int", "err", err, "value", op.Value)
@@ -83,7 +85,7 @@ func (op *Operand) getIntValueForApplies(logger *slog.Logger, recordInfo *Record
 }
 
 // getStringValueForApplies retrieves a string value based on the operand configuration and the provided record and header data.
-func (op *Operand) getStringValueForApplies(logger *slog.Logger, recordInfo *RecordWithInformation) string {
+func (op *Operand) getStringValueForApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) string {
 	value := ""
 	if op.Type == "value" {
 		value = op.Value

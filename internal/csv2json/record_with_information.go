@@ -4,6 +4,8 @@ import (
 	"errors"
 	"log/slog"
 	"strconv"
+
+	"github.com/sascha-andres/jsonedit/internal/dataabstraction"
 )
 
 // GetValue retrieves a value from the record based on the specified type and column, converting it to the target type t.
@@ -19,7 +21,7 @@ func (rwi *RecordWithInformation) GetValue(logger *slog.Logger, t, column string
 			}
 			return nil, errors.New("header not found: " + column + "")
 		}
-		return convertToType(t, rwi.Record[rwi.HeaderIndex[column]])
+		return dataabstraction.ConvertToType(t, rwi.Record[rwi.HeaderIndex[column]])
 	} else {
 		idx, err = strconv.Atoi(column)
 		if err != nil {
@@ -32,5 +34,5 @@ func (rwi *RecordWithInformation) GetValue(logger *slog.Logger, t, column string
 		}
 		return nil, errors.New("index out of range: " + column + "")
 	}
-	return convertToType(t, rwi.Record[idx])
+	return dataabstraction.ConvertToType(t, rwi.Record[idx])
 }

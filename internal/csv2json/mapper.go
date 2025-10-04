@@ -15,6 +15,8 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"gopkg.in/yaml.v3"
+
+	"github.com/sascha-andres/jsonedit/internal/dataabstraction"
 )
 
 // MapperOptionFunc defines a function signature for configuring a Mapper instance with specific options or parameters.
@@ -301,14 +303,14 @@ func (m *Mapper) mapCSVFields(out map[string]any, recordInfo *RecordWithInformat
 						continue
 					}
 				}
-				val, err := convertToType(property.Type, recordInfo.Record[i])
+				val, err := dataabstraction.ConvertToType(property.Type, recordInfo.Record[i])
 				if err != nil {
 					return nil, err
 				}
 				out = setValue(strings.Split(property.Property, "."), val, out)
 			}
 		} else {
-			val, err := convertToType(v.Type, recordInfo.Record[i])
+			val, err := dataabstraction.ConvertToType(v.Type, recordInfo.Record[i])
 			if err != nil {
 				return nil, err
 			}
@@ -342,7 +344,7 @@ func (m *Mapper) applyCalculatedFields(recordNumber int, out map[string]any, loc
 			break
 		case "environment":
 			e := os.Getenv(field.Format)
-			val, err = convertToType(field.Type, e)
+			val, err = dataabstraction.ConvertToType(field.Type, e)
 			if err != nil {
 				return nil, err
 			}
@@ -352,7 +354,7 @@ func (m *Mapper) applyCalculatedFields(recordNumber int, out map[string]any, loc
 			if !ok {
 				return nil, errors.New("extra variable " + field.Format + " not found")
 			}
-			val, err = convertToType(field.Type, e.Value)
+			val, err = dataabstraction.ConvertToType(field.Type, e.Value)
 			if err != nil {
 				return nil, err
 			}
@@ -394,7 +396,7 @@ func (m *Mapper) applyCalculatedFields(recordNumber int, out map[string]any, loc
 					return nil, errors.New(fmt.Sprintf("expected format from=to list, %q", splitMapping))
 				}
 				if splitMapping[0] == currentValue {
-					val, err = convertToType(field.Type, splitMapping[1])
+					val, err = dataabstraction.ConvertToType(field.Type, splitMapping[1])
 					isSet = true
 					break
 				}
@@ -404,7 +406,7 @@ func (m *Mapper) applyCalculatedFields(recordNumber int, out map[string]any, loc
 				}
 			}
 			if !isSet && defaultMapping != nil {
-				val, err = convertToType(field.Type, *defaultMapping)
+				val, err = dataabstraction.ConvertToType(field.Type, *defaultMapping)
 			}
 		case "ask":
 			if m.askForValueFunc == nil {
@@ -419,7 +421,7 @@ func (m *Mapper) applyCalculatedFields(recordNumber int, out map[string]any, loc
 			if err != nil {
 				return nil, err
 			}
-			val, err = convertToType(field.Type, answer)
+			val, err = dataabstraction.ConvertToType(field.Type, answer)
 		default:
 			return nil, errors.New("unknown kind " + field.Kind)
 		}
@@ -438,9 +440,9 @@ func (m *Mapper) getDateTimeValue(field CalculatedField) (any, error) {
 func (m *Mapper) getApplicationValue(field CalculatedField, i int) (any, error) {
 	switch field.Format {
 	case "record":
-		return convertToType("int", strconv.Itoa(i))
+		return dataabstraction.ConvertToType("int", strconv.Itoa(i))
 	case "records":
-		return convertToType("int", strconv.Itoa(i))
+		return dataabstraction.ConvertToType("int", strconv.Itoa(i))
 	}
 	return nil, errors.New("unknown format " + field.Format)
 }
