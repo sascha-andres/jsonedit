@@ -213,7 +213,7 @@ func (m *Mapper) MapIo(in io.Reader, writer io.Writer) error {
 			return err
 		}
 		// calculated fields
-		out, err = m.applyCalculatedFields(recordNumber, out, "record", recordInfo)
+		out, err = m.applyCalculatedFields(m.logger, recordNumber, out, "record", recordInfo)
 		if err != nil {
 			return err
 		}
@@ -247,7 +247,7 @@ func (m *Mapper) MapIo(in io.Reader, writer io.Writer) error {
 			outputData := map[string]any{
 				propertyName: arrResult,
 			}
-			outputData, err = m.applyCalculatedFields(recordNumber, outputData, "document", nil)
+			outputData, err = m.applyCalculatedFields(m.logger, recordNumber, outputData, "document", nil)
 			if err != nil {
 				return err
 			}
@@ -328,113 +328,151 @@ func (m *Mapper) mapCSVFields(out map[string]any, recordInfo *RecordWithInformat
 }
 
 // applyCalculatedFields applies calculated fields to the output based on the configuration and specified record number.
-func (m *Mapper) applyCalculatedFields(recordNumber int, out map[string]any, loc FieldLocation, recordInfo *RecordWithInformation) (map[string]any, error) {
+func (m *Mapper) applyCalculatedFields(logger *slog.Logger, recordNumber int, out map[string]any, loc FieldLocation, recordInfo *RecordWithInformation) (map[string]any, error) {
 	var err error
 
 	for _, field := range m.configuration.Calculated {
+		if len(field.Properties) > 0 && field.Property != "" {
+			return nil, errors.New("either properties or property must be set, not both")
+		}
 		if field.Location != loc {
 			continue
 		}
-		var val any
-		switch field.Kind {
-		case "application":
-			val, err = m.getApplicationValue(field, recordNumber)
-			if err != nil {
-				return nil, err
-			}
-			break
-		case "datetime":
-			val, err = m.getDateTimeValue(field)
-			if err != nil {
-				return nil, err
-			}
-			break
-		case "environment":
-			e := os.Getenv(field.Format)
-			val, err = convertToType(field.Type, e)
-			if err != nil {
-				return nil, err
-			}
-			break
-		case "extra":
-			e, ok := m.configuration.ExtraVariables[field.Format]
-			if !ok {
-				return nil, errors.New("extra variable " + field.Format + " not found")
-			}
-			val, err = convertToType(field.Type, e.Value)
-			if err != nil {
-				return nil, err
-			}
-		case "mapping":
-			if recordInfo == nil {
-				continue
-			}
-			splitFormat := strings.Split(field.Format, ":")
-			if len(splitFormat) != 2 {
-				return nil, errors.New(fmt.Sprintf("expected format field:mapping list, %q", field.Format))
-			}
-			var currentValue string
-			if recordInfo.HeaderIndex != nil {
-				idx, ok := recordInfo.HeaderIndex[splitFormat[0]]
-				if !ok {
-					return nil, errors.New("mapping field " + splitFormat[0] + " not found in header")
-				}
-				if idx >= len(recordInfo.Record) {
-					return nil, errors.New("mapping field " + splitFormat[0] + " not found as it does not exist in the record")
-				}
-				currentValue = recordInfo.Record[idx]
-			} else {
-				var i int
-				if i, err = strconv.Atoi(splitFormat[0]); err != nil {
-					return nil, errors.New("mapping field " + splitFormat[0] + " not found as it is an invalid index")
-				} else if i >= len(recordInfo.Record) {
-					return nil, errors.New("mapping field " + splitFormat[0] + " not found as it does not exist in the record")
-				}
-				currentValue = recordInfo.Record[i]
-			}
-			splitMappings := strings.Split(splitFormat[1], ",")
-			var (
-				defaultMapping *string
-				isSet          bool
-			)
-			for _, splitMapping := range splitMappings {
-				splitMapping := strings.Split(splitMapping, "=")
-				if len(splitMapping) != 2 {
-					return nil, errors.New(fmt.Sprintf("expected format from=to list, %q", splitMapping))
-				}
-				if splitMapping[0] == currentValue {
-					val, err = convertToType(field.Type, splitMapping[1])
-					isSet = true
-					break
-				}
-				if splitMapping[0] == "default" {
-					defaultMapping = &splitMapping[1]
-					break
+
+		if len(field.Properties) > 0 {
+			for _, property := range field.Properties {
+				if property.Applies(logger, recordInfo) {
+					val, err := m.getValueForCalculatedField(field, property.Type, recordNumber, recordInfo)
+					if err != nil {
+						return nil, err
+					}
+					out = setValue(strings.Split(property.Property, "."), val, out)
 				}
 			}
-			if !isSet && defaultMapping != nil {
-				val, err = convertToType(field.Type, *defaultMapping)
-			}
-		case "ask":
-			if m.askForValueFunc == nil {
-				return nil, errors.New("ask value function not set")
-			}
-			var answer string
-			if recordInfo == nil {
-				answer, err = m.askForValueFunc(nil, nil, field)
-			} else {
-				answer, err = m.askForValueFunc(recordInfo.Record, recordInfo.Header, field)
-			}
-			if err != nil {
-				return nil, err
-			}
-			val, err = convertToType(field.Type, answer)
-		default:
-			return nil, errors.New("unknown kind " + field.Kind)
 		}
-		out = setValue(strings.Split(field.Property, "."), val, out)
+
+		if field.Property != "" {
+			out, err = m.applyCalculatedFieldSimple(field, recordNumber, out, recordInfo)
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
 	return out, nil
+}
+
+// applyCalculatedFieldSimple applies a single calculated field to the output based on the configuration and specified record number.
+func (m *Mapper) applyCalculatedFieldSimple(field CalculatedField, recordNumber int, out map[string]any, recordInfo *RecordWithInformation) (map[string]any, error) {
+	val, err := m.getValueForCalculatedField(field, field.Type, recordNumber, recordInfo)
+	if err != nil {
+		return nil, err
+	}
+	return setValue(strings.Split(field.Property, "."), val, out), nil
+}
+
+// getValueForCalculatedField retrieves the computed value for a given calculated field based on its type and configuration.
+// It processes various field kinds such as "application", "datetime", "environment", "extra", "mapping", or "ask".
+// Returns the calculated value in the desired type or an error if processing fails.
+func (m *Mapper) getValueForCalculatedField(field CalculatedField, typeInfo string, recordNumber int, recordInfo *RecordWithInformation) (any, error) {
+	var val any
+	var err error
+	switch field.Kind {
+	case "application":
+		val, err = m.getApplicationValue(field, recordNumber)
+		if err != nil {
+			return nil, err
+		}
+		break
+	case "datetime":
+		val, err = m.getDateTimeValue(field)
+		if err != nil {
+			return nil, err
+		}
+		break
+	case "environment":
+		e := os.Getenv(field.Format)
+		val, err = convertToType(typeInfo, e)
+		if err != nil {
+			return nil, err
+		}
+		break
+	case "extra":
+		e, ok := m.configuration.ExtraVariables[field.Format]
+		if !ok {
+			return nil, errors.New("extra variable " + field.Format + " not found")
+		}
+		val, err = convertToType(typeInfo, e.Value)
+		if err != nil {
+			return nil, err
+		}
+	case "mapping":
+		if recordInfo == nil {
+			return nil, errors.New("mapping field requires a record")
+		}
+		splitFormat := strings.Split(field.Format, ":")
+		if len(splitFormat) != 2 {
+			return nil, errors.New(fmt.Sprintf("expected format field:mapping list, %q", field.Format))
+		}
+		var currentValue string
+		if recordInfo.HeaderIndex != nil {
+			idx, ok := recordInfo.HeaderIndex[splitFormat[0]]
+			if !ok {
+				return nil, errors.New("mapping field " + splitFormat[0] + " not found in header")
+			}
+			if idx >= len(recordInfo.Record) {
+				return nil, errors.New("mapping field " + splitFormat[0] + " not found as it does not exist in the record")
+			}
+			currentValue = recordInfo.Record[idx]
+		} else {
+			var i int
+			if i, err = strconv.Atoi(splitFormat[0]); err != nil {
+				return nil, errors.New("mapping field " + splitFormat[0] + " not found as it is an invalid index")
+			} else if i >= len(recordInfo.Record) {
+				return nil, errors.New("mapping field " + splitFormat[0] + " not found as it does not exist in the record")
+			}
+			currentValue = recordInfo.Record[i]
+		}
+		splitMappings := strings.Split(splitFormat[1], ",")
+		var (
+			defaultMapping *string
+			isSet          bool
+		)
+		for _, splitMapping := range splitMappings {
+			splitMapping := strings.Split(splitMapping, "=")
+			if len(splitMapping) != 2 {
+				return nil, errors.New(fmt.Sprintf("expected format from=to list, %q", splitMapping))
+			}
+			if splitMapping[0] == currentValue {
+				val, err = convertToType(typeInfo, splitMapping[1])
+				isSet = true
+				break
+			}
+			if splitMapping[0] == "default" {
+				defaultMapping = &splitMapping[1]
+				break
+			}
+		}
+		if !isSet && defaultMapping != nil {
+			val, err = convertToType(typeInfo, *defaultMapping)
+		}
+	case "ask":
+		if m.askForValueFunc == nil {
+			return nil, errors.New("ask value function not set")
+		}
+		var answer string
+		if recordInfo == nil {
+			answer, err = m.askForValueFunc(nil, nil, field)
+		} else {
+			answer, err = m.askForValueFunc(recordInfo.Record, recordInfo.Header, field)
+		}
+		if err != nil {
+			return nil, err
+		}
+		val, err = convertToType(typeInfo, answer)
+	default:
+		return nil, errors.New("unknown kind " + field.Kind)
+	}
+	return val, nil
 }
 
 // getDateTimeValue generates a date and time value formatted based on the Format field of the CalculatedField structure.
