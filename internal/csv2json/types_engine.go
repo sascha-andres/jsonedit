@@ -61,6 +61,9 @@ type (
 
 		// filteredNotification gets called if a record is filtered
 		filteredNotification FilteredNotification
+
+		// preProcess is called before the record is about to be processed and may be used for complex mappings
+		preProcess PreProcess
 	}
 
 	Operand struct {
@@ -172,6 +175,9 @@ type (
 
 	// FilteredNotification is called if a record got filtered
 	FilteredNotification func(record, header []string)
+
+	// PreProcess is called before the record is about to be processed and may be used for complex mappings
+	PreProcess func(record, header []string) ([]string, error)
 )
 
 const RecordLocation FieldLocation = "record"
