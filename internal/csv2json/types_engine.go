@@ -121,18 +121,20 @@ type (
 
 	// CalculatedField defines a structure for representing dynamically computed fields within a configuration.
 	CalculatedField struct {
+		// Properties represent a list of property configurations defining column mappings in the mapping structure.
+		Properties []PropertyConfiguration `json:"properties"`
 
 		// Property specifies the name of the property in the generated document.
 		Property string `json:"property"`
 
-		// Kind denotes what kind of calculate has to be treated
+		// Type informa about the type represented
+		Type string `json:"type"`
+
+		// Kind denotes what kind of calculating has to be treated
 		Kind string `json:"kind"`
 
 		// Format denotes a formatting value or the value to acquire
 		Format string `json:"format"`
-
-		// Type informa about the type represented
-		Type string `json:"type"`
 
 		// Location specifies the location or context where the calculated field applies in the mapping.
 		//Either document or record
