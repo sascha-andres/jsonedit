@@ -126,6 +126,13 @@ func NewMapper(options ...OptionFunc) (*Mapper, error) {
 	return mapper, nil
 }
 
+func (m *Mapper) SetPreProcessFunc(f PreProcess) {
+	if f == nil {
+		return
+	}
+	m.preProcess = f
+}
+
 // SetNewRecordFunc sets the function to be called when processing a new record.
 func (m *Mapper) SetNewRecordFunc(n NewRecordFunc) {
 	m.newRecordFunc = n
@@ -181,6 +188,13 @@ func (m *Mapper) MapIo(in io.Reader, writer io.Writer) error {
 		if err != nil {
 			return err
 		}
+		if m.preProcess != nil {
+			record, err = m.preProcess(record, header)
+			if err != nil {
+				m.logger.Warn("preprocess failed", slog.Any("record", record), slog.Any("header", header), slog.Any("err", err))
+				continue
+			}
+		}
 		recordInfo := &RecordWithInformation{
 			Record: record,
 			Header: header,
@@ -207,6 +221,7 @@ func (m *Mapper) MapIo(in io.Reader, writer io.Writer) error {
 		if m.newRecordFunc != nil {
 			m.newRecordFunc(record, header)
 		}
+
 		out := make(map[string]interface{})
 		out, err = m.mapCSVFields(out, recordInfo)
 		if err != nil {

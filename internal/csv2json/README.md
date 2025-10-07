@@ -511,6 +511,47 @@ Example configuration:
 
 When this calculated field is processed, the AskForValueFunc will be called with the current record, header, and the field definition. The function should return the value to use for the field, or an error if the value cannot be determined.
 
+### PreProcess
+
+`PreProcess` lets you transform each raw CSV row before any filtering, mapping, or calculated fields are applied. This is useful for data normalization and complex transformations that are easier to do on the row as a whole.
+
+Signature:
+```
+PreProcess func(record, header []string) ([]string, error)
+```
+
+When it runs:
+- Immediately after reading a row from the CSV reader.
+- Before filter rules are evaluated and before any mapping happens.
+- The `header` slice will be populated when running in named/header mode; otherwise it may be nil.
+
+What to return:
+- Return a new slice with the fields to be used for the rest of the pipeline.
+- Keep the number of fields aligned with the expected CSV structure (especially when indexing by column). If you change the number or order of columns, make sure your mapping configuration and/or named headers are consistent with the new layout.
+- Return an error to abort the whole process if the row cannot be preprocessed; the error will stop processing the record.
+
+Typical use cases:
+- Trim/cleanup fields, normalize encodings, or replace substrings.
+- Split or merge fields to better match the target mapping.
+- Standardize dates, numbers, or booleans before typing.
+- Apply domain-specific fixups not expressible in the mapping file alone.
+
+Example (replace "com" with "org" in all fields):
+```
+mapper, _ := csv2json.NewMapper(csv2json.WithOptions(cfgBytes))
+mapper.SetPreProcessFunc(func(record, header []string) ([]string, error) {
+    out := make([]string, len(record))
+    for i := range record {
+        out[i] = strings.ReplaceAll(record[i], "com", "org")
+    }
+    return out, nil
+})
+```
+
+Notes:
+- PreProcess is the earliest hook; if you want to skip rows conditionally, prefer the Filter section so you can still observe skips via FilteredNotification.
+- In named mode, you can rely on `header` to look up column positions if needed.
+
 ### FilteredNotification
 
 FilteredNotification lets you observe when a row is filtered out by the filter rules described in the Row Filtering section. This is useful for metrics, audits, or debug logging.

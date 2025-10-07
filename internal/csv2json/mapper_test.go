@@ -46,7 +46,21 @@ var afvFunctions = map[string]askForValueFuncFactory{
 	},
 }
 
+var preProcess = map[string]preProcessFactory{
+	"replacecom": func(test string) PreProcess {
+		return func(record, header []string) ([]string, error) {
+			out := make([]string, len(record))
+			for i := range record {
+				out[i] = strings.ReplaceAll(record[i], "com", "org")
+			}
+			return out, nil
+		}
+	},
+}
+
 type filterNotificationFactory func(string) FilteredNotification
+
+type preProcessFactory func(string) PreProcess
 
 var fnCount map[string]int = make(map[string]int)
 
@@ -76,6 +90,7 @@ type Parameters struct {
 	AskForValueFunc    string            `json:"ask_for_value_func"`
 	Filter             string            `json:"filter_notify"`
 	FilterExpect       int               `json:"filter_expect"`
+	PreProcessFunc     string            `json:"pre_process_func"`
 }
 
 // TestMapper tests the Mapper object's functionality using various configurations and expectations from testdata files.
@@ -142,6 +157,14 @@ func TestMapper(t *testing.T) {
 			}
 			if err == nil && expectation.ConstructError {
 				t.Fatal("construction: expected error but got none")
+			}
+
+			if parameters.PreProcessFunc != "" {
+				f, ok := preProcess[parameters.PreProcessFunc]
+				if !ok {
+					t.Fatal("pre process function not found")
+				}
+				mapper.SetPreProcessFunc(f(t.Name()))
 			}
 
 			if parameters.NewRecordFunc != "" {
