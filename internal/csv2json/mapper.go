@@ -409,7 +409,7 @@ func (m *Mapper) getValueForCalculatedField(field CalculatedField, typeInfo stri
 		break
 	case "environment":
 		e := os.Getenv(field.Format)
-		val, err = convertToType(typeInfo, e)
+		val, err = dataabstraction.ConvertToType(typeInfo, e)
 		if err != nil {
 			return nil, err
 		}
@@ -419,7 +419,7 @@ func (m *Mapper) getValueForCalculatedField(field CalculatedField, typeInfo stri
 		if !ok {
 			return nil, errors.New("extra variable " + field.Format + " not found")
 		}
-		val, err = convertToType(typeInfo, e.Value)
+		val, err = dataabstraction.ConvertToType(typeInfo, e.Value)
 		if err != nil {
 			return nil, err
 		}
@@ -461,7 +461,7 @@ func (m *Mapper) getValueForCalculatedField(field CalculatedField, typeInfo stri
 				return nil, errors.New(fmt.Sprintf("expected format from=to list, %q", splitMapping))
 			}
 			if splitMapping[0] == currentValue {
-				val, err = convertToType(typeInfo, splitMapping[1])
+				val, err = dataabstraction.ConvertToType(typeInfo, splitMapping[1])
 				isSet = true
 				break
 			}
@@ -471,7 +471,7 @@ func (m *Mapper) getValueForCalculatedField(field CalculatedField, typeInfo stri
 			}
 		}
 		if !isSet && defaultMapping != nil {
-			val, err = convertToType(typeInfo, *defaultMapping)
+			val, err = dataabstraction.ConvertToType(typeInfo, *defaultMapping)
 		}
 	case "ask":
 		if m.askForValueFunc == nil {
@@ -486,7 +486,7 @@ func (m *Mapper) getValueForCalculatedField(field CalculatedField, typeInfo stri
 		if err != nil {
 			return nil, err
 		}
-		val, err = convertToType(typeInfo, answer)
+		val, err = dataabstraction.ConvertToType(typeInfo, answer)
 	default:
 		return nil, errors.New("unknown kind " + field.Kind)
 	}
