@@ -2,11 +2,14 @@ package splitter
 
 import (
 	"errors"
+	"fmt"
 	"log/slog"
 	"strings"
+
+	"github.com/sascha-andres/jsonedit/internal/dataabstraction"
 )
 
-func (jo JsonObj) GetValue(logger *slog.Logger, dataType string, key string) (any, error) {
+func getValue(logger *slog.Logger, jo map[string]any, dataType string, key string) (any, error) {
 	logger.Debug("trying to get value for key", "key", key, "data type", dataType)
 	hierarchy := strings.Split(key, ".")
 	var v map[string]any
@@ -19,7 +22,9 @@ func (jo JsonObj) GetValue(logger *slog.Logger, dataType string, key string) (an
 		}
 		switch d.(type) {
 		case map[string]any:
-
+			v = d.(map[string]any)
+		case any:
+			return dataabstraction.ConvertToType(dataType, fmt.Sprint(d))
 		}
 	}
 	return nil, nil

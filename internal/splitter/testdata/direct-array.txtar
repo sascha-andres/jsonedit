@@ -14,5 +14,53 @@
     "extract_error": false,
     "array_path": "",
     "all_array_elements_are_values": false,
-    "all_array_elements_are_values_err": false
+    "all_array_elements_are_values_err": false,
+    "with_empty_groups": false,
+    "split_error": false
+}
+-- config.json --
+{
+    "groups": {
+        "a": [
+            {
+                "operand1": {
+                    "type": "column",
+                    "value": "prop"
+                },
+                "operand2": {
+                    "type": "value",
+                    "value": "a"
+                },
+                "operator": "=",
+                "type": "string"
+            }
+        ],
+        "not-a": [
+            {
+                "operand1": {
+                    "type": "column",
+                    "value": "prop"
+                },
+                "operand2": {
+                    "type": "value",
+                    "value": "a"
+                },
+                "operator": "!=",
+                "type": "string"
+            }
+        ]
+    }
+}
+-- outcome.json --
+{
+  "a": [
+    {
+      "prop": "a"
+    }
+  ],
+  "not-a": [
+    {
+      "prop": "b"
+    }
+  ]
 }

@@ -6,11 +6,38 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
+	"os"
 	"strings"
 )
 
 // OptionFunc defines a function type used to configure a Splitter by modifying its internal properties.
 type OptionFunc func(*Splitter) error
+
+// WithConfigurationFile sets the configuration for the Splitter and returns an OptionFunc.
+func WithConfigurationFile(cfg string) OptionFunc {
+	return func(s *Splitter) error {
+		s.Configuration = cfg
+		var conf Configuration
+		d, err := os.ReadFile(cfg)
+		if err != nil {
+			return err
+		}
+		err = json.Unmarshal(d, &conf)
+		if err != nil {
+			return err
+		}
+		s.config = conf
+		return nil
+	}
+}
+
+// WithConfiguration sets the configuration for the Splitter and returns an OptionFunc.
+func WithConfiguration(conf Configuration) OptionFunc {
+	return func(s *Splitter) error {
+		s.config = conf
+		return nil
+	}
+}
 
 // WithLogger sets a custom slog.Logger for the Splitter to use for logging operations and returns an OptionFunc.
 func WithLogger(logger *slog.Logger) OptionFunc {
@@ -75,7 +102,7 @@ func (s *Splitter) allArrayElementsAreValues(arr []any) bool {
 }
 
 // Split reads input data as bytes, processes it, and splits it into groups defined by the configuration.
-func (s *Splitter) Split(in []byte) (map[string][]byte, error) {
+func (s *Splitter) Split(in []byte) (map[string][]any, error) {
 	var input any
 	err := json.Unmarshal(in, &input)
 	if err != nil {
@@ -87,9 +114,33 @@ func (s *Splitter) Split(in []byte) (map[string][]byte, error) {
 		return nil, err
 	}
 
-	_ = dataToSplit
+	// iterate over original arrays and add to groups
+	mapOfArrays := make(map[string][]any)
+	result := make(map[string][]byte)
+	for k, _ := range s.config.Groups {
+		mapOfArrays[k] = make([]any, 0)
+		result[k] = make([]byte, 0)
+	}
 
-	return nil, errors.New("not implemented")
+	if !s.allArrayElementsAreValues(dataToSplit) {
+		for _, a := range dataToSplit {
+			for k, conditions := range s.config.Groups {
+				if conditions.Apply(s.logger, a.(map[string]any)) {
+					mapOfArrays[k] = append(mapOfArrays[k], a)
+				}
+			}
+		}
+	}
+
+	for k, data := range mapOfArrays {
+		d, err := json.Marshal(data)
+		if err != nil {
+			return nil, err
+		}
+		result[k] = d
+	}
+
+	return mapOfArrays, nil
 }
 
 // extractDataToSplit extracts and validates the data to be split based on the specified arrayPath or uses the whole input.
@@ -131,7 +182,7 @@ func (s *Splitter) extractDataToSplit(input any) ([]any, error) {
 }
 
 // SplitIo reads data from the provided io.Reader and splits it into groups based on the configuration.
-func (s *Splitter) SplitIo(in io.Reader) (map[string][]byte, error) {
+func (s *Splitter) SplitIo(in io.Reader) (map[string][]any, error) {
 	data, err := io.ReadAll(in)
 	if err != nil {
 		return nil, err

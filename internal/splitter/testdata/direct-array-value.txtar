@@ -9,3 +9,7 @@
     "all_array_elements_are_values": true,
     "all_array_elements_are_values_err": false
 }
+-- config.json --
+{}
+-- outcome.json --
+{}

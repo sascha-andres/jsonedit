@@ -7,7 +7,7 @@ import (
 )
 
 // getBoolValueForApplies evaluates and retrieves a boolean value for a condition based on the provided record and header data.
-func (op *Operand) getBoolValueForApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) bool {
+func (op *Operand) getBoolValueForApplies(logger *slog.Logger, recordInfo map[string]any) bool {
 	value := false
 	if op.Type == "value" {
 		c, err := dataabstraction.ConvertToType("bool", op.Value)
@@ -20,7 +20,7 @@ func (op *Operand) getBoolValueForApplies(logger *slog.Logger, recordInfo dataab
 		value = c.(bool)
 	}
 	if op.Type == "column" {
-		val, err := recordInfo.GetValue(logger, "bool", op.Value)
+		val, err := getValue(logger, recordInfo, "bool", op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to bool", "err", err)
@@ -33,7 +33,7 @@ func (op *Operand) getBoolValueForApplies(logger *slog.Logger, recordInfo dataab
 }
 
 // getFloatValueForApplies retrieves a float value based on the operand configuration and the provided record and header data.
-func (op *Operand) getFloatValueForApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) float64 {
+func (op *Operand) getFloatValueForApplies(logger *slog.Logger, recordInfo map[string]any) float64 {
 	value := 0.0
 	if op.Type == "value" {
 		c, err := dataabstraction.ConvertToType("float", op.Value)
@@ -46,7 +46,7 @@ func (op *Operand) getFloatValueForApplies(logger *slog.Logger, recordInfo dataa
 		value = c.(float64)
 	}
 	if op.Type == "column" {
-		val, err := recordInfo.GetValue(logger, "float", op.Value)
+		val, err := getValue(logger, recordInfo, "float", op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to float", "err", err)
@@ -59,7 +59,7 @@ func (op *Operand) getFloatValueForApplies(logger *slog.Logger, recordInfo dataa
 }
 
 // getIntValueForApplies retrieves an integer value based on the operand configuration and the provided record and header data.
-func (op *Operand) getIntValueForApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) int {
+func (op *Operand) getIntValueForApplies(logger *slog.Logger, recordInfo map[string]any) int {
 	value := 0
 	if op.Type == "value" {
 		c, err := dataabstraction.ConvertToType("int", op.Value)
@@ -72,7 +72,7 @@ func (op *Operand) getIntValueForApplies(logger *slog.Logger, recordInfo dataabs
 		value = c.(int)
 	}
 	if op.Type == "column" {
-		val, err := recordInfo.GetValue(logger, "int", op.Value)
+		val, err := getValue(logger, recordInfo, "int", op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to int", "err", err)
@@ -85,13 +85,13 @@ func (op *Operand) getIntValueForApplies(logger *slog.Logger, recordInfo dataabs
 }
 
 // getStringValueForApplies retrieves a string value based on the operand configuration and the provided record and header data.
-func (op *Operand) getStringValueForApplies(logger *slog.Logger, recordInfo dataabstraction.ValueGetter) string {
+func (op *Operand) getStringValueForApplies(logger *slog.Logger, recordInfo map[string]any) string {
 	value := ""
 	if op.Type == "value" {
 		value = op.Value
 	}
 	if op.Type == "column" {
-		val, err := recordInfo.GetValue(logger, "string", op.Value)
+		val, err := getValue(logger, recordInfo, "string", op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to string", "err", err)

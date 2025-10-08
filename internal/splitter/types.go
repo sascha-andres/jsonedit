@@ -2,8 +2,6 @@ package splitter
 
 import (
 	"log/slog"
-
-	"github.com/sascha-andres/jsonedit/internal/csv2json"
 )
 
 type (
@@ -33,7 +31,7 @@ type (
 	Configuration struct {
 
 		// Groups are all new groups to be created
-		Groups map[string]csv2json.Conditions `json:"groups"`
+		Groups map[string]Conditions `json:"groups"`
 	}
 
 	// Operand represents a structure defining a dynamic or static value for evaluation in conditions.
