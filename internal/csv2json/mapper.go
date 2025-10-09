@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
+	"github.com/dimchansky/utfbom"
 	"gopkg.in/yaml.v3"
 )
 
@@ -509,5 +510,5 @@ func (m *Mapper) getApplicationValue(field CalculatedField, i int) (any, error) 
 
 // initialize initializes the Mapper instance by reading the mapping file and opening the input and output files.
 func (m *Mapper) initialize(in, out []byte) (io.Reader, io.Writer, error) {
-	return bytes.NewReader(in), bytes.NewBuffer(out), nil
+	return utfbom.SkipOnly(bytes.NewReader(in)), bytes.NewBuffer(out), nil
 }
