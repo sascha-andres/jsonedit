@@ -42,6 +42,34 @@ Where:
   - `float` - converts the value to a floating-point number
   - `bool` - converts the value to a boolean
   - `string` (default) - keeps the value as a string
+  - `date` / `time` - parses date or time values using Go time layouts. You can specify:
+    - `date` or `time` with no arguments: uses default layouts (`2006-01-02` for date, `15:04:05` for time)
+    - `date:INPUT_LAYOUT` or `time:INPUT_LAYOUT`: parses using the provided layout
+    - `date:INPUT_LAYOUT:OUTPUT_LAYOUT` or `time:INPUT_LAYOUT:OUTPUT_LAYOUT`: parses using the input layout and outputs a formatted string using the output layout
+
+### Date and Time Types
+
+Date and time parsing uses Go's time layouts (e.g., 2006-01-02 for dates, 15:04:05 for times). When a `date` or `time` value is parsed without an `OUTPUT_LAYOUT`, it is stored as a time value and when serialized to JSON it appears in RFC3339 format (e.g., `2025-10-23T00:00:00Z`). For `time` values without a date, the serialized JSON will use a zero date component (e.g., `0000-01-01T15:00:00Z`).
+
+Examples:
+
+```json
+{
+  "mapping": {
+    "3": { "property": "date_no_format", "type": "date" },
+    "4": { "property": "date", "type": "date:20060102" },
+    "5": { "property": "datetime", "type": "time:20060102150405" },
+    "6": { "property": "time", "type": "time:150405" },
+    "7": { "property": "date_custom", "type": "time:20060102:02.01.2006" }
+  }
+}
+```
+
+- `date` uses the default layout `2006-01-02`.
+- `date:20060102` parses a compact date (YYYYMMDD).
+- `time:20060102150405` parses a full datetime (YYYYMMDDhhmmss).
+- `time:150405` parses only a time (hhmmss).
+- `time:20060102:02.01.2006` parses a date using the input layout and outputs it formatted as `DD.MM.YYYY`.
 
 ## Multiple Properties from a Single Column
 
