@@ -2,6 +2,8 @@ package csv2json
 
 import (
 	"strconv"
+	"strings"
+	"time"
 )
 
 // convertToType converts the input string `val` to a specified type `t` such as "int", "float", or "bool".
@@ -26,6 +28,33 @@ func convertToType(t, val string) (any, error) {
 			return nil, err
 		}
 		return b, nil
+	}
+	if strings.HasPrefix(t, "date") || strings.HasPrefix(t, "time") {
+		arguments := strings.Split(t, ":")
+		switch len(arguments) {
+		case 1:
+			format := "2006-01-02"
+			if strings.HasPrefix(t, "time") {
+				format = "15:04:05"
+			}
+			d, err := time.Parse(format, val)
+			if err != nil {
+				return nil, err
+			}
+			return d, nil
+		case 2:
+			d, err := time.Parse(arguments[1], val)
+			if err != nil {
+				return nil, err
+			}
+			return d, nil
+		case 3:
+			d, err := time.Parse(arguments[1], val)
+			if err != nil {
+				return nil, err
+			}
+			return d.Format(arguments[2]), nil
+		}
 	}
 	return val, nil
 }

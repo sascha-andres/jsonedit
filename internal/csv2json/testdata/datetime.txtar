@@ -1,0 +1,101 @@
+-- input.csv --
+1;John Doe;john@example.com;2025-10-23;20251023;20251023150000;150000;20251023
+2;Jane Smith;jane@example.com;2025-10-22;20251022;20251022140000;140000;20251022
+-- config.json --
+{
+  "mapping": {
+    "0": {
+      "properties": [
+        {
+          "property": "id",
+          "type": "int"
+        },
+        {
+          "property": "id2",
+          "type": "int",
+          "condition": {
+            "operator": "=",
+            "operand1": {
+              "type": "value",
+              "value": "john@example.com"
+            },
+            "operand2": {
+              "type": "column",
+              "value": "2"
+            },
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "1": {
+      "property": "name",
+      "type": "string"
+    },
+    "2": {
+      "property": "email",
+      "type": "string"
+    },
+    "3": {
+      "property": "date_no_format",
+      "type": "date"
+    },
+    "4": {
+     "property": "date",
+     "type": "date:20060102"
+    },
+    "5": {
+      "property": "datetime",
+      "type": "time:20060102150405"
+    },
+    "6": {
+      "property": "time",
+      "type": "time:150405"
+    },
+    "7": {
+      "property": "date_custom",
+      "type": "time:20060102:02.01.2006"
+    }
+  }
+}
+-- output --
+{
+  "_data": [
+    {
+      "date": "2025-10-23T00:00:00Z",
+      "date_custom": "23.10.2025",
+      "date_no_format": "2025-10-23T00:00:00Z",
+      "datetime": "2025-10-23T15:00:00Z",
+      "email": "john@example.com",
+      "id": 1,
+      "id2": 1,
+      "name": "John Doe",
+      "time": "0000-01-01T15:00:00Z"
+    },
+    {
+      "date": "2025-10-22T00:00:00Z",
+      "date_custom": "22.10.2025",
+      "date_no_format": "2025-10-22T00:00:00Z",
+      "datetime": "2025-10-22T14:00:00Z",
+      "email": "jane@example.com",
+      "id": 2,
+      "name": "Jane Smith",
+      "time": "0000-01-01T14:00:00Z"
+    }
+  ]
+}
+-- parameters --
+{
+		"access_by_header": false,
+		"separator": ";",
+		"output_type": "json",
+		"nested_property_name": "_data",
+		"array": true,
+		"generateArray": false,
+		"logger": true
+}
+-- expectation --
+{
+    "construct_error": false,
+    "error": false
+}
