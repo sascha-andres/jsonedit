@@ -190,7 +190,7 @@ func (m *Mapper) MapIo(in io.Reader, writer io.Writer) error {
 			return err
 		}
 		if m.preProcess != nil {
-			record, err = m.preProcess(record, header)
+			record, err = m.preProcess(record, header, m.configuration.ExtraVariables)
 			if err != nil {
 				m.logger.Warn("preprocess failed", slog.Any("record", record), slog.Any("header", header), slog.Any("err", err))
 				continue

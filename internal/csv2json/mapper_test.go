@@ -48,7 +48,7 @@ var afvFunctions = map[string]askForValueFuncFactory{
 
 var preProcess = map[string]preProcessFactory{
 	"replacecom": func(test string) PreProcess {
-		return func(record, header []string) ([]string, error) {
+		return func(record, header []string, extraVariables map[string]ExtraVariable) ([]string, error) {
 			out := make([]string, len(record))
 			for i := range record {
 				out[i] = strings.ReplaceAll(record[i], "com", "org")

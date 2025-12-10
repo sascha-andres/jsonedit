@@ -177,7 +177,7 @@ type (
 	FilteredNotification func(record, header []string)
 
 	// PreProcess is called before the record is about to be processed and may be used for complex mappings
-	PreProcess func(record, header []string) ([]string, error)
+	PreProcess func(record, header []string, extraVariables map[string]ExtraVariable) ([]string, error)
 )
 
 const RecordLocation FieldLocation = "record"
