@@ -8,21 +8,21 @@
       "properties": [
         {
           "property": "id",
-          "type": "int"
+          "type": { "type": "int" }
         },
         {
           "property": "id2",
-          "type": "int"
+          "type": { "type": "int" }
         }
       ]
     },
     "1": {
       "property": "name",
-      "type": "string"
+      "type": { "type": "string" }
     },
     "2": {
       "property": "email",
-      "type": "string"
+      "type": { "type": "string" }
     }
   }
 }

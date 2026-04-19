@@ -6,15 +6,15 @@
   "mapping": {
     "0": {
       "property": "id",
-      "type": "int"
+      "type": { "type": "int" }
     },
     "1": {
       "property": "name",
-      "type": "string"
+      "type": { "type": "string" }
     },
     "2": {
       "property": "email",
-      "type": "string"
+      "type": { "type": "string" }
     }
   },
   "calculated": [
@@ -22,7 +22,7 @@
         "property": "calculatedProperty",
         "kind": "ask",
         "format": "expect",
-        "type": "string",
+        "type": { "type": "string" },
         "location": "record"
       }
     ]

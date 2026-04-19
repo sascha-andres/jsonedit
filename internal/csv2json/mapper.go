@@ -333,7 +333,7 @@ func (m *Mapper) mapCSVFields(out map[string]any, recordInfo *RecordWithInformat
 				out = setValue(strings.Split(property.Property, "."), val, out)
 			}
 		} else {
-			val, err := convertToType(v.Type, recordInfo.Record[i])
+			val, err := convertToType(v.Information, recordInfo.Record[i])
 			if err != nil {
 				return nil, err
 			}
@@ -389,7 +389,7 @@ func (m *Mapper) applyCalculatedFieldSimple(field CalculatedField, recordNumber 
 // getValueForCalculatedField retrieves the computed value for a given calculated field based on its type and configuration.
 // It processes various field kinds such as "application", "datetime", "environment", "extra", "mapping", or "ask".
 // Returns the calculated value in the desired type or an error if processing fails.
-func (m *Mapper) getValueForCalculatedField(field CalculatedField, typeInfo string, recordNumber int, recordInfo *RecordWithInformation) (any, error) {
+func (m *Mapper) getValueForCalculatedField(field CalculatedField, typeInfo TypeInformation, recordNumber int, recordInfo *RecordWithInformation) (any, error) {
 	var val any
 	var err error
 	switch field.Kind {
@@ -501,9 +501,9 @@ func (m *Mapper) getDateTimeValue(field CalculatedField) (any, error) {
 func (m *Mapper) getApplicationValue(field CalculatedField, i int) (any, error) {
 	switch field.Format {
 	case "record":
-		return convertToType("int", strconv.Itoa(i))
+		return convertToType(TypeInformation{Type: "int"}, strconv.Itoa(i))
 	case "records":
-		return convertToType("int", strconv.Itoa(i))
+		return convertToType(TypeInformation{Type: "int"}, strconv.Itoa(i))
 	}
 	return nil, errors.New("unknown format " + field.Format)
 }

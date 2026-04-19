@@ -7,41 +7,31 @@
   "mapping": {
     "0": {
       "property": "id",
-      "type": "int"
+      "type": { "type": "int" }
     },
     "1": {
       "property": "name",
-      "type": "string"
+      "type": { "type": "string" }
     },
     "2": {
       "property": "email",
-      "type": "string"
+      "type": { "type": "string" }
     }
   },
   "filter": {
-    "john": [{
-         "operator": "=",
-         "operand1": {
-           "type": "value",
-           "value": "John Doe"
-         },
-         "operand2": {
-           "type": "column",
-           "value": "1"
-         },
-         "type": "string"
-   },{
+    "john": [
+      {
         "operator": "=",
-        "operand1": {
-        "type": "value",
-        "value": "john2@example.com"
-        },
-        "operand2": {
-        "type": "column",
-        "value": "2"
-        },
+        "operand1": { "type": "value", "value": "John Doe" },
+        "operand2": { "type": "column", "value": "1" },
         "type": "string"
-   }]
+      },{
+        "operator": "=",
+        "operand1": { "type": "value", "value": "john2@example.com" },
+        "operand2": { "type": "column", "value": "2" },
+        "type": "string"
+      }
+    ]
   }
 }
 -- output --

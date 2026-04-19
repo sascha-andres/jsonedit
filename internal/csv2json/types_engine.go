@@ -101,7 +101,7 @@ type (
 		Property string `json:"property"`
 
 		// Type specifies the data type of the column in the mapping configuration.
-		Type string `json:"type"`
+		Type TypeInformation `json:"type"`
 
 		// Condition specifies the logical condition to be evaluated for a property, including value, column, and comparison operator.
 		Condition *Condition `json:"condition,omitempty"`
@@ -115,12 +115,22 @@ type (
 		// Property specifies the name of the column property in the mapping configuration.
 		Property string `json:"property"`
 
-		// Type specifies the data type of the column in the mapping configuration.
-		Type string `json:"type"`
+		// Information specifies the data type of the column in the mapping configuration.
+		Information TypeInformation `json:"type"`
 	}
 
 	// FieldLocation represents the location or identifier of a specific field within a system or context as a string.
 	FieldLocation string
+
+	// TypeInformation holds the type information of a field
+	TypeInformation struct {
+		// Type is the type of the field.
+		Type string `json:"type,omitempty"`
+		// ParseWith is an argument how to parse the field value.
+		ParseWith string `json:"parse_with,omitempty"`
+		// FormatWith is an argument how to format the field value.
+		FormatWith string `json:"format_with,omitempty"`
+	}
 
 	// CalculatedField defines a structure for representing dynamically computed fields within a configuration.
 	CalculatedField struct {
@@ -130,8 +140,8 @@ type (
 		// Property specifies the name of the property in the generated document.
 		Property string `json:"property"`
 
-		// Type informa about the type represented
-		Type string `json:"type"`
+		// Type information about the type represented
+		Type TypeInformation `json:"type"`
 
 		// Kind denotes what kind of calculating has to be treated
 		Kind string `json:"kind"`

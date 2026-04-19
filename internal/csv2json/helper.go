@@ -8,8 +8,8 @@ import (
 
 // convertToType converts the input string `val` to a specified type `t` such as "int", "float", or "bool".
 // Returns the converted value as `any` or an error if the conversion fails.
-func convertToType(t, val string) (any, error) {
-	switch t {
+func convertToType(t TypeInformation, val string) (any, error) {
+	switch t.Type {
 	case "int":
 		i, err := strconv.Atoi(val)
 		if err != nil {
@@ -29,12 +29,10 @@ func convertToType(t, val string) (any, error) {
 		}
 		return b, nil
 	}
-	if strings.HasPrefix(t, "date") || strings.HasPrefix(t, "time") {
-		arguments := strings.Split(t, ":")
-		switch len(arguments) {
-		case 1:
+	if strings.HasPrefix(t.Type, "date") || strings.HasPrefix(t.Type, "time") {
+		if t.ParseWith == "" && t.FormatWith == "" {
 			format := "2006-01-02"
-			if strings.HasPrefix(t, "time") {
+			if strings.HasPrefix(t.Type, "time") {
 				format = "15:04:05"
 			}
 			d, err := time.Parse(format, val)
@@ -42,19 +40,19 @@ func convertToType(t, val string) (any, error) {
 				return nil, err
 			}
 			return d, nil
-		case 2:
-			d, err := time.Parse(arguments[1], val)
+		}
+		if t.ParseWith != "" && t.FormatWith == "" {
+			d, err := time.Parse(t.ParseWith, val)
 			if err != nil {
 				return nil, err
 			}
 			return d, nil
-		case 3:
-			d, err := time.Parse(arguments[1], val)
-			if err != nil {
-				return nil, err
-			}
-			return d.Format(arguments[2]), nil
 		}
+		d, err := time.Parse(t.ParseWith, val)
+		if err != nil {
+			return nil, err
+		}
+		return d.Format(t.FormatWith), nil
 	}
 	return val, nil
 }
