@@ -7,11 +7,11 @@ The mapping configuration is a JSON file that defines how CSV columns are mapped
   "mapping": {
     "key1": {
       "property": "propertyName",
-      "type": "dataType"
+      "descriptor": { "type": "dataType" }
     },
     "key2": {
       "property": "nested.property",
-      "type": "dataType"
+      "descriptor": { "type": "dataType" }
     }
   },
   "calculated": [
@@ -19,7 +19,7 @@ The mapping configuration is a JSON file that defines how CSV columns are mapped
       "property": "calculatedProperty",
       "kind": "kindOfCalculation",
       "format": "formatString",
-      "type": "dataType",
+      "descriptor": { "type": "dataType" },
       "location": "record"
     }
   ],
@@ -37,15 +37,15 @@ Where:
   - Column names from the CSV header when using the `-named` flag
 - `propertyName` is the name of the property in the output
 - `nested.property` demonstrates how to create nested objects using dot notation
-- `dataType` is one of:
-  - `int` - converts the value to an integer
-  - `float` - converts the value to a floating-point number
-  - `bool` - converts the value to a boolean
-  - `string` (default) - keeps the value as a string
-  - `date` / `time` - parses date or time values using Go time layouts. You can specify:
-    - `date` or `time` with no arguments: uses default layouts (`2006-01-02` for date, `15:04:05` for time)
-    - `date:INPUT_LAYOUT` or `time:INPUT_LAYOUT`: parses using the provided layout
-    - `date:INPUT_LAYOUT:OUTPUT_LAYOUT` or `time:INPUT_LAYOUT:OUTPUT_LAYOUT`: parses using the input layout and outputs a formatted string using the output layout
+- `descriptor` is an object describing the data type of the field:
+  - `type` (required) — one of:
+    - `int` - converts the value to an integer
+    - `float` - converts the value to a floating-point number
+    - `bool` - converts the value to a boolean
+    - `string` (default) - keeps the value as a string
+    - `date` / `time` - parses date or time values using Go time layouts
+  - `parse_with` (optional) — input layout used when parsing `date` or `time` values (Go time layout string, e.g. `20060102`). Omit to use the default layout (`2006-01-02` for date, `15:04:05` for time).
+  - `format_with` (optional) — output layout used to format a parsed `date` or `time` value as a string. When omitted the value is serialized in RFC3339 format.
 
 ### Date and Time Types
 
@@ -56,20 +56,20 @@ Examples:
 ```json
 {
   "mapping": {
-    "3": { "property": "date_no_format", "type": "date" },
-    "4": { "property": "date", "type": "date:20060102" },
-    "5": { "property": "datetime", "type": "time:20060102150405" },
-    "6": { "property": "time", "type": "time:150405" },
-    "7": { "property": "date_custom", "type": "time:20060102:02.01.2006" }
+    "3": { "property": "date_no_format", "descriptor": { "type": "date" } },
+    "4": { "property": "date", "descriptor": { "type": "date", "parse_with": "20060102" } },
+    "5": { "property": "datetime", "descriptor": { "type": "time", "parse_with": "20060102150405" } },
+    "6": { "property": "time", "descriptor": { "type": "time", "parse_with": "150405" } },
+    "7": { "property": "date_custom", "descriptor": { "type": "time", "parse_with": "20060102", "format_with": "02.01.2006" } }
   }
 }
 ```
 
-- `date` uses the default layout `2006-01-02`.
-- `date:20060102` parses a compact date (YYYYMMDD).
-- `time:20060102150405` parses a full datetime (YYYYMMDDhhmmss).
-- `time:150405` parses only a time (hhmmss).
-- `time:20060102:02.01.2006` parses a date using the input layout and outputs it formatted as `DD.MM.YYYY`.
+- `{ "type": "date" }` uses the default layout `2006-01-02`.
+- `{ "type": "date", "parse_with": "20060102" }` parses a compact date (YYYYMMDD).
+- `{ "type": "time", "parse_with": "20060102150405" }` parses a full datetime (YYYYMMDDhhmmss).
+- `{ "type": "time", "parse_with": "150405" }` parses only a time (hhmmss).
+- `{ "type": "time", "parse_with": "20060102", "format_with": "02.01.2006" }` parses a date using the input layout and outputs it formatted as `DD.MM.YYYY`.
 
 ## Multiple Properties from a Single Column
 
@@ -82,11 +82,11 @@ In addition to mapping a column to a single property, you can map a single colum
       "properties": [
         {
           "property": "firstProperty",
-          "type": "dataType"
+          "descriptor": { "type": "dataType" }
         },
         {
           "property": "nested.secondProperty",
-          "type": "dataType"
+          "descriptor": { "type": "dataType" }
         }
       ]
     }
@@ -97,7 +97,7 @@ In addition to mapping a column to a single property, you can map a single colum
 Where:
 - `columnKey` is either a column index or name (depending on whether you're using the `-named` flag)
 - Each item in the `properties` array defines a separate output property that will receive the value from the same input column
-- Each property definition has the same structure as a regular mapping (with `property` and `type` fields)
+- Each property definition has the same structure as a regular mapping (with `property` and `descriptor` fields)
 - You can use dot notation in the `property` field to create nested structures
 
 ### Example
@@ -116,25 +116,25 @@ You can map the address column to multiple properties:
   "mapping": {
     "id": {
       "property": "userId",
-      "type": "int"
+      "descriptor": { "type": "int" }
     },
     "name": {
       "property": "fullName",
-      "type": "string"
+      "descriptor": { "type": "string" }
     },
     "address": {
       "properties": [
         {
           "property": "originalAddress",
-          "type": "string"
+          "descriptor": { "type": "string" }
         },
         {
           "property": "contact.address",
-          "type": "string"
+          "descriptor": { "type": "string" }
         },
         {
           "property": "shipping.address",
-          "type": "string"
+          "descriptor": { "type": "string" }
         }
       ]
     }
@@ -166,7 +166,7 @@ Each calculated field has the following properties:
 - `property`: The name of the property in the output (supports dot notation for nested objects)
 - `kind`: The type of calculation to perform (see below)
 - `format`: Additional information for the calculation, varies by kind
-- `type`: The data type of the calculated value (`int`, `float`, `bool`, or `string`)
+- `descriptor`: An object describing the data type of the calculated value. The `type` field is one of `int`, `float`, `bool`, or `string`.
 - `location`: Where the calculated field should be applied - either `record` (default) or `document`
 
 ### Kinds of Calculated Fields
@@ -223,7 +223,7 @@ Document-level calculated fields are useful for adding metadata about the entire
   "mapping": {
     "id": {
       "property": "productId",
-      "type": "int"
+      "descriptor": { "type": "int" }
     }
   },
   "calculated": [
@@ -231,49 +231,49 @@ Document-level calculated fields are useful for adding metadata about the entire
       "property": "metadata.recordNumber",
       "kind": "application",
       "format": "record",
-      "type": "int",
+      "descriptor": { "type": "int" },
       "location": "record"
     },
     {
       "property": "metadata.processedDate",
       "kind": "datetime",
       "format": "2006-01-02",
-      "type": "string",
+      "descriptor": { "type": "string" },
       "location": "record"
     },
     {
       "property": "metadata.processedTime",
       "kind": "datetime",
       "format": "15:04:05",
-      "type": "string",
+      "descriptor": { "type": "string" },
       "location": "record"
     },
     {
       "property": "metadata.userHome",
       "kind": "environment",
       "format": "HOME",
-      "type": "string",
+      "descriptor": { "type": "string" },
       "location": "record"
     },
     {
       "property": "metadata.version",
       "kind": "extra",
       "format": "app-version",
-      "type": "string",
+      "descriptor": { "type": "string" },
       "location": "record"
     },
     {
       "property": "_meta.totalRecords",
       "kind": "application",
       "format": "records",
-      "type": "int",
+      "descriptor": { "type": "int" },
       "location": "document"
     },
     {
       "property": "_meta.processedAt",
       "kind": "datetime",
       "format": "2006-01-02 15:04:05",
-      "type": "string",
+      "descriptor": { "type": "string" },
       "location": "document"
     }
   ],
@@ -323,11 +323,11 @@ Each operand is an object with:
       "properties": [
         {
           "property": "id",
-          "type": "int"
+          "descriptor": { "type": "int" }
         },
         {
           "property": "premiumId",
-          "type": "int",
+          "descriptor": { "type": "int" },
           "condition": {
             "operator": "=",
             "operand1": {
@@ -415,9 +415,9 @@ Filter rows where id equals 1:
 ```json
 {
   "mapping": {
-    "0": { "property": "id", "type": "int" },
-    "1": { "property": "name", "type": "string" },
-    "2": { "property": "email", "type": "string" }
+    "0": { "property": "id", "descriptor": { "type": "int" } },
+    "1": { "property": "name", "descriptor": { "type": "string" } },
+    "2": { "property": "email", "descriptor": { "type": "string" } }
   },
   "filter": {
     "id_is_1": [
@@ -530,7 +530,7 @@ Example configuration:
       "property": "dynamicValue",
       "kind": "ask",
       "format": "some-identifier",
-      "type": "string",
+      "descriptor": { "type": "string" },
       "location": "record"
     }
   ]
@@ -708,15 +708,15 @@ And this mapping.json:
   "mapping": {
     "0": {
       "property": "property1",
-      "type": "int"
+      "descriptor": { "type": "int" }
     },
     "1": {
       "property": "property2.property3",
-      "type": "string"
+      "descriptor": { "type": "string" }
     },
     "2": {
       "property": "property4",
-      "type": "float"
+      "descriptor": { "type": "float" }
     }
   }
 }
@@ -752,15 +752,15 @@ And this mapping.json with value mapping:
   "mapping": {
     "id": {
       "property": "id",
-      "type": "int"
+      "descriptor": { "type": "int" }
     },
     "status": {
       "property": "originalStatus",
-      "type": "string"
+      "descriptor": { "type": "string" }
     },
     "value": {
       "property": "amount",
-      "type": "float"
+      "descriptor": { "type": "float" }
     }
   },
   "calculated": [
@@ -768,7 +768,7 @@ And this mapping.json with value mapping:
       "property": "statusCode",
       "kind": "mapping",
       "format": "status:active=1,inactive=0,pending=2,default=-1",
-      "type": "int",
+      "descriptor": { "type": "int" },
       "location": "record"
     }
   ]
@@ -804,15 +804,15 @@ And this mapping.json:
   "mapping": {
     "id": {
       "property": "productId",
-      "type": "int"
+      "descriptor": { "type": "int" }
     },
     "name": {
       "property": "productName",
-      "type": "string"
+      "descriptor": { "type": "string" }
     },
     "price": {
       "property": "pricing.retail",
-      "type": "float"
+      "descriptor": { "type": "float" }
     }
   }
 }
