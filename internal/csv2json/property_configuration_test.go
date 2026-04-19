@@ -21,9 +21,9 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "nil condition",
 			pc: PropertyConfiguration{
-				Property:  "test",
-				Type:      "string",
-				Condition: nil,
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "string"},
+				Condition:  nil,
 			},
 			named:  false,
 			record: []string{"value1", "value2"},
@@ -33,8 +33,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "int condition equals true",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "int",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "int"},
 				Condition: &Condition{
 					Type:     "int",
 					Operator: "=",
@@ -50,8 +50,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "int condition equals false",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "int",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "int"},
 				Condition: &Condition{
 					Type:     "int",
 					Operator: "=",
@@ -67,8 +67,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "int condition not equals true",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "int",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "int"},
 				Condition: &Condition{
 					Type:     "int",
 					Operator: "!=",
@@ -84,8 +84,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "int condition greater than true",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "int",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "int"},
 				Condition: &Condition{
 					Type:     "int",
 					Operator: ">",
@@ -101,8 +101,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "int condition less than true",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "int",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "int"},
 				Condition: &Condition{
 					Type:     "int",
 					Operator: "<",
@@ -118,8 +118,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "int condition with column reference",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "int",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "int"},
 				Condition: &Condition{
 					Type:     "int",
 					Operator: "=",
@@ -135,8 +135,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "float condition equals true",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "float",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "float"},
 				Condition: &Condition{
 					Type:     "float",
 					Operator: "=",
@@ -152,8 +152,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "float condition not equals true",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "float",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "float"},
 				Condition: &Condition{
 					Type:     "float",
 					Operator: "!=",
@@ -169,8 +169,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "float condition greater than true",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "float",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "float"},
 				Condition: &Condition{
 					Type:     "float",
 					Operator: ">",
@@ -186,8 +186,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "float condition with column reference",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "float",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "float"},
 				Condition: &Condition{
 					Type:     "float",
 					Operator: "=",
@@ -203,8 +203,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "string condition equals true",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "string",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "string"},
 				Condition: &Condition{
 					Type:     "string",
 					Operator: "=",
@@ -220,8 +220,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "string condition not equals true",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "string",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "string"},
 				Condition: &Condition{
 					Type:     "string",
 					Operator: "!=",
@@ -237,8 +237,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "string condition with column reference",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "string",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "string"},
 				Condition: &Condition{
 					Type:     "string",
 					Operator: "=",
@@ -254,8 +254,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "bool condition equals true",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "bool",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "bool"},
 				Condition: &Condition{
 					Type:     "bool",
 					Operator: "=",
@@ -271,8 +271,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "bool condition not equals true",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "bool",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "bool"},
 				Condition: &Condition{
 					Type:     "bool",
 					Operator: "!=",
@@ -288,8 +288,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "bool condition with column reference",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "bool",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "bool"},
 				Condition: &Condition{
 					Type:     "bool",
 					Operator: "=",
@@ -305,8 +305,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "bool condition with unsupported operator",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "bool",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "bool"},
 				Condition: &Condition{
 					Type:     "bool",
 					Operator: ">", // Not supported for bool
@@ -322,8 +322,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "unsupported condition type",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "unknown",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "unknown"},
 				Condition: &Condition{
 					Type:     "unknown",
 					Operator: "=",
@@ -339,8 +339,8 @@ func TestPropertyConfiguration_Applies(t *testing.T) {
 		{
 			name: "named column reference",
 			pc: PropertyConfiguration{
-				Property: "test",
-				Type:     "string",
+				Property:   "test",
+				Descriptor: DataDescriptor{Type: "string"},
 				Condition: &Condition{
 					Type:     "string",
 					Operator: "=",

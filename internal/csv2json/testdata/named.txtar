@@ -7,15 +7,15 @@ id;name;mail
   "mapping": {
     "id": {
       "property": "id",
-      "type": "int"
+      "descriptor": { "type": "int" }
     },
     "name": {
       "property": "name",
-      "type": "string"
+      "descriptor": { "type": "string" }
     },
     "mail": {
       "property": "email",
-      "type": "string"
+      "descriptor": { "type": "string" }
     }
   }
 }

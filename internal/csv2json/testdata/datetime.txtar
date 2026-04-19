@@ -8,21 +8,15 @@
       "properties": [
         {
           "property": "id",
-          "type": "int"
+          "descriptor": { "type": "int" }
         },
         {
           "property": "id2",
-          "type": "int",
+          "descriptor": { "type": "int" },
           "condition": {
             "operator": "=",
-            "operand1": {
-              "type": "value",
-              "value": "john@example.com"
-            },
-            "operand2": {
-              "type": "column",
-              "value": "2"
-            },
+            "operand1": { "type": "value", "value": "john@example.com" },
+            "operand2": { "type": "column", "value": "2" },
             "type": "string"
           }
         }
@@ -30,31 +24,31 @@
     },
     "1": {
       "property": "name",
-      "type": "string"
+      "descriptor": { "type": "string" }
     },
     "2": {
       "property": "email",
-      "type": "string"
+      "descriptor": { "type": "string" }
     },
     "3": {
       "property": "date_no_format",
-      "type": "date"
+      "descriptor": { "type": "date" }
     },
     "4": {
      "property": "date",
-     "type": "date:20060102"
+     "descriptor": { "type": "date", "parse_with": "20060102" }
     },
     "5": {
       "property": "datetime",
-      "type": "time:20060102150405"
+      "descriptor": { "type": "time", "parse_with": "20060102150405" }
     },
     "6": {
       "property": "time",
-      "type": "time:150405"
+      "descriptor": { "type": "time", "parse_with": "150405" }
     },
     "7": {
       "property": "date_custom",
-      "type": "time:20060102:02.01.2006"
+      "descriptor": { "type": "time", "parse_with": "20060102", "format_with": "02.01.2006" }
     }
   }
 }

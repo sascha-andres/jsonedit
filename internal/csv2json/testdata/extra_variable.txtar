@@ -8,21 +8,15 @@
       "properties": [
         {
           "property": "id",
-          "type": "int"
+          "descriptor": { "type": "int" }
         },
         {
           "property": "id2",
-          "type": "int",
+          "descriptor": { "type": "int" },
           "condition": {
             "operator": "=",
-            "operand1": {
-              "type": "value",
-              "value": "john@example.com"
-            },
-            "operand2": {
-              "type": "column",
-              "value": "2"
-            },
+            "operand1": { "type": "value", "value": "john@example.com" },
+            "operand2": { "type": "column", "value": "2" },
             "type": "string"
           }
         }
@@ -30,11 +24,11 @@
     },
     "1": {
       "property": "name",
-      "type": "string"
+      "descriptor": { "type": "string" }
     },
     "2": {
       "property": "email",
-      "type": "string"
+      "descriptor": { "type": "string" }
     }
   },
   "calculated": [
@@ -42,14 +36,12 @@
       "property": "calculatedProperty",
       "kind": "extra",
       "format": "variable-name",
-      "type": "string",
+      "descriptor": { "type": "string" },
       "location": "record"
     }
   ],
   "extra_variables": {
-    "variable-name": {
-      "value": "variable-value"
-    }
+    "variable-name": { "value": "variable-value" }
   }
 }
 -- output --

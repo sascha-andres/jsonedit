@@ -8,21 +8,21 @@
       "properties": [
         {
           "property": "id",
-          "type": "int"
+          "descriptor": { "type": "int" }
         },
         {
           "property": "id2",
-          "type": "int"
+          "descriptor": { "type": "int" }
         }
       ]
     },
     "1": {
       "property": "name",
-      "type": "string"
+      "descriptor": { "type": "string" }
     },
     "2": {
       "property": "email",
-      "type": "string"
+      "descriptor": { "type": "string" }
     }
   }
 }

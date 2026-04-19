@@ -6,30 +6,26 @@
   "mapping": {
     "0": {
       "property": "id",
-      "type": "int"
+      "descriptor": { "type": "int" }
     },
     "1": {
       "property": "name",
-      "type": "string"
+      "descriptor": { "type": "string" }
     },
     "2": {
       "property": "email",
-      "type": "string"
+      "descriptor": { "type": "string" }
     }
   },
   "filter": {
-    "john": [{
-         "operator": "=",
-         "operand1": {
-           "type": "value",
-           "value": "1"
-         },
-         "operand2": {
-           "type": "column",
-           "value": "0"
-         },
-         "type": "string"
-   }]
+    "john": [
+      {
+        "operator": "=",
+        "operand1": { "type": "value", "value": "1" },
+        "operand2": { "type": "column", "value": "0" },
+        "type": "string"
+      }
+    ]
   }
 }
 -- output --
