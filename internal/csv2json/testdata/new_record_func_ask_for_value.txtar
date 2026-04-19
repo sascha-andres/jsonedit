@@ -6,15 +6,15 @@
   "mapping": {
     "0": {
       "property": "id",
-      "type": { "type": "int" }
+      "descriptor": { "type": "int" }
     },
     "1": {
       "property": "name",
-      "type": { "type": "string" }
+      "descriptor": { "type": "string" }
     },
     "2": {
       "property": "email",
-      "type": { "type": "string" }
+      "descriptor": { "type": "string" }
     }
   },
   "calculated": [
@@ -22,7 +22,7 @@
         "property": "calculatedProperty",
         "kind": "ask",
         "format": "expect",
-        "type": { "type": "string" },
+        "descriptor": { "type": "string" },
         "location": "record"
       }
     ]

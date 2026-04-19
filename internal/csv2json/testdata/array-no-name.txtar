@@ -8,11 +8,11 @@
       "properties": [
         {
           "property": "id",
-          "type": { "type": "int" }
+          "descriptor": { "type": "int" }
         },
         {
           "property": "id2",
-          "type": { "type":"int" },
+          "descriptor": { "type":"int" },
           "condition": {
             "operator": "=",
             "operand1": { "type": "value", "value": "john@example.com" },
@@ -24,11 +24,11 @@
     },
     "1": {
       "property": "name",
-      "type": { "type": "string" }
+      "descriptor": { "type": "string" }
     },
     "2": {
       "property": "email",
-      "type": { "type": "string" }
+      "descriptor": { "type": "string" }
     }
   }
 }

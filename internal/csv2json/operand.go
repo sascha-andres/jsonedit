@@ -8,7 +8,7 @@ import (
 func (op *Operand) getBoolValueForApplies(logger *slog.Logger, recordInfo *RecordWithInformation) bool {
 	value := false
 	if op.Type == "value" {
-		c, err := convertToType(TypeInformation{Type: "bool"}, op.Value)
+		c, err := convertToType(DataDescriptor{Type: "bool"}, op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to bool", "err", err, "value", op.Value)
@@ -18,7 +18,7 @@ func (op *Operand) getBoolValueForApplies(logger *slog.Logger, recordInfo *Recor
 		value = c.(bool)
 	}
 	if op.Type == "column" {
-		val, err := recordInfo.GetValue(logger, TypeInformation{Type: "bool"}, op.Value)
+		val, err := recordInfo.GetValue(logger, DataDescriptor{Type: "bool"}, op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to bool", "err", err)
@@ -34,7 +34,7 @@ func (op *Operand) getBoolValueForApplies(logger *slog.Logger, recordInfo *Recor
 func (op *Operand) getFloatValueForApplies(logger *slog.Logger, recordInfo *RecordWithInformation) float64 {
 	value := 0.0
 	if op.Type == "value" {
-		c, err := convertToType(TypeInformation{Type: "float"}, op.Value)
+		c, err := convertToType(DataDescriptor{Type: "float"}, op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to float64", "err", err, "value", op.Value)
@@ -44,7 +44,7 @@ func (op *Operand) getFloatValueForApplies(logger *slog.Logger, recordInfo *Reco
 		value = c.(float64)
 	}
 	if op.Type == "column" {
-		val, err := recordInfo.GetValue(logger, TypeInformation{Type: "float"}, op.Value)
+		val, err := recordInfo.GetValue(logger, DataDescriptor{Type: "float"}, op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to float", "err", err)
@@ -60,7 +60,7 @@ func (op *Operand) getFloatValueForApplies(logger *slog.Logger, recordInfo *Reco
 func (op *Operand) getIntValueForApplies(logger *slog.Logger, recordInfo *RecordWithInformation) int {
 	value := 0
 	if op.Type == "value" {
-		c, err := convertToType(TypeInformation{Type: "int"}, op.Value)
+		c, err := convertToType(DataDescriptor{Type: "int"}, op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to int", "err", err, "value", op.Value)
@@ -70,7 +70,7 @@ func (op *Operand) getIntValueForApplies(logger *slog.Logger, recordInfo *Record
 		value = c.(int)
 	}
 	if op.Type == "column" {
-		val, err := recordInfo.GetValue(logger, TypeInformation{Type: "int"}, op.Value)
+		val, err := recordInfo.GetValue(logger, DataDescriptor{Type: "int"}, op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to int", "err", err)
@@ -89,7 +89,7 @@ func (op *Operand) getStringValueForApplies(logger *slog.Logger, recordInfo *Rec
 		value = op.Value
 	}
 	if op.Type == "column" {
-		val, err := recordInfo.GetValue(logger, TypeInformation{Type: "string"}, op.Value)
+		val, err := recordInfo.GetValue(logger, DataDescriptor{Type: "string"}, op.Value)
 		if err != nil {
 			if logger != nil {
 				logger.Error("error converting value to string", "err", err)

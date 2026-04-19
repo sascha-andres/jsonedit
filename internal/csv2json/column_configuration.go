@@ -10,14 +10,14 @@ func (cc *ColumnConfiguration) IsValid(logger *slog.Logger, key string) bool {
 		}
 		return false
 	}
-	if len(cc.Property) > 0 && len(cc.Information.Type) == 0 {
+	if len(cc.Property) > 0 && len(cc.Descriptor.Type) == 0 {
 		if logger != nil {
 			logger.Warn("column configuration has a property defined but no type", "key", key)
 		}
 		return false
 	}
 	for _, property := range cc.Properties {
-		if len(property.Property) == 0 || len(property.Type.Type) == 0 {
+		if len(property.Property) == 0 || len(property.Descriptor.Type) == 0 {
 			if logger != nil {
 				logger.Warn("column configuration has a property defined but no type", "key", key)
 			}

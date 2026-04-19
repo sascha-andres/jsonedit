@@ -9,7 +9,7 @@ import (
 // GetValue retrieves a value from the record based on the specified type and column, converting it to the target type t.
 // Logs errors for invalid headers or indices using the provided logger.
 // Returns the converted value or an error if the operation fails.
-func (rwi *RecordWithInformation) GetValue(logger *slog.Logger, t TypeInformation, column string) (any, error) {
+func (rwi *RecordWithInformation) GetValue(logger *slog.Logger, t DataDescriptor, column string) (any, error) {
 	var idx int
 	var err error
 	if rwi.HeaderIndex != nil {

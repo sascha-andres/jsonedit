@@ -8,7 +8,7 @@ import (
 
 // convertToType converts the input string `val` to a specified type `t` such as "int", "float", or "bool".
 // Returns the converted value as `any` or an error if the conversion fails.
-func convertToType(t TypeInformation, val string) (any, error) {
+func convertToType(t DataDescriptor, val string) (any, error) {
 	switch t.Type {
 	case "int":
 		i, err := strconv.Atoi(val)

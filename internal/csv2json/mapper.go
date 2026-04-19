@@ -326,14 +326,14 @@ func (m *Mapper) mapCSVFields(out map[string]any, recordInfo *RecordWithInformat
 						continue
 					}
 				}
-				val, err := convertToType(property.Type, recordInfo.Record[i])
+				val, err := convertToType(property.Descriptor, recordInfo.Record[i])
 				if err != nil {
 					return nil, err
 				}
 				out = setValue(strings.Split(property.Property, "."), val, out)
 			}
 		} else {
-			val, err := convertToType(v.Information, recordInfo.Record[i])
+			val, err := convertToType(v.Descriptor, recordInfo.Record[i])
 			if err != nil {
 				return nil, err
 			}
@@ -358,7 +358,7 @@ func (m *Mapper) applyCalculatedFields(logger *slog.Logger, recordNumber int, ou
 		if len(field.Properties) > 0 {
 			for _, property := range field.Properties {
 				if property.Applies(logger, recordInfo) {
-					val, err := m.getValueForCalculatedField(field, property.Type, recordNumber, recordInfo)
+					val, err := m.getValueForCalculatedField(field, property.Descriptor, recordNumber, recordInfo)
 					if err != nil {
 						return nil, err
 					}
@@ -379,7 +379,7 @@ func (m *Mapper) applyCalculatedFields(logger *slog.Logger, recordNumber int, ou
 
 // applyCalculatedFieldSimple applies a single calculated field to the output based on the configuration and specified record number.
 func (m *Mapper) applyCalculatedFieldSimple(field CalculatedField, recordNumber int, out map[string]any, recordInfo *RecordWithInformation) (map[string]any, error) {
-	val, err := m.getValueForCalculatedField(field, field.Type, recordNumber, recordInfo)
+	val, err := m.getValueForCalculatedField(field, field.Descriptor, recordNumber, recordInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -389,7 +389,7 @@ func (m *Mapper) applyCalculatedFieldSimple(field CalculatedField, recordNumber 
 // getValueForCalculatedField retrieves the computed value for a given calculated field based on its type and configuration.
 // It processes various field kinds such as "application", "datetime", "environment", "extra", "mapping", or "ask".
 // Returns the calculated value in the desired type or an error if processing fails.
-func (m *Mapper) getValueForCalculatedField(field CalculatedField, typeInfo TypeInformation, recordNumber int, recordInfo *RecordWithInformation) (any, error) {
+func (m *Mapper) getValueForCalculatedField(field CalculatedField, typeInfo DataDescriptor, recordNumber int, recordInfo *RecordWithInformation) (any, error) {
 	var val any
 	var err error
 	switch field.Kind {
@@ -501,9 +501,9 @@ func (m *Mapper) getDateTimeValue(field CalculatedField) (any, error) {
 func (m *Mapper) getApplicationValue(field CalculatedField, i int) (any, error) {
 	switch field.Format {
 	case "record":
-		return convertToType(TypeInformation{Type: "int"}, strconv.Itoa(i))
+		return convertToType(DataDescriptor{Type: "int"}, strconv.Itoa(i))
 	case "records":
-		return convertToType(TypeInformation{Type: "int"}, strconv.Itoa(i))
+		return convertToType(DataDescriptor{Type: "int"}, strconv.Itoa(i))
 	}
 	return nil, errors.New("unknown format " + field.Format)
 }

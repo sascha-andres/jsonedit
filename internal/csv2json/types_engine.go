@@ -100,8 +100,8 @@ type (
 		// Property specifies the name of the column property in the mapping configuration.
 		Property string `json:"property"`
 
-		// Type specifies the data type of the column in the mapping configuration.
-		Type TypeInformation `json:"type"`
+		// Descriptor specifies the data type of the column in the mapping configuration.
+		Descriptor DataDescriptor `json:"descriptor"`
 
 		// Condition specifies the logical condition to be evaluated for a property, including value, column, and comparison operator.
 		Condition *Condition `json:"condition,omitempty"`
@@ -115,15 +115,15 @@ type (
 		// Property specifies the name of the column property in the mapping configuration.
 		Property string `json:"property"`
 
-		// Information specifies the data type of the column in the mapping configuration.
-		Information TypeInformation `json:"type"`
+		// Descriptor specifies the data type of the column in the mapping configuration.
+		Descriptor DataDescriptor `json:"descriptor"`
 	}
 
 	// FieldLocation represents the location or identifier of a specific field within a system or context as a string.
 	FieldLocation string
 
-	// TypeInformation holds the type information of a field
-	TypeInformation struct {
+	// DataDescriptor holds the type information of a field
+	DataDescriptor struct {
 		// Type is the type of the field.
 		Type string `json:"type,omitempty"`
 		// ParseWith is an argument how to parse the field value.
@@ -140,8 +140,8 @@ type (
 		// Property specifies the name of the property in the generated document.
 		Property string `json:"property"`
 
-		// Type information about the type represented
-		Type TypeInformation `json:"type"`
+		// Descriptor information about the type represented
+		Descriptor DataDescriptor `json:"descriptor"`
 
 		// Kind denotes what kind of calculating has to be treated
 		Kind string `json:"kind"`
